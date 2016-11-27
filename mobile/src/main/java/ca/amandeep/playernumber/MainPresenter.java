@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import ca.amandeep.playernumber.models.Game;
 import rx.android.schedulers.AndroidSchedulers;
@@ -22,11 +23,10 @@ public class MainPresenter implements GamesAdapter.GameSelectListener, GamesPres
 
     public MainPresenter(@NonNull AppCompatActivity activity, @NonNull Context context) {
         mContext = context;
-        mHomePlayerPresenter = new PlayerPresenter(PlayerPresenter.Type.HOME);
-        mAwayPlayerPresenter = new PlayerPresenter(PlayerPresenter.Type.AWAY);
-
-        mHomePlayerPresenter.bindView(activity.findViewById(R.id.play_view_home));
-        mAwayPlayerPresenter.bindView(activity.findViewById(R.id.play_view_away));
+        mHomePlayerPresenter = new PlayerPresenter(mContext, PlayerPresenter.Type.HOME,
+                createPlayerViewHolderFrom(activity.findViewById(R.id.play_view_home)));
+        mAwayPlayerPresenter = new PlayerPresenter(mContext, PlayerPresenter.Type.AWAY,
+                createPlayerViewHolderFrom(activity.findViewById(R.id.play_view_away)));
 
         mNumEdit = (EditText) activity.findViewById(R.id.number_edit);
         mNumEdit.addTextChangedListener(new AfterTextWatcherHolder(this::onNumberEditChanged));
@@ -37,6 +37,16 @@ public class MainPresenter implements GamesAdapter.GameSelectListener, GamesPres
         mProgressDialog.setMessage(mContext.getString(R.string.loading_todays_games));
 
         mGamesPresenter = new GamesPresenter(activity, mContext, this);
+    }
+
+    private PlayerViewHolder createPlayerViewHolderFrom(View view) {
+        return PlayerViewHolder.newBuilder()
+                .setFirstNameView((TextView) view.findViewById(R.id.first_name))
+                .setLastNameView((TextView) view.findViewById(R.id.last_name))
+                .setBirthPlaceView((TextView) view.findViewById(R.id.birth_place))
+                .setTeamLabelView((TextView) view.findViewById(R.id.team_label))
+                .setContainerView(view)
+                .build();
     }
 
     public void startFetchData() {

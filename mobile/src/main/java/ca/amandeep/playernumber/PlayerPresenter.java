@@ -1,17 +1,13 @@
 package ca.amandeep.playernumber;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.View;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindDimen;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import ca.amandeep.playernumber.models.Player;
 import ca.amandeep.playernumber.models.Team;
 import rx.Observable;
@@ -21,24 +17,18 @@ import rx.math.operators.OperatorMinMax;
 
 public class PlayerPresenter {
 
+    @NonNull private final Context mContext;
     @NonNull private final Type mType;
-    @BindView(R.id.first_name) TextView firstName;
-    @BindView(R.id.last_name) TextView lastName;
-    @BindView(R.id.birth_place) TextView birthPlace;
-    @BindView(R.id.team_label) TextView teamLabel;
-    @BindView(R.id.info_container) View infoContainer;
-    @BindDimen(R.dimen.fab_size) int fabSize;
-    private View container;
-    private List<Player> mPlayers = new ArrayList<>();
+    @NonNull private final PlayerViewHolder mViewHolder;
+    private final int mFabSize;
+    @NonNull private List<Player> mPlayers = new ArrayList<>();
     private int mJerseyNumber;
 
-    public PlayerPresenter(@NonNull Type type) {
+    public PlayerPresenter(@NonNull Context context, @NonNull Type type, @NonNull PlayerViewHolder viewHolder) {
+        mContext = context;
         mType = type;
-    }
-
-    public void bindView(@NonNull View view) {
-        container = view;
-        ButterKnife.bind(this, view);
+        mViewHolder = viewHolder;
+        mFabSize = mContext.getResources().getDimensionPixelSize(R.dimen.fab_size);
     }
 
     public void bindTeam(@NonNull Team team) {
@@ -53,22 +43,22 @@ public class PlayerPresenter {
             teamLabelColor = ColourUtils.darken(backgroundColor, 0.2);
         }
 
-        firstName.setTextColor(foregroundColor);
-        lastName.setTextColor(foregroundColor);
-        birthPlace.setTextColor(foregroundColor);
+        mViewHolder.getFirstNameView().setTextColor(foregroundColor);
+        mViewHolder.getLastNameView().setTextColor(foregroundColor);
+        mViewHolder.getBirthPlaceView().setTextColor(foregroundColor);
 
-        container.setBackgroundColor(backgroundColor);
+        mViewHolder.getContainerView().setBackgroundColor(backgroundColor);
 
-        teamLabel.setText(team.abbreviation());
-        teamLabel.setTextColor(teamLabelColor);
+        mViewHolder.getTeamLabelView().setText(team.abbreviation());
+        mViewHolder.getTeamLabelView().setTextColor(teamLabelColor);
 
         if (mType == Type.HOME) {
-            infoContainer.setPadding(0, fabSize / 2, 0, 0);
+            mViewHolder.getContainerView().setPadding(0, mFabSize / 2, 0, 0);
         } else {
-            infoContainer.setPadding(0, 0, 0, fabSize / 2);
+            mViewHolder.getContainerView().setPadding(0, 0, 0, mFabSize / 2);
         }
 
-        new PlayersRepository(container.getContext())
+        new PlayersRepository(mContext)
                 .getPlayers(team)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::bindPlayers);
@@ -85,21 +75,21 @@ public class PlayerPresenter {
         final Player player = getPlayerWithJerseyNumber(mJerseyNumber);
 
         if (player != null) {
-            firstName.setText(player.firstName());
-            lastName.setText(player.lastName());
+            mViewHolder.getFirstNameView().setText(player.firstName());
+            mViewHolder.getLastNameView().setText(player.lastName());
             if (player.birthCity() != null && player.birthCountry() != null) {
-                birthPlace.setText(player.birthCity() + ", " + player.birthCountry());
+                mViewHolder.getBirthPlaceView().setText(player.birthCity() + ", " + player.birthCountry());
             } else if (player.birthCity() != null) {
-                birthPlace.setText(player.birthCity());
+                mViewHolder.getBirthPlaceView().setText(player.birthCity());
             } else if (player.birthCountry() != null) {
-                birthPlace.setText(player.birthCountry());
+                mViewHolder.getBirthPlaceView().setText(player.birthCountry());
             } else {
-                birthPlace.setText(null);
+                mViewHolder.getBirthPlaceView().setText(null);
             }
         } else {
-            firstName.setText(null);
-            lastName.setText(null);
-            birthPlace.setText(null);
+            mViewHolder.getFirstNameView().setText(null);
+            mViewHolder.getLastNameView().setText(null);
+            mViewHolder.getBirthPlaceView().setText(null);
         }
     }
 
