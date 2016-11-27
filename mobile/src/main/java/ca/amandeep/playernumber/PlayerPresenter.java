@@ -19,7 +19,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.math.operators.OperatorMinMax;
 
 
-public class PlayerViewPresenter {
+public class PlayerPresenter {
 
     @NonNull private final Type mType;
     @BindView(R.id.first_name) TextView firstName;
@@ -32,7 +32,7 @@ public class PlayerViewPresenter {
     private List<Player> mPlayers = new ArrayList<>();
     private int mJerseyNumber;
 
-    public PlayerViewPresenter(@NonNull Type type) {
+    public PlayerPresenter(@NonNull Type type) {
         mType = type;
     }
 

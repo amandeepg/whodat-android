@@ -22,6 +22,7 @@ public class TeamsRepository {
 
     private static final String PREF_LAST_TEAMS_FETCH = "PREF_LAST_TEAMS_FETCH_";
     private static final long MAX_STALE_ALLOWANCE_MILLIS = 1000L * 60L * 60L * 24L * 60L; // 1000 ms * 60 s * 60 m * 24 h * 60 d = 1month
+
     private final SharedPreferences mPrefs;
     private final DbOpenHelper mDbHelper;
 
