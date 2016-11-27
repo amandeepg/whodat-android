@@ -3,6 +3,7 @@ package ca.amandeep.playernumber;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,8 +24,9 @@ public class GamesPresenter {
     private AlertDialog mDialog;
     private AlertDialog.Builder mDialogBuilder;
 
-    public GamesPresenter(AppCompatActivity activity, Context context, ViewDelegate viewDelegate) {
-        mLayoutInflater = LayoutInflater.from(activity);
+    public GamesPresenter(@NonNull AppCompatActivity activity, @NonNull Context context,
+            @NonNull LayoutInflater layoutInflater, @NonNull ViewDelegate viewDelegate) {
+        mLayoutInflater = layoutInflater;
         mContext = context;
         mViewDelegate = viewDelegate;
 
@@ -32,7 +34,7 @@ public class GamesPresenter {
                 .setCancelable(false);
     }
 
-    public void showGamesDialog(List<Game> games) {
+    public void showGamesDialog(@NonNull List<Game> games) {
         @SuppressLint("InflateParams")
         final View view = mLayoutInflater.inflate(R.layout.dialog_games, null);
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);

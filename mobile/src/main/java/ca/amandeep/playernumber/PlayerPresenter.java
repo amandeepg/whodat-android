@@ -20,8 +20,9 @@ public class PlayerPresenter {
     @NonNull private final Context mContext;
     @NonNull private final Type mType;
     @NonNull private final PlayerViewHolder mViewHolder;
+    @NonNull private final List<Player> mPlayers = new ArrayList<>();
     private final int mFabSize;
-    @NonNull private List<Player> mPlayers = new ArrayList<>();
+
     private int mJerseyNumber;
 
     public PlayerPresenter(@NonNull Context context, @NonNull Type type, @NonNull PlayerViewHolder viewHolder) {
@@ -109,8 +110,11 @@ public class PlayerPresenter {
         }
     }
 
-    private void bindPlayers(List<Player> players) {
-        mPlayers = players;
+    private void bindPlayers(@Nullable List<Player> players) {
+        mPlayers.clear();
+        if (players != null) {
+            mPlayers.addAll(players);
+        }
         bindPlayerNum();
     }
 

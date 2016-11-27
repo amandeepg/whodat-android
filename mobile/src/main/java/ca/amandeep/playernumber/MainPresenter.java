@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,7 +22,8 @@ public class MainPresenter implements GamesAdapter.GameSelectListener, GamesPres
     @NonNull private final ProgressDialog mProgressDialog;
     @NonNull private final GamesPresenter mGamesPresenter;
 
-    public MainPresenter(@NonNull AppCompatActivity activity, @NonNull Context context) {
+    public MainPresenter(@NonNull AppCompatActivity activity, @NonNull Context context,
+            @NonNull LayoutInflater layoutInflater) {
         mContext = context;
         mHomePlayerPresenter = new PlayerPresenter(mContext, PlayerPresenter.Type.HOME,
                 createPlayerViewHolderFrom(activity.findViewById(R.id.play_view_home)));
@@ -36,10 +38,11 @@ public class MainPresenter implements GamesAdapter.GameSelectListener, GamesPres
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setMessage(mContext.getString(R.string.loading_todays_games));
 
-        mGamesPresenter = new GamesPresenter(activity, mContext, this);
+        mGamesPresenter = new GamesPresenter(activity, mContext, layoutInflater, this);
     }
 
-    private PlayerViewHolder createPlayerViewHolderFrom(View view) {
+    @NonNull
+    private PlayerViewHolder createPlayerViewHolderFrom(@NonNull View view) {
         return PlayerViewHolder.newBuilder()
                 .setFirstNameView((TextView) view.findViewById(R.id.first_name))
                 .setLastNameView((TextView) view.findViewById(R.id.last_name))

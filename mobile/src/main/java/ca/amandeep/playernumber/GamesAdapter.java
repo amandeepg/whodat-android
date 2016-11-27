@@ -1,5 +1,7 @@
 package ca.amandeep.playernumber;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +20,10 @@ public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolder> 
     private static final int HEADER = 1;
     private static final int GAME = 2;
 
-    private final GameSelectListener mListener;
-    private final List<GameOrHeader> gameOrHeaders;
+    @NonNull private final GameSelectListener mListener;
+    @NonNull private final List<GameOrHeader> gameOrHeaders;
 
-    public GamesAdapter(List<Game> games, GameSelectListener listener) {
+    public GamesAdapter(@NonNull List<Game> games, @NonNull GameSelectListener listener) {
         games = Observable.from(games)
                 .toSortedList((game1, game2) -> game1.league().compareTo(game2.league()))
                 .toBlocking()
@@ -41,12 +43,13 @@ public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolder> 
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.game_item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.headerView.setVisibility(View.GONE);
         holder.atView.setVisibility(View.GONE);
         holder.homeTeamTextView.setVisibility(View.GONE);
@@ -54,11 +57,15 @@ public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolder> 
 
         if (getItemViewType(position) == HEADER) {
             final String league = gameOrHeaders.get(position).league;
+            assert league != null;
+
             holder.headerView.setText(league.toUpperCase());
 
             holder.headerView.setVisibility(View.VISIBLE);
         } else {
             final Game game = gameOrHeaders.get(position).game;
+            assert game != null;
+
             final Team awayTeam = game.awayTeam();
             final Team homeTeam = game.homeTeam();
 
@@ -88,10 +95,10 @@ public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolder> 
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView awayTeamTextView;
-        private final TextView homeTeamTextView;
-        private final View atView;
-        private final TextView headerView;
+        @NonNull private final TextView awayTeamTextView;
+        @NonNull private final TextView homeTeamTextView;
+        @NonNull private final View atView;
+        @NonNull private final TextView headerView;
 
         private ViewHolder(View itemView) {
             super(itemView);
@@ -103,10 +110,10 @@ public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolder> 
     }
 
     private static class GameOrHeader {
-        private final String league;
-        private final Game game;
+        @Nullable private final String league;
+        @Nullable private final Game game;
 
-        private GameOrHeader(String league, Game game) {
+        private GameOrHeader(@Nullable String league, @Nullable Game game) {
             this.league = league;
             this.game = game;
         }
