@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/overall_container">
+
+    <ca.amandeep.playernumber.VerticalTextView
+        android:id="@+id/team_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginRight="@dimen/standard_margin"
+        android:includeFontPadding="false"
+        android:textAllCaps="true"
+        android:textSize="@dimen/team_label_text"
+        android:textStyle="bold"
+        android:typeface="sans"
+        tools:text="Maple Leafs"/>
+
+    <LinearLayout
+        android:id="@+id/info_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/first_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:includeFontPadding="false"
+            android:textSize="@dimen/medium_player_text"
+            tools:text="Nazem"/>
+
+        <TextView
+            android:id="@+id/last_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif"
+            android:includeFontPadding="false"
+            android:letterSpacing="0.1"
+            android:textAllCaps="true"
+            android:textSize="@dimen/large_player_text"
+            android:textStyle="bold"
+            android:typeface="sans"
+            tools:text="Kadri"/>
+
+        <TextView
+            android:id="@+id/birth_place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif-condensed"
+            android:includeFontPadding="false"
+            android:textSize="@dimen/small_player_text"
+            android:typeface="serif"
+            tools:text="Toronto, ON"/>
+    </LinearLayout>
+</FrameLayout>

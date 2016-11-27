@@ -1,0 +1,22 @@
+CREATE TABLE team (
+    _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    id TEXT NOT NULL UNIQUE,
+    city TEXT NOT NULL,
+    name TEXT NOT NULL,
+    abbreviation TEXT NOT NULL,
+    colour TEXT NOT NULL
+  );
+
+-- Further SQL statements are proceeded by an identifier.
+selectAll:
+SELECT *
+FROM team;
+
+insertTeam:
+INSERT INTO team(id, city, name, abbreviation, colour)
+VALUES (?, ?, ?, ?, ?);
+
+findTeam:
+SELECT *
+FROM team
+WHERE id = ?;

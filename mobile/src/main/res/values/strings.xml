@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Who\'s That Player</string>
+    <string name="which_game_are_you_watching">Which game are you watching?</string>
+    <string name="loading_todays_games">Loading today\'s games…</string>
+</resources>
