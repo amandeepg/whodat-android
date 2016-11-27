@@ -8,7 +8,6 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import ca.amandeep.playernumber.models.Game;
 import rx.android.schedulers.AndroidSchedulers;
@@ -23,14 +22,14 @@ public class MainPresenter implements GamesAdapter.GameSelectListener, GamesPres
     @NonNull private final GamesPresenter mGamesPresenter;
 
     public MainPresenter(@NonNull AppCompatActivity activity, @NonNull Context context,
-            @NonNull LayoutInflater layoutInflater) {
+            @NonNull LayoutInflater layoutInflater, @NonNull MainViewHolder viewHolder) {
         mContext = context;
-        mHomePlayerPresenter = new PlayerPresenter(mContext, PlayerPresenter.Type.HOME,
-                createPlayerViewHolderFrom(activity.findViewById(R.id.play_view_home)));
-        mAwayPlayerPresenter = new PlayerPresenter(mContext, PlayerPresenter.Type.AWAY,
-                createPlayerViewHolderFrom(activity.findViewById(R.id.play_view_away)));
+        mHomePlayerPresenter =
+                new PlayerPresenter(mContext, PlayerPresenter.Type.HOME, viewHolder.getHomePlayerViewHolder());
+        mAwayPlayerPresenter =
+                new PlayerPresenter(mContext, PlayerPresenter.Type.AWAY, viewHolder.getAwayPlayerViewHolder());
 
-        mNumEdit = (EditText) activity.findViewById(R.id.number_edit);
+        mNumEdit = viewHolder.getJerseyNumberEditText();
         mNumEdit.addTextChangedListener(new AfterTextWatcherHolder(this::onNumberEditChanged));
         mNumEdit.setVisibility(View.INVISIBLE);
 
@@ -39,17 +38,6 @@ public class MainPresenter implements GamesAdapter.GameSelectListener, GamesPres
         mProgressDialog.setMessage(mContext.getString(R.string.loading_todays_games));
 
         mGamesPresenter = new GamesPresenter(activity, mContext, layoutInflater, this);
-    }
-
-    @NonNull
-    private PlayerViewHolder createPlayerViewHolderFrom(@NonNull View view) {
-        return PlayerViewHolder.newBuilder()
-                .setFirstNameView((TextView) view.findViewById(R.id.first_name))
-                .setLastNameView((TextView) view.findViewById(R.id.last_name))
-                .setBirthPlaceView((TextView) view.findViewById(R.id.birth_place))
-                .setTeamLabelView((TextView) view.findViewById(R.id.team_label))
-                .setContainerView(view)
-                .build();
     }
 
     public void startFetchData() {
