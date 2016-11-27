@@ -18,13 +18,13 @@ public class GamesPresenter {
 
     private final LayoutInflater mLayoutInflater;
     private final Context mContext;
-    private final AlertDialog.Builder mDialogBuilder;
     private final ViewDelegate mViewDelegate;
 
     private AlertDialog mDialog;
+    private AlertDialog.Builder mDialogBuilder;
 
     public GamesPresenter(AppCompatActivity activity, Context context, ViewDelegate viewDelegate) {
-        mLayoutInflater = LayoutInflater.from(context);
+        mLayoutInflater = LayoutInflater.from(activity);
         mContext = context;
         mViewDelegate = viewDelegate;
 
