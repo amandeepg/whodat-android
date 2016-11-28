@@ -64,14 +64,15 @@ public class PlayersRepository {
         Log.d(TAG, "Thread report: Read from DB on: " + Thread.currentThread());
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final SqlDelightStatement query = Player.FACTORY.forTeam(team.id());
-        final Cursor playersCursor = db.rawQuery(query.statement, query.args);
 
-        final List<Player> players = new ArrayList<>(playersCursor.getCount());
-        while (playersCursor.moveToNext()) {
-            players.add(Player.FOR_TEAM_MAPPER.map(playersCursor).player());
+        try (final Cursor playersCursor = db.rawQuery(query.statement, query.args)) {
+            final List<Player> players = new ArrayList<>(playersCursor.getCount());
+            while (playersCursor.moveToNext()) {
+                players.add(Player.FOR_TEAM_MAPPER.map(playersCursor).player());
+            }
+            Log.d(TAG, "readPlayersFromDb: players.size(): " + players.size());
+            return players;
         }
-        Log.d(TAG, "readPlayersFromDb: players.size(): " + players.size());
-        return players;
     }
 
     private void writePlayersToDb(List<PlayerTeam> playerTeams) {
@@ -84,14 +85,16 @@ public class PlayersRepository {
         for (final PlayerTeam playerTeam : playerTeams) {
             final Player player = playerTeam.player();
             final SqlDelightStatement query = Team.FACTORY.findTeam(playerTeam.team().id());
-            final Cursor teamsCursor = db.rawQuery(query.statement, query.args);
-            if (BuildConfig.DEBUG) {
-                if (teamsCursor.getCount() != 1) {
-                    throw new RuntimeException("Should only find 1 team");
+            final Team team;
+            try (final Cursor teamsCursor = db.rawQuery(query.statement, query.args)) {
+                if (BuildConfig.DEBUG) {
+                    if (teamsCursor.getCount() != 1) {
+                        throw new RuntimeException("Should only find 1 team");
+                    }
                 }
+                teamsCursor.moveToFirst();
+                team = Team.SELECT_ALL_MAPPER.map(teamsCursor);
             }
-            teamsCursor.moveToFirst();
-            final Team team = Team.SELECT_ALL_MAPPER.map(teamsCursor);
 
             insertPlayer.bind(
                     player.id(),
@@ -139,13 +142,15 @@ public class PlayersRepository {
     private Team findTeam(Team team) {
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final SqlDelightStatement query = Team.FACTORY.findTeam(team.id());
-        final Cursor teamsCursor = db.rawQuery(query.statement, query.args);
-        if (BuildConfig.DEBUG) {
-            if (teamsCursor.getCount() != 1) {
-                throw new RuntimeException("Should only find 1 team");
+
+        try (final Cursor teamsCursor = db.rawQuery(query.statement, query.args)) {
+            if (BuildConfig.DEBUG) {
+                if (teamsCursor.getCount() != 1) {
+                    throw new RuntimeException("Should only find 1 team");
+                }
             }
+            teamsCursor.moveToFirst();
+            return Team.SELECT_ALL_MAPPER.map(teamsCursor);
         }
-        teamsCursor.moveToFirst();
-        return Team.SELECT_ALL_MAPPER.map(teamsCursor);
     }
 }
