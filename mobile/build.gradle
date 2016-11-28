@@ -15,7 +15,7 @@ buildscript {
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.1"
     defaultConfig {
         applicationId "ca.amandeep.playernumber"
         minSdkVersion 19
@@ -36,11 +36,11 @@ android {
 }
 
 dependencies {
-    wearApp project(':wear')
+    //wearApp project(':wear')
 
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.google.android.gms:play-services-wearable:9.8.0'
-    compile 'com.android.support:appcompat-v7:25.0.0'
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
+    //compile 'com.google.android.gms:play-services-wearable:10.0.0'
+    compile 'com.android.support:appcompat-v7:25.0.1'
 
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-moshi:2.1.0'
@@ -53,15 +53,13 @@ dependencies {
     annotationProcessor 'com.google.auto.value:auto-value:1.2'
     annotationProcessor 'com.ryanharter.auto.value:auto-value-moshi:0.4.2'
     provided 'com.ryanharter.auto.value:auto-value-moshi-annotations:0.4.2'
-    compile 'com.jakewharton:butterknife:8.4.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
 
-    compile 'com.facebook.stetho:stetho:1.4.1'
+    debugCompile 'com.facebook.stetho:stetho:1.4.1'
 
-    compile 'com.android.support:design:25.0.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
-    compile 'com.android.support:recyclerview-v7:25.0.0'
-    compile 'com.android.support:support-annotations:25.0.0'
+    compile 'com.android.support:design:25.0.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile 'com.android.support:recyclerview-v7:25.0.1'
+    compile 'com.android.support:support-annotations:25.0.1'
 
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
 }

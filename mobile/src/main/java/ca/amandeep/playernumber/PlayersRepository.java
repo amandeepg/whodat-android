@@ -46,7 +46,7 @@ public class PlayersRepository {
                 .flatMap(shouldFetchFromCache -> {
                     if (!shouldFetchFromCache) {
                         Log.d(TAG, "go fetch from api");
-                        return MyApplication.getsService().listPlayers(team.id(), team.id())
+                        return PlayerNumberApplication.getService().listPlayers(team.id(), team.id())
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(Schedulers.io())
                                 .doOnNext(playerTeams -> Log.d(TAG, "fetched from api: " + playerTeams.size()))

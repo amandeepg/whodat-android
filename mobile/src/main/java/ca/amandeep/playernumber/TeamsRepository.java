@@ -38,7 +38,7 @@ public class TeamsRepository {
                 .flatMap(shouldFetchFromCache -> {
                     if (!shouldFetchFromCache) {
                         Log.d(TAG, "go fetch from api");
-                        return MyApplication.getsService().listTeams()
+                        return PlayerNumberApplication.getService().listTeams()
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(Schedulers.io())
                                 .doOnNext(teams -> Log.d(TAG, "fetched from api: " + teams.size()))

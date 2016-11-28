@@ -15,7 +15,7 @@ public class GamesRepository {
 
     @NonNull
     public Single<List<Game>> getGames() {
-        return MyApplication.getsService().listGames()
+        return PlayerNumberApplication.getService().listGames()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .doOnNext(games -> Log.d(TAG, "fetched from api: " + games.size()))
