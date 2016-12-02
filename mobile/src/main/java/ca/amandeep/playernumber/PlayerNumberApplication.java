@@ -18,7 +18,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public class PlayerNumberApplication extends Application {
     private static final String TAG = "PlayerNumberApplication";
-    private static final String BASE_URL = "https://d1de3t8oqfn2fp.cloudfront.net";
+    private static final String BASE_URL = "https://player-number.amandeep.ca";
 
     private static PlayerNumberService sService;
 
