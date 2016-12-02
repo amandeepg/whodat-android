@@ -62,4 +62,5 @@ dependencies {
     compile 'com.android.support:support-annotations:25.0.1'
 
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
+    compile 'com.github.paolorotolo:appintro:4.1.0'
 }

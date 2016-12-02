@@ -12,7 +12,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public class PlayerNumberApplication extends Application {
-    public static final String BASE_URL = "https://player-number.herokuapp.com";
+    public static final String BASE_URL = "https://d1de3t8oqfn2fp.cloudfront.net";
 
     private static PlayerNumberService sService;
 

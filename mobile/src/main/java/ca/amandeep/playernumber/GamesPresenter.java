@@ -20,9 +20,9 @@ public class GamesPresenter {
     private final LayoutInflater mLayoutInflater;
     private final Context mContext;
     private final ViewDelegate mViewDelegate;
+    private final AlertDialog.Builder mDialogBuilder;
 
     private AlertDialog mDialog;
-    private AlertDialog.Builder mDialogBuilder;
 
     public GamesPresenter(@NonNull AppCompatActivity activity, @NonNull Context context,
             @NonNull LayoutInflater layoutInflater, @NonNull ViewDelegate viewDelegate) {

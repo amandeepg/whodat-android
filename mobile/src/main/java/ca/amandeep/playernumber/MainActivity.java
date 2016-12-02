@@ -16,6 +16,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        IntroStarter.startIntroIfFirstTime(this);
+
         setContentView(R.layout.activity_main);
         mMainPresenter = new MainPresenter(this, getApplicationContext(), LayoutInflater.from(this),
                 MainViewHolder.newBuilder()

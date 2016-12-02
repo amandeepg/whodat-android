@@ -1,10 +1,8 @@
 package ca.amandeep.playernumber.models;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
-import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.sqldelight.ColumnAdapter;
