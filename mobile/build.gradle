@@ -55,6 +55,7 @@ dependencies {
     provided 'com.ryanharter.auto.value:auto-value-moshi-annotations:0.4.2'
 
     debugCompile 'com.facebook.stetho:stetho:1.4.1'
+    debugCompile 'com.facebook.stetho:stetho-okhttp3:1.4.1'
 
     compile 'com.android.support:design:25.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
