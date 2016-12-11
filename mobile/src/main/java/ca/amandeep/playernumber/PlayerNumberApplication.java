@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.squareup.moshi.Moshi;
 
@@ -44,7 +45,7 @@ public class PlayerNumberApplication extends Application {
 
         sService = retrofit.create(PlayerNumberService.class);
 
-        Fabric.with(this, new Answers());
+        Fabric.with(this, new Answers(), new Crashlytics());
     }
 
     protected OkHttpClient.Builder createOkHttpClientBuilder(@NonNull Context context) {
