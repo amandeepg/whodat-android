@@ -5,11 +5,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.crashlytics.android.answers.Answers;
 import com.squareup.moshi.Moshi;
 
 import ca.amandeep.playernumber.api.PlayerNumberService;
 import ca.amandeep.playernumber.models.AutoValueMoshiFactory;
 import ca.amandeep.playernumber.models.CalendarAdapter;
+import io.fabric.sdk.android.Fabric;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -41,6 +43,8 @@ public class PlayerNumberApplication extends Application {
                 .build();
 
         sService = retrofit.create(PlayerNumberService.class);
+
+        Fabric.with(this, new Answers());
     }
 
     protected OkHttpClient.Builder createOkHttpClientBuilder(@NonNull Context context) {

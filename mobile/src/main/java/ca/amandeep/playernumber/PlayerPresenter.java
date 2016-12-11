@@ -5,6 +5,9 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +16,6 @@ import ca.amandeep.playernumber.models.Team;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.math.operators.OperatorMinMax;
-
 
 public class PlayerPresenter {
 
@@ -75,7 +77,11 @@ public class PlayerPresenter {
     private void bindPlayerNum() {
         final Player player = getPlayerWithJerseyNumber(mJerseyNumber);
 
+        Answers.getInstance().logCustom(new CustomEvent("Player queried"));
+
         if (player != null) {
+            Answers.getInstance().logCustom(new CustomEvent("Player found"));
+
             mViewHolder.getFirstNameView().setText(player.firstName());
             mViewHolder.getLastNameView().setText(player.lastName());
             if (player.birthCity() != null && player.birthCountry() != null) {
