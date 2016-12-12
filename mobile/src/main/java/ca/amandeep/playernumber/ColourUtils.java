@@ -19,32 +19,6 @@ public class ColourUtils {
         return c;
     }
 
-    public static int lighten(@ColorInt int color, double fraction) {
-        final int red = lightenColor(Color.red(color), fraction);
-        final int green = lightenColor(Color.green(color), fraction);
-        final int blue = lightenColor(Color.blue(color), fraction);
-        final int alpha = Color.alpha(color);
-
-        return Color.argb(alpha, red, green, blue);
-    }
-
-    public static int darken(@ColorInt int color, double fraction) {
-        final int red = darkenColor(Color.red(color), fraction);
-        final int green = darkenColor(Color.green(color), fraction);
-        final int blue = darkenColor(Color.blue(color), fraction);
-        final int alpha = Color.alpha(color);
-
-        return Color.argb(alpha, red, green, blue);
-    }
-
-    private static int darkenColor(int color, double fraction) {
-        return (int) Math.max(color - (color * fraction), 0);
-    }
-
-    private static int lightenColor(int color, double fraction) {
-        return (int) Math.min(color + (color * fraction), 255);
-    }
-
     private static float getLuminance(@ColorInt int backgroundColor) {
         final float r = getLuminanceComponent(Color.red(backgroundColor));
         final float g = getLuminanceComponent(Color.green(backgroundColor));
@@ -54,10 +28,6 @@ public class ColourUtils {
 
     public static boolean isBright(@ColorInt int color) {
         return getLuminance(color) > 0.179f;
-    }
-
-    public static boolean isBlackOrAlmostBlack(int color) {
-        return getLuminance(color) < 0.03;
     }
 
     @ColorInt

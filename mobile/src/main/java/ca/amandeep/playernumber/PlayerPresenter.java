@@ -23,11 +23,10 @@ import rx.math.operators.OperatorMinMax;
 
 public class PlayerPresenter {
 
-    private static final double TEAM_LABEL_LIGHTEN_AMOUNT = 0.9;
-    private static final double TEAM_LABEL_DARKEN_AMOUNT = 0.2;
-    private static final int ALPHA_PLAYER_LABEL = (int) (255 * 0.9);
-    private static final int ALPHA_STATUS = (int) (255 * 0.75);
+    private static final int ALPHA_PLAYER_LABEL = (int) (255f * 0.9f);
+    private static final int ALPHA_STATUS = (int) (255f * 0.75f);
     private static final int CROSSFADE_DURATION_MILLIS = 100;
+    private static final int ALPHA_TEAM_LABEL = (int) (255f / 4f);
 
     @NonNull private final Context mContext;
     @NonNull private final Type mType;
@@ -71,20 +70,10 @@ public class PlayerPresenter {
     }
 
     public void bindTeam(@NonNull Team team) {
-        @ColorInt final int foregroundColor;
-        @ColorInt final int teamLabelColor;
         @ColorInt final int backgroundColor = Color.parseColor("#" + team.colour());
-        if (ColourUtils.isBright(backgroundColor)) {
-            foregroundColor = ColourUtils.modifyAlpha(Color.BLACK, ALPHA_PLAYER_LABEL);
-            teamLabelColor = ColourUtils.lighten(backgroundColor, TEAM_LABEL_LIGHTEN_AMOUNT);
-        } else {
-            foregroundColor = ColourUtils.modifyAlpha(Color.WHITE, ALPHA_PLAYER_LABEL);
-            if (ColourUtils.isBlackOrAlmostBlack(backgroundColor)) {
-                teamLabelColor = Color.DKGRAY;
-            } else {
-                teamLabelColor = ColourUtils.darken(backgroundColor, TEAM_LABEL_DARKEN_AMOUNT);
-            }
-        }
+        @ColorInt final int textColor = ColourUtils.isBright(backgroundColor) ? Color.BLACK : Color.WHITE;
+        @ColorInt final int foregroundColor = ColourUtils.modifyAlpha(textColor, ALPHA_PLAYER_LABEL);
+        @ColorInt final int teamLabelColor = ColourUtils.modifyAlpha(textColor, ALPHA_TEAM_LABEL);
 
         setTextColor(mViewHolder.getFirstNameView(), foregroundColor);
         setTextColor(mViewHolder.getLastNameView(), foregroundColor);
