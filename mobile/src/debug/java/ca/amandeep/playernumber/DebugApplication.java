@@ -11,8 +11,9 @@ import okhttp3.OkHttpClient;
 public class DebugApplication extends PlayerNumberApplication {
 
     public void onCreate() {
-        super.onCreate();
         Stetho.initializeWithDefaults(this);
+
+        super.onCreate();
     }
 
     @Override

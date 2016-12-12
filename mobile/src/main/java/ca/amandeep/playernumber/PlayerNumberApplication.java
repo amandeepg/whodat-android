@@ -3,10 +3,11 @@ package ca.amandeep.playernumber;
 import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.core.CrashlyticsCore;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.squareup.moshi.Moshi;
 
 import ca.amandeep.playernumber.api.PlayerNumberService;
@@ -21,7 +22,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public class PlayerNumberApplication extends Application {
     private static final String TAG = "PlayerNumberApplication";
-    private static final String BASE_URL = "https://player-number.amandeep.ca";
+    private static final String BASE_URL_KEY = "base_url";
 
     private static PlayerNumberService sService;
 
@@ -32,8 +33,29 @@ public class PlayerNumberApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        Fabric.with(this,
+                new Answers(),
+                new Crashlytics.Builder()
+                        .core(new CrashlyticsCore.Builder()
+                                .disabled(BuildConfig.DEBUG)
+                                .build())
+                        .build());
+
+        final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+        remoteConfig.setDefaults(R.xml.remote_config_defaults);
+        final long cacheExpiration = getRemoteConfigCacheExpiration();
+        remoteConfig.fetch(cacheExpiration)
+                .addOnFailureListener(Crashlytics::logException)
+                .addOnFailureListener(Throwable::printStackTrace)
+                .addOnSuccessListener(nothing -> {
+                    remoteConfig.activateFetched();
+                    printRemoteConfig();
+                });
+
+        printRemoteConfig();
+
         final Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(remoteConfig.getString(BASE_URL_KEY))
                 .client(createOkHttpClientBuilder(getApplicationContext())
                         .build())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -45,7 +67,17 @@ public class PlayerNumberApplication extends Application {
 
         sService = retrofit.create(PlayerNumberService.class);
 
-        Fabric.with(this, new Answers(), new Crashlytics());
+    }
+
+    private void printRemoteConfig() {
+        final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+        for (final String key : remoteConfig.getKeysByPrefix(null)) {
+            Logger.d(TAG, "printRemoteConfig: " + key + " = " + remoteConfig.getString(key));
+        }
+    }
+
+    private long getRemoteConfigCacheExpiration() {
+        return BuildConfig.DEBUG ? 0 : 3600;
     }
 
     protected OkHttpClient.Builder createOkHttpClientBuilder(@NonNull Context context) {
@@ -54,7 +86,7 @@ public class PlayerNumberApplication extends Application {
             final Cache responseCache = new Cache(context.getCacheDir(), 5 * 1024 * 1024);
             builder.cache(responseCache);
         } catch (Exception e) {
-            Log.d(TAG, "Unable to set http cache", e);
+            Logger.d(TAG, "Unable to set http cache", e);
         }
 
         return builder;

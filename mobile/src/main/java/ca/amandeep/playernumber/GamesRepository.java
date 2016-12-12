@@ -1,7 +1,6 @@
 package ca.amandeep.playernumber;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class GamesRepository {
         return PlayerNumberApplication.getService().listGames()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .doOnNext(games -> Log.d(TAG, "fetched from api: " + games.size()))
+                .doOnNext(games -> Logger.d(TAG, "fetched from api: " + games.size()))
                 .toSingle();
     }
 

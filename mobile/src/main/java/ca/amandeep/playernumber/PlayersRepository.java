@@ -7,14 +7,12 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.squareup.sqldelight.SqlDelightStatement;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import ca.amandeep.playernumber.db.DbOpenHelper;
@@ -45,11 +43,11 @@ public class PlayersRepository {
                 .subscribeOn(Schedulers.io())
                 .flatMap(shouldFetchFromCache -> {
                     if (!shouldFetchFromCache) {
-                        Log.d(TAG, "go fetch from api");
+                        Logger.d(TAG, "go fetch from api");
                         return PlayerNumberApplication.getService().listPlayers(team.id())
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(Schedulers.io())
-                                .doOnNext(playerTeams -> Log.d(TAG, "fetched from api: " + playerTeams.size()))
+                                .doOnNext(playerTeams -> Logger.d(TAG, "fetched from api: " + playerTeams.size()))
                                 .toSingle()
                                 .doOnSuccess(this::writePlayersToDb)
                                 .map(playerTeams -> null);
@@ -61,7 +59,7 @@ public class PlayersRepository {
 
     @NonNull
     private List<Player> readPlayersFromDb(@NonNull Team team) {
-        Log.d(TAG, "Thread report: Read from DB on: " + Thread.currentThread());
+        Logger.d(TAG, "Thread report: Read from DB on: " + Thread.currentThread());
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final SqlDelightStatement query = Player.FACTORY.forTeam(team.id());
 
@@ -70,13 +68,13 @@ public class PlayersRepository {
             while (playersCursor.moveToNext()) {
                 players.add(Player.FOR_TEAM_MAPPER.map(playersCursor).player());
             }
-            Log.d(TAG, "readPlayersFromDb: players.size(): " + players.size());
+            Logger.d(TAG, "readPlayersFromDb: players.size(): " + players.size());
             return players;
         }
     }
 
     private void writePlayersToDb(List<PlayerTeam> playerTeams) {
-        Log.d(TAG, "Thread report: Save to DB on: " + Thread.currentThread());
+        Logger.d(TAG, "Thread report: Save to DB on: " + Thread.currentThread());
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final PlayerModel.InsertPlayer insertPlayer = new PlayerModel.InsertPlayer(db, Player.FACTORY);
 
@@ -122,20 +120,19 @@ public class PlayersRepository {
         final long currentTimeMillis = System.currentTimeMillis();
         final SharedPreferences.Editor editor = mPrefs.edit();
         for (Team team : teamsWritten) {
-            Log.d(TAG, String.format(Locale.US,
-                    "writePlayersToDb: Setting PREF flag, players of team %s written now at %s",
-                    team.abbreviation(), currentTimeMillis));
+            Logger.d(TAG, "writePlayersToDb: Setting PREF flag, players of team %s written now at %s",
+                    team.abbreviation(), String.valueOf(currentTimeMillis));
             editor.putLong(PREF_LAST_PLAYERS_FETCH + team.id(), currentTimeMillis);
         }
         editor.apply();
     }
 
     private boolean shouldFetchFromCache(@NonNull Team team) {
-        Log.d(TAG, "Thread report: Read from prefs on: " + Thread.currentThread());
+        Logger.d(TAG, "Thread report: Read from prefs on: " + Thread.currentThread());
         final long lastFetch = mPrefs.getLong(PREF_LAST_PLAYERS_FETCH + team.id(), 0);
         final long staleMillis = System.currentTimeMillis() - lastFetch;
         final boolean fetchFromCache = staleMillis <= MAX_STALE_ALLOWANCE_MILLIS;
-        Log.d(TAG, "shouldFetchFromCache: " + fetchFromCache);
+        Logger.d(TAG, "shouldFetchFromCache: " + fetchFromCache);
         return fetchFromCache;
     }
 

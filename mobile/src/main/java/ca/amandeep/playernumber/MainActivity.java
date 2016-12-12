@@ -4,10 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,6 +20,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        final String testToast = FirebaseRemoteConfig.getInstance().getString("test_toast");
+        if (!TextUtils.isEmpty(testToast)) {
+            Toast.makeText(this, testToast, Toast.LENGTH_LONG).show();
+        }
 
         IntroStarter.startIntroIfFirstTime(this);
 

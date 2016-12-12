@@ -11,9 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.CustomEvent;
-
 import java.util.List;
 
 import ca.amandeep.playernumber.models.Game;
@@ -55,7 +52,7 @@ public class GamesPresenter {
         mDialog.cancel();
         mDialog = null;
 
-        Answers.getInstance().logCustom(new CustomEvent("Game selected"));
+        Analytics.logEvent(mContext, "Game selected");
 
         mViewDelegate.onGameSelect(game);
     }

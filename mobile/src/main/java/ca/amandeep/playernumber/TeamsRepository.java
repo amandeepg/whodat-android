@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.List;
 
@@ -37,11 +36,11 @@ public class TeamsRepository {
                 .subscribeOn(Schedulers.io())
                 .flatMap(shouldFetchFromCache -> {
                     if (!shouldFetchFromCache) {
-                        Log.d(TAG, "go fetch from api");
+                        Logger.d(TAG, "go fetch from api");
                         return PlayerNumberApplication.getService().listTeams()
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(Schedulers.io())
-                                .doOnNext(teams -> Log.d(TAG, "fetched from api: " + teams.size()))
+                                .doOnNext(teams -> Logger.d(TAG, "fetched from api: " + teams.size()))
                                 .toSingle()
                                 .doOnSuccess(this::writeTeamsToDb)
                                 .map(teams -> null);
@@ -52,7 +51,7 @@ public class TeamsRepository {
     }
 
     private void writeTeamsToDb(List<Team> teams) {
-        Log.d(TAG, "Thread report: Save to DB on: " + Thread.currentThread());
+        Logger.d(TAG, "Thread report: Save to DB on: " + Thread.currentThread());
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final TeamModel.InsertTeam insertTeam = new TeamModel.InsertTeam(db);
 
@@ -72,10 +71,10 @@ public class TeamsRepository {
     }
 
     private boolean shouldFetchFromCache() {
-        Log.d(TAG, "Thread report: Read from prefs on: " + Thread.currentThread());
+        Logger.d(TAG, "Thread report: Read from prefs on: " + Thread.currentThread());
         final long lastFetch = mPrefs.getLong(PREF_LAST_TEAMS_FETCH, 0);
         final boolean fetchFromCache = System.currentTimeMillis() - lastFetch <= MAX_STALE_ALLOWANCE_MILLIS;
-        Log.d(TAG, "shouldFetchFromCache: " + fetchFromCache);
+        Logger.d(TAG, "shouldFetchFromCache: " + fetchFromCache);
         return fetchFromCache;
     }
 }
