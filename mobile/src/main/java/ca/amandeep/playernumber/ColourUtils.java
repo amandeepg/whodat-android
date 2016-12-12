@@ -56,6 +56,10 @@ public class ColourUtils {
         return getLuminance(color) > 0.179f;
     }
 
+    public static boolean isBlackOrAlmostBlack(int color) {
+        return getLuminance(color) < 0.03;
+    }
+
     @ColorInt
     public static int modifyAlpha(@ColorInt int color, int alpha) {
         return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));

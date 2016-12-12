@@ -16,6 +16,9 @@ import rx.math.operators.OperatorMinMax;
 
 public class PlayerPresenter {
 
+    private static final double TEAM_LABEL_LIGHTEN_AMOUNT = 0.9;
+    private static final double TEAM_LABEL_DARKEN_AMOUNT = 0.2;
+    private static final int ALPHA_PLAYER_LABEL = (int) (255 * 0.9);
     @NonNull private final Context mContext;
     @NonNull private final Type mType;
     @NonNull private final PlayerViewHolder mViewHolder;
@@ -36,11 +39,15 @@ public class PlayerPresenter {
         final int teamLabelColor;
         final int backgroundColor = Color.parseColor("#" + team.colour());
         if (ColourUtils.isBright(backgroundColor)) {
-            foregroundColor = ColourUtils.modifyAlpha(Color.BLACK, (int) (255 * 0.9));
-            teamLabelColor = ColourUtils.lighten(backgroundColor, 0.9);
+            foregroundColor = ColourUtils.modifyAlpha(Color.BLACK, ALPHA_PLAYER_LABEL);
+            teamLabelColor = ColourUtils.lighten(backgroundColor, TEAM_LABEL_LIGHTEN_AMOUNT);
         } else {
-            foregroundColor = ColourUtils.modifyAlpha(Color.WHITE, (int) (255 * 0.9));
-            teamLabelColor = ColourUtils.darken(backgroundColor, 0.2);
+            foregroundColor = ColourUtils.modifyAlpha(Color.WHITE, ALPHA_PLAYER_LABEL);
+            if (ColourUtils.isBlackOrAlmostBlack(backgroundColor)) {
+                teamLabelColor = Color.DKGRAY;
+            } else {
+                teamLabelColor = ColourUtils.darken(backgroundColor, TEAM_LABEL_DARKEN_AMOUNT);
+            }
         }
 
         mViewHolder.getFirstNameView().setTextColor(foregroundColor);
