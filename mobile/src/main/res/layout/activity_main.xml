@@ -22,6 +22,11 @@
                 android:layout_gravity="center"/>
         </FrameLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#337F7F7F"/>
+
         <FrameLayout
             android:id="@+id/play_view_home"
             android:layout_width="match_parent"
