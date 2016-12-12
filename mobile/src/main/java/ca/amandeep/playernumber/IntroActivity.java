@@ -13,6 +13,8 @@ public class IntroActivity extends AppIntro {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Analytics.logEvent(this, "start_tutorial");
+
         addSlide(AppIntroFragment.newInstance(
                 getString(R.string.intro1_title),
                 getString(R.string.intro1_desc),
@@ -36,6 +38,7 @@ public class IntroActivity extends AppIntro {
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
+        Analytics.logEvent(this, "finish_tutorial");
         finish();
     }
 }

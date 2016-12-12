@@ -28,7 +28,7 @@ public class PlayersRepository {
     private static final String TAG = "PlayersRepository";
 
     private static final String PREF_LAST_PLAYERS_FETCH = "PREF_LAST_PLAYERS_FETCH_";
-    private static final long MAX_STALE_ALLOWANCE_MILLIS = 1000L * 60L * 60L * 24L; // 1000 ms * 60 s * 60 m * 24 h = 1d
+    private static final String MAX_AGE_PLAYERS_KEY = "max_age_players";
     private final SharedPreferences mPrefs;
     private final DbOpenHelper mDbHelper;
 
@@ -131,7 +131,7 @@ public class PlayersRepository {
         Logger.d(TAG, "Thread report: Read from prefs on: " + Thread.currentThread());
         final long lastFetch = mPrefs.getLong(PREF_LAST_PLAYERS_FETCH + team.id(), 0);
         final long staleMillis = System.currentTimeMillis() - lastFetch;
-        final boolean fetchFromCache = staleMillis <= MAX_STALE_ALLOWANCE_MILLIS;
+        final boolean fetchFromCache = staleMillis <= Config.getLong(MAX_AGE_PLAYERS_KEY);
         Logger.d(TAG, "shouldFetchFromCache: " + fetchFromCache);
         return fetchFromCache;
     }

@@ -23,6 +23,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 public class PlayerNumberApplication extends Application {
     private static final String TAG = "PlayerNumberApplication";
     private static final String BASE_URL_KEY = "base_url";
+    private static final String OKHTTP_CACHE_SIZE_KEY = "okhttp_cache_size";
 
     private static PlayerNumberService sService;
 
@@ -41,21 +42,10 @@ public class PlayerNumberApplication extends Application {
                                 .build())
                         .build());
 
-        final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
-        remoteConfig.setDefaults(R.xml.remote_config_defaults);
-        final long cacheExpiration = getRemoteConfigCacheExpiration();
-        remoteConfig.fetch(cacheExpiration)
-                .addOnFailureListener(Crashlytics::logException)
-                .addOnFailureListener(Throwable::printStackTrace)
-                .addOnSuccessListener(nothing -> {
-                    remoteConfig.activateFetched();
-                    printRemoteConfig();
-                });
-
-        printRemoteConfig();
+        initRemoteConfig();
 
         final Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(remoteConfig.getString(BASE_URL_KEY))
+                .baseUrl(Config.getString(BASE_URL_KEY))
                 .client(createOkHttpClientBuilder(getApplicationContext())
                         .build())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -67,6 +57,20 @@ public class PlayerNumberApplication extends Application {
 
         sService = retrofit.create(PlayerNumberService.class);
 
+    }
+
+    private void initRemoteConfig() {
+        final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+        remoteConfig.setDefaults(R.xml.remote_config_defaults);
+        final long cacheExpiration = getRemoteConfigCacheExpiration();
+        remoteConfig.fetch(cacheExpiration)
+                .addOnFailureListener(Crashlytics::logException)
+                .addOnFailureListener(e -> Logger.d(TAG, "Unable to fetch remote config", e))
+                .addOnSuccessListener(nothing -> {
+                    remoteConfig.activateFetched();
+                    printRemoteConfig();
+                });
+        printRemoteConfig();
     }
 
     private void printRemoteConfig() {
@@ -83,7 +87,7 @@ public class PlayerNumberApplication extends Application {
     protected OkHttpClient.Builder createOkHttpClientBuilder(@NonNull Context context) {
         final OkHttpClient.Builder builder = new OkHttpClient.Builder();
         try {
-            final Cache responseCache = new Cache(context.getCacheDir(), 5 * 1024 * 1024);
+            final Cache responseCache = new Cache(context.getCacheDir(), Config.getLong(OKHTTP_CACHE_SIZE_KEY));
             builder.cache(responseCache);
         } catch (Exception e) {
             Logger.d(TAG, "Unable to set http cache", e);

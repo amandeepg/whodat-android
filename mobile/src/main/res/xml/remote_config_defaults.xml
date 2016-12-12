@@ -4,4 +4,16 @@
         <key>base_url</key>
         <value>https://player-number.amandeep.ca</value>
     </entry>
+    <entry>
+        <key>okhttp_cache_size</key>
+        <value>5232640</value>
+    </entry>
+    <entry>
+        <key>max_age_teams</key>
+        <value>5184000000</value>
+    </entry>
+    <entry>
+        <key>max_age_players</key>
+        <value>86400000</value>
+    </entry>
 </defaultsMap>

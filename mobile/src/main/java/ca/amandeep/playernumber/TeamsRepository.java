@@ -20,7 +20,7 @@ public class TeamsRepository {
     private static final String TAG = "TeamsRepository";
 
     private static final String PREF_LAST_TEAMS_FETCH = "PREF_LAST_TEAMS_FETCH_";
-    private static final long MAX_STALE_ALLOWANCE_MILLIS = 1000L * 60L * 60L * 24L * 60L; // 1000 ms * 60 s * 60 m * 24 h * 60 d = 1month
+    private static final String MAX_AGE_TEAMS_KEY = "max_age_teams";
 
     private final SharedPreferences mPrefs;
     private final DbOpenHelper mDbHelper;
@@ -73,7 +73,7 @@ public class TeamsRepository {
     private boolean shouldFetchFromCache() {
         Logger.d(TAG, "Thread report: Read from prefs on: " + Thread.currentThread());
         final long lastFetch = mPrefs.getLong(PREF_LAST_TEAMS_FETCH, 0);
-        final boolean fetchFromCache = System.currentTimeMillis() - lastFetch <= MAX_STALE_ALLOWANCE_MILLIS;
+        final boolean fetchFromCache = System.currentTimeMillis() - lastFetch <= Config.getLong(MAX_AGE_TEAMS_KEY);
         Logger.d(TAG, "shouldFetchFromCache: " + fetchFromCache);
         return fetchFromCache;
     }
