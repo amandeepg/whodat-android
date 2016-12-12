@@ -9,7 +9,7 @@ import java.util.Locale;
 public class Logger {
     public static void d(@NonNull String tag, @NonNull String message, @Nullable String... args) {
         if (BuildConfig.DEBUG) {
-            Log.d(tag, String.format(Locale.US, message, args));
+            Log.d(tag, String.format(Locale.US, message, (Object[]) args));
         }
     }
 
