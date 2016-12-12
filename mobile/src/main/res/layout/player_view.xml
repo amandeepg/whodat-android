@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge
+    android:id="@+id/overall_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/overall_container">
+    android:layout_height="wrap_content">
 
     <TextSwitcher
         android:id="@+id/team_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|center_vertical">
+
         <include layout="@layout/team_label"/>
+
         <include layout="@layout/team_label"/>
     </TextSwitcher>
 
@@ -26,7 +28,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal">
+
             <include layout="@layout/first_name"/>
+
             <include layout="@layout/first_name"/>
         </TextSwitcher>
 
@@ -40,7 +44,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal">
+
                 <include layout="@layout/last_name"/>
+
                 <include layout="@layout/last_name"/>
             </TextSwitcher>
 
@@ -49,7 +55,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal">
+
                 <include layout="@layout/status"/>
+
                 <include layout="@layout/status"/>
             </TextSwitcher>
         </FrameLayout>
@@ -59,7 +67,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal">
+
             <include layout="@layout/birth_place"/>
+
             <include layout="@layout/birth_place"/>
         </TextSwitcher>
     </LinearLayout>
