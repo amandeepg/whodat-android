@@ -26,6 +26,7 @@
         android:layout_gravity="center"
         android:orientation="vertical">
 
+
         <TextView
             android:id="@+id/first_name"
             android:layout_width="wrap_content"
@@ -35,19 +36,38 @@
             android:textSize="@dimen/medium_player_text"
             tools:text="Nazem"/>
 
-        <TextView
-            android:id="@+id/last_name"
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:fontFamily="sans-serif"
-            android:includeFontPadding="false"
-            android:letterSpacing="0.05"
-            android:textAllCaps="true"
-            android:textSize="@dimen/large_player_text"
-            android:textStyle="bold"
-            android:typeface="sans"
-            tools:text="Kadri"/>
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/last_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="sans-serif"
+                android:includeFontPadding="false"
+                android:letterSpacing="0.05"
+                android:textAllCaps="true"
+                android:textSize="@dimen/large_player_text"
+                android:textStyle="bold"
+                android:typeface="sans"
+                tools:text="Kadri"/>
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif"
+                android:includeFontPadding="false"
+                android:textSize="@dimen/medium_player_text"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:typeface="sans"
+                tools:text="Loading..."/>
+        </FrameLayout>
 
         <TextView
             android:id="@+id/birth_place"

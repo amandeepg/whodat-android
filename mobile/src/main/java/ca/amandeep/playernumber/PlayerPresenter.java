@@ -19,6 +19,7 @@ public class PlayerPresenter {
     private static final double TEAM_LABEL_LIGHTEN_AMOUNT = 0.9;
     private static final double TEAM_LABEL_DARKEN_AMOUNT = 0.2;
     private static final int ALPHA_PLAYER_LABEL = (int) (255 * 0.9);
+    private static final int ALPHA_STATUS = (int) (255 * 0.75);
     @NonNull private final Context mContext;
     @NonNull private final Type mType;
     @NonNull private final PlayerViewHolder mViewHolder;
@@ -26,6 +27,7 @@ public class PlayerPresenter {
     private final int mFabSize;
 
     private int mJerseyNumber;
+    private boolean mLoading;
 
     public PlayerPresenter(@NonNull Context context, @NonNull Type type, @NonNull PlayerViewHolder viewHolder) {
         mContext = context;
@@ -53,6 +55,7 @@ public class PlayerPresenter {
         mViewHolder.getFirstNameView().setTextColor(foregroundColor);
         mViewHolder.getLastNameView().setTextColor(foregroundColor);
         mViewHolder.getBirthPlaceView().setTextColor(foregroundColor);
+        mViewHolder.getStatusView().setTextColor(ColourUtils.modifyAlpha(foregroundColor, ALPHA_STATUS));
 
         mViewHolder.getContainerView().setBackgroundColor(backgroundColor);
 
@@ -65,17 +68,22 @@ public class PlayerPresenter {
             mViewHolder.getContainerView().setPadding(0, 0, 0, mFabSize / 2);
         }
 
+        bindPlayerNum(-1);
+        mViewHolder.getStatusView().setText(R.string.loading);
+
+        mLoading = true;
         new PlayersRepository(mContext)
                 .getPlayers(team)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::bindPlayers);
 
-        bindPlayerNum(-1);
     }
 
     public void bindPlayerNum(int jerseyNumber) {
         mJerseyNumber = jerseyNumber;
-        bindPlayerNum();
+        if (!mLoading) {
+            bindPlayerNum();
+        }
     }
 
     private void bindPlayerNum() {
@@ -97,10 +105,12 @@ public class PlayerPresenter {
             } else {
                 mViewHolder.getBirthPlaceView().setText(null);
             }
+            mViewHolder.getStatusView().setText(null);
         } else {
             mViewHolder.getFirstNameView().setText(null);
             mViewHolder.getLastNameView().setText(null);
             mViewHolder.getBirthPlaceView().setText(null);
+            mViewHolder.getStatusView().setText(R.string.no_player);
         }
     }
 
@@ -125,6 +135,8 @@ public class PlayerPresenter {
         if (players != null) {
             mPlayers.addAll(players);
         }
+        mLoading = false;
+        mViewHolder.getStatusView().setText(null);
         bindPlayerNum();
     }
 

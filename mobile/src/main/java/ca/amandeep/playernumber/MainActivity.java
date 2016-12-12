@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 .setLastNameView((TextView) view.findViewById(R.id.last_name))
                 .setBirthPlaceView((TextView) view.findViewById(R.id.birth_place))
                 .setTeamLabelView((TextView) view.findViewById(R.id.team_label))
+                .setStatusView((TextView) view.findViewById(R.id.status))
                 .setContainerView(view)
                 .build();
     }
