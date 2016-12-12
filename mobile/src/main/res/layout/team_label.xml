@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ca.amandeep.playernumber.VerticalTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="end|center_vertical"
+    android:layout_marginEnd="@dimen/standard_margin"
+    android:includeFontPadding="false"
+    android:textAllCaps="true"
+    android:textSize="@dimen/team_label_text"
+    android:textStyle="bold"
+    android:typeface="sans"
+    tools:text="Maple Leafs"
+    tools:showIn="@layout/player_view"/>
