@@ -42,7 +42,7 @@
             android:layout_gravity="center_horizontal"
             android:fontFamily="sans-serif"
             android:includeFontPadding="false"
-            android:letterSpacing="0.1"
+            android:letterSpacing="0.05"
             android:textAllCaps="true"
             android:textSize="@dimen/large_player_text"
             android:textStyle="bold"
