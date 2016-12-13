@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -45,6 +46,13 @@ public class GamesPresenter {
         mViewDelegate.hideProgressSpinner();
         mDialog = mDialogBuilder
                 .setView(view)
+                .setOnKeyListener((dialogInterface, keyCode, keyEvent) -> {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        mViewDelegate.onDismiss();
+                        return true;
+                    }
+                    return false;
+                })
                 .show();
     }
 
@@ -59,6 +67,7 @@ public class GamesPresenter {
 
     public interface ViewDelegate {
         void hideProgressSpinner();
-        void onGameSelect(Game game);
+        void onGameSelect(@NonNull Game game);
+        void onDismiss();
     }
 }

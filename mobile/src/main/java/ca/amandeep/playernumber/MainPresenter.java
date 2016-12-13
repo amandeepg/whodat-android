@@ -16,6 +16,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class MainPresenter implements GamesAdapter.GameSelectListener, GamesPresenter.ViewDelegate {
 
+    @NonNull private final AppCompatActivity mActivity;
     @NonNull private final Context mContext;
     @NonNull private final PlayerPresenter mAwayPlayerPresenter;
     @NonNull private final PlayerPresenter mHomePlayerPresenter;
@@ -25,6 +26,7 @@ public class MainPresenter implements GamesAdapter.GameSelectListener, GamesPres
 
     public MainPresenter(@NonNull AppCompatActivity activity, @NonNull Context context,
             @NonNull LayoutInflater layoutInflater, @NonNull MainViewHolder viewHolder) {
+        mActivity = activity;
         mContext = context;
         mHomePlayerPresenter =
                 new PlayerPresenter(mContext, PlayerPresenter.Type.HOME, viewHolder.getHomePlayerViewHolder());
@@ -72,6 +74,11 @@ public class MainPresenter implements GamesAdapter.GameSelectListener, GamesPres
         mHomePlayerPresenter.bindTeam(game.homeTeam());
 
         onNumberEditChanged(mNumEdit.getText());
+    }
+
+    @Override
+    public void onDismiss() {
+        mActivity.finish();
     }
 
     public void onBackPressed() {
