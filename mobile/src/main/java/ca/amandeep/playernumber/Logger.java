@@ -18,4 +18,10 @@ public class Logger {
             Log.d(tag, message, e);
         }
     }
+
+    public static void d(@NonNull String tag, @NonNull String message, @NonNull Throwable t) {
+        if (BuildConfig.DEBUG) {
+            Log.d(tag, message, t);
+        }
+    }
 }

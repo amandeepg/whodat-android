@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.List;
+
 import ca.amandeep.playernumber.models.Game;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -47,7 +49,12 @@ public class MainPresenter implements GamesAdapter.GameSelectListener, GamesPres
                 .getTeams()
                 .flatMap(ignore -> new GamesRepository().getGames())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mGamesPresenter::showGamesDialog);
+                .subscribe(new BaseSubscriber<List<Game>>() {
+                    @Override
+                    public void onNext(List<Game> games) {
+                        mGamesPresenter.showGamesDialog(games);
+                    }
+                });
     }
 
     private void onNumberEditChanged(@NonNull Editable editable) {

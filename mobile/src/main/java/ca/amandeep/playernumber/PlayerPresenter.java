@@ -102,7 +102,12 @@ public class PlayerPresenter {
         new PlayersRepository(mContext)
                 .getPlayers(team)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindPlayers);
+                .subscribe(new BaseSubscriber<List<Player>>() {
+                    @Override
+                    public void onNext(List<Player> players) {
+                        PlayerPresenter.this.bindPlayers(players);
+                    }
+                });
 
     }
 
