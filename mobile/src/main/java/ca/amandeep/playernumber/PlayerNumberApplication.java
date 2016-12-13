@@ -16,6 +16,7 @@ import ca.amandeep.playernumber.models.CalendarAdapter;
 import io.fabric.sdk.android.Fabric;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.moshi.MoshiConverterFactory;
@@ -92,6 +93,15 @@ public class PlayerNumberApplication extends Application {
         } catch (Exception e) {
             Logger.d(TAG, "Unable to set http cache", e);
         }
+
+        builder.addInterceptor(chain -> {
+            final Request original = chain.request();
+
+            final Request request = original.newBuilder()
+                    .header(SecurityConfig.AUTH_KEY, SecurityConfig.AUTH_VALUE)
+                    .method(original.method(), original.body()).build();
+            return chain.proceed(request);
+        });
 
         return builder;
     }
