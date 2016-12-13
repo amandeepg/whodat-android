@@ -16,4 +16,20 @@
         <key>max_age_players</key>
         <value>86400000</value>
     </entry>
+    <entry>
+        <key>pinned_cert_1</key>
+        <value>player-number.amandeep.ca sha256/2CHeUkHqyBA8p/eC6g702e1qgBXC2/bq6LTqGUiCUVI=</value>
+    </entry>
+    <entry>
+        <key>pinned_cert_2</key>
+        <value>player-number.amandeep.ca sha256/JSMzqOOrtyOT1kmau6zKhgT676hGgczD5VMdRMyJZFA=</value>
+    </entry>
+    <entry>
+        <key>pinned_cert_3</key>
+        <value>player-number.amandeep.ca sha256/++MBgDH5WGvL9Bcn5Be30cRcL0f5O+NyoXuWtQdX1aI=</value>
+    </entry>
+    <entry>
+        <key>pinned_cert_4</key>
+        <value>player-number.amandeep.ca sha256/KwccWaCgrnaw6tsrrSO61FgLacNgG2MMLq8GE6+oP5I=</value>
+    </entry>
 </defaultsMap>

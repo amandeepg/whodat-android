@@ -11,8 +11,6 @@ import android.widget.EditText;
 import android.widget.TextSwitcher;
 import android.widget.Toast;
 
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-
 public class MainActivity extends AppCompatActivity {
 
     @Nullable private MainPresenter mMainPresenter;
@@ -21,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final String testToast = FirebaseRemoteConfig.getInstance().getString("test_toast");
+        final String testToast = Config.getString("test_toast");
         if (!TextUtils.isEmpty(testToast)) {
             Toast.makeText(this, testToast, Toast.LENGTH_LONG).show();
         }

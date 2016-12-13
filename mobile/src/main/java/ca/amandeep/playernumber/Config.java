@@ -18,12 +18,13 @@ public class Config {
     public static long getLong(@NonNull String key) {
         return getConfig().getLong(key);
     }
+
     public static float getFloat(@NonNull String key) {
         return (float) getConfig().getDouble(key);
     }
 
     @NonNull
-    private static FirebaseRemoteConfig getConfig() {
+    public static FirebaseRemoteConfig getConfig() {
         return FirebaseRemoteConfig.getInstance();
     }
 }

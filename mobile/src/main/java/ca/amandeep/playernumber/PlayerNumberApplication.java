@@ -15,6 +15,7 @@ import ca.amandeep.playernumber.models.AutoValueMoshiFactory;
 import ca.amandeep.playernumber.models.CalendarAdapter;
 import io.fabric.sdk.android.Fabric;
 import okhttp3.Cache;
+import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
@@ -25,6 +26,7 @@ public class PlayerNumberApplication extends Application {
     private static final String TAG = "PlayerNumberApplication";
     private static final String BASE_URL_KEY = "base_url";
     private static final String OKHTTP_CACHE_SIZE_KEY = "okhttp_cache_size";
+    public static final String PINNED_CERT_KEY_PREFIX = "pinned_cert_";
 
     private static PlayerNumberService sService;
 
@@ -61,7 +63,7 @@ public class PlayerNumberApplication extends Application {
     }
 
     private void initRemoteConfig() {
-        final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+        final FirebaseRemoteConfig remoteConfig = Config.getConfig();
         remoteConfig.setDefaults(R.xml.remote_config_defaults);
         final long cacheExpiration = getRemoteConfigCacheExpiration();
         remoteConfig.fetch(cacheExpiration)
@@ -71,11 +73,10 @@ public class PlayerNumberApplication extends Application {
                     remoteConfig.activateFetched();
                     printRemoteConfig();
                 });
-        printRemoteConfig();
     }
 
     private void printRemoteConfig() {
-        final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+        final FirebaseRemoteConfig remoteConfig = Config.getConfig();
         for (final String key : remoteConfig.getKeysByPrefix(null)) {
             Logger.d(TAG, "printRemoteConfig: " + key + " = " + remoteConfig.getString(key));
         }
@@ -102,6 +103,22 @@ public class PlayerNumberApplication extends Application {
                     .method(original.method(), original.body()).build();
             return chain.proceed(request);
         });
+
+        Logger.d(TAG, "Load certs");
+        final FirebaseRemoteConfig remoteConfig = Config.getConfig();
+        final CertificatePinner.Builder certBuilder = new CertificatePinner.Builder();
+        int i = 1;
+        while (true) {
+            final String[] split = remoteConfig.getString(PINNED_CERT_KEY_PREFIX + i++).split(" ");
+            if (split.length < 2) {
+                break;
+            }
+            final String domain = split[0];
+            final String cert = split[1];
+            Logger.d(TAG, "domain = %s, cert = %s", domain, cert);
+            certBuilder.add(domain, cert);
+        }
+        builder.certificatePinner(certBuilder.build());
 
         return builder;
     }
