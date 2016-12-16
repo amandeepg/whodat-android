@@ -6,4 +6,7 @@
     <dimen name="team_label_text">28sp</dimen>
     <dimen name="fab_size">60dp</dimen>
     <dimen name="fab_font_size">36sp</dimen>
+
+    <dimen name="tooltip_title_size">18dp</dimen>
+    <dimen name="tooltip_subtitle_size">14dp</dimen>
 </resources>

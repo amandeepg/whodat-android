@@ -11,4 +11,6 @@
     <string name="at">\@</string>
     <string name="no_player">None</string>
     <string name="loading">Loading…</string>
+    <string name="tooltip_primary_text">Enter the jersey number here</string>
+    <string name="tooltip_secondary_text">And you\'ll see who the player is instantly!</string>
 </resources>

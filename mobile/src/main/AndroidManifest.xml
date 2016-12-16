@@ -17,7 +17,7 @@
             android:name=".MainActivity"
             android:screenOrientation="nosensor"
             android:theme="@style/Theme.Design.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
