@@ -18,7 +18,7 @@ buildscript {
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "ca.amandeep.playernumber"
         minSdkVersion 19
@@ -47,7 +47,7 @@ dependencies {
 
     //compile fileTree(dir: 'libs', include: ['*.jar'])
     //compile 'com.google.android.gms:play-services-wearable:10.0.0'
-    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:appcompat-v7:25.1.0'
 
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-moshi:2.1.0'
@@ -64,10 +64,10 @@ dependencies {
     debugCompile 'com.facebook.stetho:stetho:1.4.1'
     debugCompile 'com.facebook.stetho:stetho-okhttp3:1.4.1'
 
-    compile 'com.android.support:design:25.0.1'
+    compile 'com.android.support:design:25.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-    compile 'com.android.support:recyclerview-v7:25.0.1'
-    compile 'com.android.support:support-annotations:25.0.1'
+    compile 'com.android.support:recyclerview-v7:25.1.0'
+    compile 'com.android.support:support-annotations:25.1.0'
 
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.github.paolorotolo:appintro:4.1.0'
