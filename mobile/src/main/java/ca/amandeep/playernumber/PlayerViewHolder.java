@@ -10,7 +10,7 @@ import com.google.auto.value.AutoValue;
 public abstract class PlayerViewHolder {
     @NonNull public abstract TextSwitcher getFirstNameView();
     @NonNull public abstract TextSwitcher getLastNameView();
-    @NonNull public abstract TextSwitcher getBirthPlaceView();
+    @NonNull public abstract TextSwitcher getPositionView();
     @NonNull public abstract TextSwitcher getTeamLabelView();
     @NonNull public abstract TextSwitcher getStatusView();
     @NonNull public abstract View getContainerView();
@@ -24,7 +24,7 @@ public abstract class PlayerViewHolder {
     abstract static class Builder {
         public abstract Builder setFirstNameView(TextSwitcher v);
         public abstract Builder setLastNameView(TextSwitcher v);
-        public abstract Builder setBirthPlaceView(TextSwitcher v);
+        public abstract Builder setPositionView(TextSwitcher v);
         public abstract Builder setTeamLabelView(TextSwitcher v);
         public abstract Builder setStatusView(TextSwitcher v);
         public abstract Builder setContainerView(View v);

@@ -9,5 +9,5 @@
     android:includeFontPadding="false"
     android:textSize="@dimen/small_player_text"
     android:typeface="serif"
-    tools:text="Toronto, ON"
+    tools:text="Defenseman"
     tools:showIn="@layout/player_view"/>

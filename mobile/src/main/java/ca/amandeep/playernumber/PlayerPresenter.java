@@ -56,7 +56,7 @@ public class PlayerPresenter {
         setupTextSwitcher(mViewHolder.getStatusView());
         setupTextSwitcher(mViewHolder.getTeamLabelView());
         setupTextSwitcher(mViewHolder.getLastNameView());
-        setupTextSwitcher(mViewHolder.getBirthPlaceView());
+        setupTextSwitcher(mViewHolder.getPositionView());
 
         mPreviousBackgroundColor = Color.BLACK;
         mViewHolder.getContainerView().setBackgroundColor(mPreviousBackgroundColor);
@@ -77,7 +77,7 @@ public class PlayerPresenter {
 
         setTextColor(mViewHolder.getFirstNameView(), foregroundColor);
         setTextColor(mViewHolder.getLastNameView(), foregroundColor);
-        setTextColor(mViewHolder.getBirthPlaceView(), foregroundColor);
+        setTextColor(mViewHolder.getPositionView(), foregroundColor);
         setTextColor(mViewHolder.getStatusView(), ColourUtils.modifyAlpha(foregroundColor, ALPHA_STATUS));
 
         ObjectAnimator.ofObject(mViewHolder.getContainerView(), "backgroundColor",
@@ -139,20 +139,12 @@ public class PlayerPresenter {
 
             mViewHolder.getFirstNameView().setText(player.firstName());
             mViewHolder.getLastNameView().setText(player.lastName());
-            if (player.birthCity() != null && player.birthCountry() != null) {
-                mViewHolder.getBirthPlaceView().setText(player.birthCity() + ", " + player.birthCountry());
-            } else if (player.birthCity() != null) {
-                mViewHolder.getBirthPlaceView().setText(player.birthCity());
-            } else if (player.birthCountry() != null) {
-                mViewHolder.getBirthPlaceView().setText(player.birthCountry());
-            } else {
-                mViewHolder.getBirthPlaceView().setText(null);
-            }
+            mViewHolder.getPositionView().setText(player.position());
             mViewHolder.getStatusView().setText(null);
         } else {
             mViewHolder.getFirstNameView().setText(null);
             mViewHolder.getLastNameView().setText(null);
-            mViewHolder.getBirthPlaceView().setText(null);
+            mViewHolder.getPositionView().setText(null);
             mViewHolder.getStatusView().setText(mContext.getString(R.string.no_player));
         }
     }

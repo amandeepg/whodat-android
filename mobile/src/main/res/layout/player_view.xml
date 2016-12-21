@@ -63,14 +63,14 @@
         </FrameLayout>
 
         <TextSwitcher
-            android:id="@+id/birth_place"
+            android:id="@+id/position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal">
 
-            <include layout="@layout/birth_place"/>
+            <include layout="@layout/position"/>
 
-            <include layout="@layout/birth_place"/>
+            <include layout="@layout/position"/>
         </TextSwitcher>
     </LinearLayout>
 </merge>

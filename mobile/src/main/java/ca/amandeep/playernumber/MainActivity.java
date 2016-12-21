@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         return PlayerViewHolder.newBuilder()
                 .setFirstNameView((TextSwitcher) view.findViewById(R.id.first_name))
                 .setLastNameView((TextSwitcher) view.findViewById(R.id.last_name))
-                .setBirthPlaceView((TextSwitcher) view.findViewById(R.id.birth_place))
+                .setPositionView((TextSwitcher) view.findViewById(R.id.position))
                 .setTeamLabelView((TextSwitcher) view.findViewById(R.id.team_label))
                 .setStatusView((TextSwitcher) view.findViewById(R.id.status))
                 .setContainerView(view)
