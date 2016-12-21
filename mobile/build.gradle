@@ -23,8 +23,8 @@ android {
         applicationId "ca.amandeep.playernumber"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 4
-        versionName "0.4"
+        versionCode 5
+        versionName "0.5"
     }
     buildTypes {
         release {

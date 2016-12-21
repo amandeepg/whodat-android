@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">WhoDatPlayer</string>
+    <string name="app_name">WhoDat</string>
     <string name="which_game_are_you_watching">Which game are you watching?</string>
     <string name="loading_todays_games">Loading today\'s games…</string>
-    <string name="intro1_title">WhoDatPlayer helps you identify players on the ice, field, or court!</string>
+    <string name="intro1_title">WhoDat helps you identify players on the ice, field, or court!</string>
     <string name="intro1_desc">First select the game you\'re watching</string>
     <string name="intro2_title">Then just enter the jersey number you see</string>
     <string name="intro2_desc"/>
