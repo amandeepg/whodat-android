@@ -1,4 +1,4 @@
-package ca.amandeep.playernumber;
+package ca.amandeep.playernumber.player;
 
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -21,7 +21,7 @@ public abstract class PlayerViewHolder {
     }
 
     @AutoValue.Builder
-    abstract static class Builder {
+    public abstract static class Builder {
         public abstract Builder setFirstNameView(TextSwitcher v);
         public abstract Builder setLastNameView(TextSwitcher v);
         public abstract Builder setPositionView(TextSwitcher v);
@@ -29,6 +29,6 @@ public abstract class PlayerViewHolder {
         public abstract Builder setStatusView(TextSwitcher v);
         public abstract Builder setContainerView(View v);
 
-        abstract PlayerViewHolder build();
+        public abstract PlayerViewHolder build();
     }
 }

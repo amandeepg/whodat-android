@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import ca.amandeep.playernumber.core.Config;
+import ca.amandeep.playernumber.core.Logger;
 import ca.amandeep.playernumber.db.DbOpenHelper;
 import ca.amandeep.playernumber.models.Team;
 import ca.amandeep.playernumber.models.TeamModel;

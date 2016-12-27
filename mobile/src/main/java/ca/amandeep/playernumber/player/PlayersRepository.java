@@ -1,4 +1,4 @@
-package ca.amandeep.playernumber;
+package ca.amandeep.playernumber.player;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,6 +15,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import ca.amandeep.playernumber.BuildConfig;
+import ca.amandeep.playernumber.PlayerNumberApplication;
+import ca.amandeep.playernumber.core.Config;
+import ca.amandeep.playernumber.core.Logger;
 import ca.amandeep.playernumber.db.DbOpenHelper;
 import ca.amandeep.playernumber.models.Player;
 import ca.amandeep.playernumber.models.PlayerModel;

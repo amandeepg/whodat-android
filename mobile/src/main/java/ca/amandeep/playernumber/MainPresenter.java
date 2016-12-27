@@ -19,7 +19,15 @@ import com.getkeepsafe.taptargetview.TapTargetView;
 
 import java.util.List;
 
+import ca.amandeep.playernumber.core.BaseSubscriber;
+import ca.amandeep.playernumber.games.GamesAdapter;
+import ca.amandeep.playernumber.games.GamesPresenter;
+import ca.amandeep.playernumber.games.GamesRepository;
 import ca.amandeep.playernumber.models.Game;
+import ca.amandeep.playernumber.player.PlayerPresenter;
+import ca.amandeep.playernumber.utils.StringUtils;
+import ca.amandeep.playernumber.utils.ViewUtils;
+import ca.amandeep.playernumber.views.AfterTextWatcherHolder;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class MainPresenter implements GamesAdapter.GameSelectListener, GamesPresenter.ViewDelegate {

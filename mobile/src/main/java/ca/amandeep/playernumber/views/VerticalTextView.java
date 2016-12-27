@@ -1,4 +1,4 @@
-package ca.amandeep.playernumber;
+package ca.amandeep.playernumber.views;
 
 import android.content.Context;
 import android.graphics.Canvas;

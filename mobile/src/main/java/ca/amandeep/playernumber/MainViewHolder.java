@@ -5,6 +5,8 @@ import android.widget.EditText;
 
 import com.google.auto.value.AutoValue;
 
+import ca.amandeep.playernumber.player.PlayerViewHolder;
+
 @AutoValue
 public abstract class MainViewHolder {
     @NonNull public abstract PlayerViewHolder getHomePlayerViewHolder();

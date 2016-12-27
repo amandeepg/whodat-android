@@ -1,4 +1,4 @@
-package ca.amandeep.playernumber;
+package ca.amandeep.playernumber.utils;
 
 import android.graphics.Color;
 import android.support.annotation.ColorInt;

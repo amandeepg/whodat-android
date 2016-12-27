@@ -6,8 +6,8 @@ import android.support.v4.app.Fragment;
 
 import com.github.paolorotolo.appintro.AppIntro2;
 
-import ca.amandeep.playernumber.Analytics;
 import ca.amandeep.playernumber.R;
+import ca.amandeep.playernumber.core.Analytics;
 
 public class IntroActivity extends AppIntro2 {
     @Override

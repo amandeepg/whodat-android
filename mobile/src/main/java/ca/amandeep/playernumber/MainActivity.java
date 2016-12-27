@@ -11,7 +11,9 @@ import android.widget.EditText;
 import android.widget.TextSwitcher;
 import android.widget.Toast;
 
+import ca.amandeep.playernumber.core.Config;
 import ca.amandeep.playernumber.intro.IntroStarter;
+import ca.amandeep.playernumber.player.PlayerViewHolder;
 
 public class MainActivity extends AppCompatActivity {
 

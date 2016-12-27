@@ -11,6 +11,8 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.squareup.moshi.Moshi;
 
 import ca.amandeep.playernumber.api.PlayerNumberService;
+import ca.amandeep.playernumber.core.Config;
+import ca.amandeep.playernumber.core.Logger;
 import ca.amandeep.playernumber.models.AutoValueMoshiFactory;
 import ca.amandeep.playernumber.models.CalendarAdapter;
 import io.fabric.sdk.android.Fabric;

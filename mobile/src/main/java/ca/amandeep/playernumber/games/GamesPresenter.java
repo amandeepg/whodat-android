@@ -1,4 +1,4 @@
-package ca.amandeep.playernumber;
+package ca.amandeep.playernumber.games;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -14,6 +14,8 @@ import android.view.View;
 
 import java.util.List;
 
+import ca.amandeep.playernumber.R;
+import ca.amandeep.playernumber.core.Analytics;
 import ca.amandeep.playernumber.models.Game;
 
 public class GamesPresenter {

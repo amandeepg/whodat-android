@@ -1,4 +1,4 @@
-package ca.amandeep.playernumber;
+package ca.amandeep.playernumber.core;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

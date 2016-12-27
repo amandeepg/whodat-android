@@ -1,9 +1,11 @@
-package ca.amandeep.playernumber;
+package ca.amandeep.playernumber.games;
 
 import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import ca.amandeep.playernumber.PlayerNumberApplication;
+import ca.amandeep.playernumber.core.Logger;
 import ca.amandeep.playernumber.models.Game;
 import rx.Single;
 import rx.schedulers.Schedulers;

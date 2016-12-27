@@ -11,7 +11,7 @@
         android:text="@string/intro2_title"
         android:textSize="23sp"/>
 
-    <ca.amandeep.playernumber.MaskImageView
+    <ca.amandeep.playernumber.views.MaskImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

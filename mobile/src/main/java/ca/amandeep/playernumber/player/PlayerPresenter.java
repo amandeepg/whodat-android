@@ -1,4 +1,4 @@
-package ca.amandeep.playernumber;
+package ca.amandeep.playernumber.player;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
@@ -15,8 +15,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.amandeep.playernumber.R;
+import ca.amandeep.playernumber.core.Analytics;
+import ca.amandeep.playernumber.core.BaseSubscriber;
 import ca.amandeep.playernumber.models.Player;
 import ca.amandeep.playernumber.models.Team;
+import ca.amandeep.playernumber.utils.ColourUtils;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.math.operators.OperatorMinMax;

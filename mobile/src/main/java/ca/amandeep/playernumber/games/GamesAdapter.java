@@ -1,4 +1,4 @@
-package ca.amandeep.playernumber;
+package ca.amandeep.playernumber.games;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.amandeep.playernumber.R;
 import ca.amandeep.playernumber.models.Game;
 import ca.amandeep.playernumber.models.Team;
 import rx.Observable;
