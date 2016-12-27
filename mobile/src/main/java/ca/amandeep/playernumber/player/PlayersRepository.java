@@ -33,8 +33,8 @@ public class PlayersRepository {
 
     private static final String PREF_LAST_PLAYERS_FETCH = "PREF_LAST_PLAYERS_FETCH_";
     private static final String MAX_AGE_PLAYERS_KEY = "max_age_players";
-    private final SharedPreferences mPrefs;
-    private final DbOpenHelper mDbHelper;
+    @NonNull private final SharedPreferences mPrefs;
+    @NonNull private final DbOpenHelper mDbHelper;
 
     public PlayersRepository(@NonNull Context context) {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -77,7 +77,7 @@ public class PlayersRepository {
         }
     }
 
-    private void writePlayersToDb(List<PlayerTeam> playerTeams) {
+    private void writePlayersToDb(@NonNull List<PlayerTeam> playerTeams) {
         Logger.d(TAG, "Thread report: Save to DB on: " + Thread.currentThread());
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final PlayerModel.InsertPlayer insertPlayer = new PlayerModel.InsertPlayer(db, Player.FACTORY);
@@ -86,17 +86,7 @@ public class PlayersRepository {
 
         for (final PlayerTeam playerTeam : playerTeams) {
             final Player player = playerTeam.player();
-            final SqlDelightStatement query = Team.FACTORY.findTeam(playerTeam.team().id());
-            final Team team;
-            try (final Cursor teamsCursor = db.rawQuery(query.statement, query.args)) {
-                if (BuildConfig.DEBUG) {
-                    if (teamsCursor.getCount() != 1) {
-                        throw new RuntimeException("Should only find 1 team");
-                    }
-                }
-                teamsCursor.moveToFirst();
-                team = Team.SELECT_ALL_MAPPER.map(teamsCursor);
-            }
+            final Team team = findTeam(playerTeam.team());
 
             insertPlayer.bind(
                     player.id(),
@@ -140,9 +130,25 @@ public class PlayersRepository {
         return fetchFromCache;
     }
 
-    private Team findTeam(Team team) {
-        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        final SqlDelightStatement query = Team.FACTORY.findTeam(team.id());
+    @NonNull
+    private Team findTeam(@NonNull Team team) {
+        return findTeam(mDbHelper, team);
+    }
+
+    @NonNull
+    private static Team findTeam(@NonNull DbOpenHelper dbHelper, @NonNull Team team) {
+        return findTeam(dbHelper, team.id());
+    }
+
+    @NonNull
+    public static Team findTeam(@NonNull Context context, @NonNull String teamId) {
+        return findTeam(DbOpenHelper.getInstance(context), teamId);
+    }
+
+    @NonNull
+    public static Team findTeam(@NonNull DbOpenHelper dbHelper, @NonNull String teamId) {
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
+        final SqlDelightStatement query = Team.FACTORY.findTeam(teamId);
 
         try (final Cursor teamsCursor = db.rawQuery(query.statement, query.args)) {
             if (BuildConfig.DEBUG) {
