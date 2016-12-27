@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".IntroActivity"
+            android:name=".intro.IntroActivity"
             android:screenOrientation="nosensor"
             android:theme="@style/Theme.Design.NoActionBar">
         </activity>

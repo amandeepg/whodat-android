@@ -3,11 +3,10 @@
     <string name="which_game_are_you_watching">Which game are you watching?</string>
     <string name="loading_todays_games">Loading today\'s games…</string>
     <string name="intro1_title">WhoDat helps you identify players on the ice, field, or court!</string>
-    <string name="intro1_desc">First select the game you\'re watching</string>
-    <string name="intro2_title">Then just enter the jersey number you see</string>
-    <string name="intro2_desc"/>
-    <string name="intro3_title">And you\'ll see who that player is!</string>
-    <string name="intro3_desc"/>
+    <string name="intro2_title">Whether you\'re\nwatching on TV …</string>
+    <string name="intro3_title">… or you\'re at the game</string>
+    <string name="intro4_title">Just select the game you\'re watching</string>
+    <string name="intro5_title">And you\'ll see who\nthe player is instantly!</string>
     <string name="at">\@</string>
     <string name="no_player">None</string>
     <string name="loading">Loading…</string>

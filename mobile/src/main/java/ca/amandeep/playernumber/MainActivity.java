@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextSwitcher;
 import android.widget.Toast;
 
+import ca.amandeep.playernumber.intro.IntroStarter;
+
 public class MainActivity extends AppCompatActivity {
 
     @Nullable private MainPresenter mMainPresenter;
