@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.squareup.sqldelight'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'io.fabric'
+apply from: 'versioning.gradle'
 
 buildscript {
     repositories {
@@ -23,8 +24,11 @@ android {
         applicationId "ca.amandeep.playernumber"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 5
-        versionName "0.5"
+        versionName buildVersionName()
+        versionCode buildVersionCode()
+        println "    versionName = " + versionName
+        println "    versionCode = " + versionCode
+        println "max versionCode = " + 2100000000
     }
     buildTypes {
         release {
