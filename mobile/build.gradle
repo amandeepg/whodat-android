@@ -22,7 +22,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "ca.amandeep.playernumber"
-        minSdkVersion 19
+        minSdkVersion 16
         targetSdkVersion 25
         versionName buildVersionName()
         versionCode buildVersionCode()
