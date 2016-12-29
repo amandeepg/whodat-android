@@ -25,8 +25,16 @@ FROM player
 JOIN team ON player.team = team._id;
 
 insertPlayer:
-INSERT INTO player(id, team, firstName, lastName, jerseyNumber, position, height, weight, birthDate, age, birthCity, birthCountry, gamesPlayed)
+INSERT OR REPLACE INTO player(id, team, firstName, lastName, jerseyNumber, position, height, weight, birthDate, age, birthCity, birthCountry, gamesPlayed)
 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteTeam:
+DELETE FROM player
+WHERE team IN (
+  SELECT _id
+  FROM team
+  WHERE id = ?
+);
 
 forTeam:
 SELECT *

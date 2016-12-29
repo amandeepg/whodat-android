@@ -96,7 +96,7 @@ public class GamesPresenter {
         mDialog.cancel();
         mDialog = null;
 
-        Analytics.logEvent(mContext, "Game selected");
+        Analytics.logEvent(mContext, "game_selected");
 
         mViewDelegate.onGameSelect(game);
     }

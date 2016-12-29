@@ -2,7 +2,6 @@ package ca.amandeep.playernumber;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -59,11 +58,7 @@ public class TeamsRepository {
 
         for (final Team team : teams) {
             insertTeam.bind(team.id(), team.city(), team.name(), team.abbreviation(), team.colour());
-            try {
-                insertTeam.program.executeInsert();
-            } catch (SQLiteConstraintException ignored) {
-                // skip if already inside
-            }
+            insertTeam.program.executeInsert();
         }
 
         mPrefs

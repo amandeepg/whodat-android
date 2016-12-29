@@ -136,10 +136,10 @@ public class PlayerPresenter {
     private void bindPlayerNum() {
         final Player player = getPlayerWithJerseyNumber(mJerseyNumber);
 
-        Analytics.logEvent(mContext, "Player queried");
+        Analytics.logEvent(mContext, "player_queried");
 
         if (player != null) {
-            Analytics.logEvent(mContext, "Player found");
+            Analytics.logEvent(mContext, "player_found");
 
             mViewHolder.getFirstNameView().setText(player.firstName());
             mViewHolder.getLastNameView().setText(player.lastName());

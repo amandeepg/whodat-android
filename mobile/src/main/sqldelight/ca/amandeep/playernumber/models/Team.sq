@@ -13,7 +13,7 @@ SELECT *
 FROM team;
 
 insertTeam:
-INSERT INTO team(id, city, name, abbreviation, colour)
+INSERT OR REPLACE INTO team(id, city, name, abbreviation, colour)
 VALUES (?, ?, ?, ?, ?);
 
 findTeam:

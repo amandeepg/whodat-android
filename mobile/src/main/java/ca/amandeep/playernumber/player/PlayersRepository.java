@@ -3,7 +3,6 @@ package ca.amandeep.playernumber.player;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -53,6 +52,7 @@ public class PlayersRepository {
                                 .observeOn(Schedulers.io())
                                 .doOnNext(playerTeams -> Logger.d(TAG, "fetched from api: " + playerTeams.size()))
                                 .toSingle()
+                                .doOnSuccess(playerTeams -> removePlayersFromTeam(team))
                                 .doOnSuccess(this::writePlayersToDb)
                                 .map(playerTeams -> null);
                     } else {
@@ -61,13 +61,20 @@ public class PlayersRepository {
                 }).map(ignore -> readPlayersFromDb(findTeam(team)));
     }
 
+    private void removePlayersFromTeam(@NonNull Team team) {
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        final PlayerModel.DeleteTeam deleteTeam = new PlayerModel.DeleteTeam(db);
+        deleteTeam.bind(team.id());
+        deleteTeam.program.executeUpdateDelete();
+    }
+
     @NonNull
     private List<Player> readPlayersFromDb(@NonNull Team team) {
         Logger.d(TAG, "Thread report: Read from DB on: " + Thread.currentThread());
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final SqlDelightStatement query = Player.FACTORY.forTeam(team.id());
 
-        final Cursor playersCursor = db.rawQuery(query.statement, query.args)
+        final Cursor playersCursor = db.rawQuery(query.statement, query.args);
         try {
             final List<Player> players = new ArrayList<>(playersCursor.getCount());
             while (playersCursor.moveToNext()) {
@@ -87,7 +94,7 @@ public class PlayersRepository {
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final PlayerModel.InsertPlayer insertPlayer = new PlayerModel.InsertPlayer(db, Player.FACTORY);
 
-        final Set<Team> teamsWritten = new HashSet<>(2);
+        final Set<Team> teamsWritten = new HashSet<>();
 
         for (final PlayerTeam playerTeam : playerTeams) {
             final Player player = playerTeam.player();
@@ -108,11 +115,7 @@ public class PlayersRepository {
                     player.birthCountry(),
                     player.gamesPlayed()
             );
-            try {
-                insertPlayer.program.executeInsert();
-            } catch (SQLiteConstraintException ignored) {
-                // skip if already inside
-            }
+            insertPlayer.program.executeInsert();
             teamsWritten.add(team);
         }
 
@@ -151,11 +154,11 @@ public class PlayersRepository {
     }
 
     @NonNull
-    public static Team findTeam(@NonNull DbOpenHelper dbHelper, @NonNull String teamId) {
+    private static Team findTeam(@NonNull DbOpenHelper dbHelper, @NonNull String teamId) {
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         final SqlDelightStatement query = Team.FACTORY.findTeam(teamId);
 
-        final Cursor teamsCursor = db.rawQuery(query.statement, query.args)
+        final Cursor teamsCursor = db.rawQuery(query.statement, query.args);
         try {
             if (BuildConfig.DEBUG) {
                 if (teamsCursor.getCount() != 1) {
