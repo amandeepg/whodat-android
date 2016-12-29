@@ -67,13 +67,18 @@ public class PlayersRepository {
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final SqlDelightStatement query = Player.FACTORY.forTeam(team.id());
 
-        try (final Cursor playersCursor = db.rawQuery(query.statement, query.args)) {
+        final Cursor playersCursor = db.rawQuery(query.statement, query.args)
+        try {
             final List<Player> players = new ArrayList<>(playersCursor.getCount());
             while (playersCursor.moveToNext()) {
                 players.add(Player.FOR_TEAM_MAPPER.map(playersCursor).player());
             }
             Logger.d(TAG, "readPlayersFromDb: players.size(): " + players.size());
             return players;
+        } finally {
+            if (playersCursor != null) {
+                playersCursor.close();
+            }
         }
     }
 
@@ -150,7 +155,8 @@ public class PlayersRepository {
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         final SqlDelightStatement query = Team.FACTORY.findTeam(teamId);
 
-        try (final Cursor teamsCursor = db.rawQuery(query.statement, query.args)) {
+        final Cursor teamsCursor = db.rawQuery(query.statement, query.args)
+        try {
             if (BuildConfig.DEBUG) {
                 if (teamsCursor.getCount() != 1) {
                     throw new RuntimeException("Should only find 1 team");
@@ -158,6 +164,10 @@ public class PlayersRepository {
             }
             teamsCursor.moveToFirst();
             return Team.SELECT_ALL_MAPPER.map(teamsCursor);
+        } finally {
+            if (teamsCursor != null) {
+                teamsCursor.close();
+            }
         }
     }
 }
