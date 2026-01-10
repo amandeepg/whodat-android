@@ -1,0 +1,40 @@
+package ca.amandeep.playernumber.ui.theme
+
+import androidx.compose.ui.graphics.Color
+
+val Blue80 = Color(0xFFAEC6FF)
+val Blue40 = Color(0xFF0B5FFF)
+val BlueContainerLight = Color(0xFFD6E3FF)
+val BlueContainerDark = Color(0xFF00439A)
+val BlueOnDark = Color(0xFF002F6C)
+
+val Teal80 = Color(0xFF52DBC8)
+val Teal40 = Color(0xFF006A60)
+val TealContainerLight = Color(0xFF74F8E5)
+val TealContainerDark = Color(0xFF005048)
+val TealOnDark = Color(0xFF003731)
+
+val Orange80 = Color(0xFFFFB68C)
+val Orange40 = Color(0xFFB54700)
+val OrangeContainerLight = Color(0xFFFFDBC9)
+val OrangeContainerDark = Color(0xFF853B00)
+val OrangeOnDark = Color(0xFF5E2800)
+
+val SurfaceLight = Color(0xFFF9F9FF)
+val SurfaceDark = Color(0xFF121318)
+val SurfaceVariantLight = Color(0xFFE2E2EC)
+val SurfaceVariantDark = Color(0xFF44474F)
+val OnSurfaceLight = Color(0xFF1A1C1E)
+val OnSurfaceDark = Color(0xFFE3E2E9)
+val OnSurfaceVariantLight = Color(0xFF44474F)
+val OnSurfaceVariantDark = Color(0xFFC5C6D0)
+val OutlineLight = Color(0xFF74777F)
+val OutlineDark = Color(0xFF8E9099)
+val OutlineVariantLight = Color(0xFFC5C6D0)
+val OutlineVariantDark = Color(0xFF44474F)
+val OnPrimaryContainerLight = Color(0xFF001B3E)
+val OnSecondaryContainerLight = Color(0xFF00201B)
+val OnTertiaryContainerLight = Color(0xFF2F1200)
+val OnPrimaryContainerDark = Color(0xFFD8E2FF)
+val OnSecondaryContainerDark = Color(0xFF74F8E5)
+val OnTertiaryContainerDark = Color(0xFFFFDBC9)

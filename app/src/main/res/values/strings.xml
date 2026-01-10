@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">PlayerNumber</string>
+    <string name="select_matchup_title">Select Matchup</string>
+    <string name="back_content_description">Back</string>
+    <string name="reset_matchup_content_description">Reset matchup</string>
+    <string name="enter_jersey_number">Enter a jersey number</string>
+    <string name="change_teams_hint">Tap to change teams</string>
+    <string name="no_team_number">No %1$s #%2$d</string>
+    <string name="matchup_at_separator">\@</string>
+    <string name="select_teams_content_description">Select teams</string>
+    <string name="away_team_label">Away Team</string>
+    <string name="home_team_label">Home Team</string>
+    <string name="team_search_placeholder">Search team…</string>
+    <string name="clear_team_content_description">Clear team</string>
+    <string name="today_games_header">Games today</string>
+    <string name="enable_location_for_nearby_games">Enable location for nearby games</string>
+    <string name="nearby_games_at_stadium_label">At stadium</string>
+    <string name="nearby_games_at_arena_label">At arena</string>
+    <string name="nearby_games_at_ballpark_label">At ballpark</string>
+    <string name="nearby_games_closest_label">Closest</string>
+    <string name="nearby_games_at_venue_format">at %1$s</string>
+</resources>
