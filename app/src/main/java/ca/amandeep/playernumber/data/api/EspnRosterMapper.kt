@@ -114,8 +114,7 @@ private fun extractSuffix(source: String?): String? {
 private fun resolvePosition(position: Any?): Pair<String?, String?> = when (position) {
     is Map<*, *> -> {
         val abbrev = position["abbreviation"] as? String
-        val name = (position["name"] as? String)
-            .takeUnless { it.isNullOrBlank() }
+        val name = (position["name"] as? String).takeUnless { it.isNullOrBlank() }
             ?: position["displayName"] as? String
         abbrev to name
     }

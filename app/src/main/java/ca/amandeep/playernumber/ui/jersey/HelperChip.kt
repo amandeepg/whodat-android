@@ -94,8 +94,7 @@ internal fun AssistBubble(
                 )
             }
             Box(
-                modifier = Modifier
-                    .align(arrowAlignment)
+                modifier = Modifier.align(arrowAlignment)
                     .size(HelperChipArrowDiameter),
                 contentAlignment = Alignment.Center,
             ) {

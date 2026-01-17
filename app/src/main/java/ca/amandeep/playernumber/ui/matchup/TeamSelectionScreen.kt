@@ -552,8 +552,7 @@ private fun TeamSelectionScreenContent(
     }
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
+        modifier = modifier.fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .imePadding(),
     ) {
@@ -624,8 +623,7 @@ private fun TeamSelectionBars(
     }
     Box(modifier = modifier.fillMaxWidth()) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
@@ -659,8 +657,7 @@ private fun TeamSelectionBars(
                 topBorderClip = awayBadgeClip,
                 bottomBorderClip = homeBadgeClip,
                 textColor = textColor,
-                modifier = Modifier
-                    .align(Alignment.Center)
+                modifier = Modifier.align(Alignment.Center)
                     .onGloballyPositioned { coordinates ->
                         badgeBounds.value = coordinates.rectInWindow()
                     },
@@ -707,16 +704,14 @@ private fun TeamSelectionBar(
     Surface(
         onClick = onActivate,
         enabled = !isActive,
-        modifier = modifier
-            .fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .heightIn(min = 96.dp),
         shape = RoundedCornerShape(30.dp),
         color = cardColor,
         border = activeBorder,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
                 .padding(
                     PaddingValues(
                         horizontal = 20.dp,
@@ -910,8 +905,7 @@ private fun CloseIconButton(
     background: Color? = null,
 ) {
     Box(
-        modifier = modifier
-            .clip(CircleShape)
+        modifier = modifier.clip(CircleShape)
             .then(if (background != null) Modifier.background(background) else Modifier)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
@@ -1077,8 +1071,7 @@ private fun TeamSelectionBarsPreviewContent(
         activeSlot = activeSlot,
     )
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
             .background(colors.background),
     ) {
         val entries = teamSelectionBarEntries(

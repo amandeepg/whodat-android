@@ -66,8 +66,7 @@ internal fun TodayGamesSection(
     val textMeasurer = rememberTextMeasurer()
     val fadeModifier = Modifier.fadingEdges(listState)
     LazyColumn(
-        modifier = modifier
-            .fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .then(fadeModifier),
         state = listState,
         contentPadding = contentPadding,
@@ -167,8 +166,7 @@ private fun EnableLocationPill(
         color = colors.secondary,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
                 .padding(horizontal = 14.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
@@ -250,8 +248,7 @@ private fun TodayGameCard(
         color = colors.surfaceContainerHigh,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
                 .clickable(onClick = onClick)
                 .padding(horizontal = 14.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),

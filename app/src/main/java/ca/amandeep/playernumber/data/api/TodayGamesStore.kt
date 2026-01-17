@@ -63,13 +63,11 @@ internal object TodayGamesStore {
     }
 
     private fun createRepository(): EspnTodayGamesRepository {
-        val moshi = Moshi
-            .Builder()
+        val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .build()
         val okHttpClient = OkHttpClient.Builder().build()
-        val retrofit = Retrofit
-            .Builder()
+        val retrofit = Retrofit.Builder()
             .baseUrl("https://site.api.espn.com/")
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))

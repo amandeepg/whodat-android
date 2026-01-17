@@ -32,11 +32,9 @@ internal fun computeNearbyGames(
     if (candidates.isEmpty()) {
         return NearbyGames(atStadium = null, closest = emptyList())
     }
-    val atStadium = candidates
-        .filter { it.distanceMeters <= atStadiumMeters }
+    val atStadium = candidates.filter { it.distanceMeters <= atStadiumMeters }
         .minByOrNull { it.distanceMeters }
-    val closest = candidates
-        .filter { it.distanceMeters <= CLOSEST_RANGE_METERS }
+    val closest = candidates.filter { it.distanceMeters <= CLOSEST_RANGE_METERS }
         .filter { it.game.eventId != atStadium?.game?.eventId }
         .sortedBy { it.distanceMeters }
     return NearbyGames(atStadium = atStadium, closest = closest)

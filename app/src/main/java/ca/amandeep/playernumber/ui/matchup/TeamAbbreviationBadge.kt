@@ -55,8 +55,7 @@ internal fun TeamAbbreviationBadge(
         val background = colors.surfaceVariant.copy(alpha = 0.55f)
         val iconTint = colors.onSurfaceVariant.copy(alpha = 0.8f)
         Box(
-            modifier = modifier
-                .size(size)
+            modifier = modifier.size(size)
                 .clip(CircleShape)
                 .background(background),
             contentAlignment = Alignment.Center,
@@ -88,8 +87,7 @@ internal fun TeamAbbreviationBadge(
     }
 
     Box(
-        modifier = modifier
-            .size(size)
+        modifier = modifier.size(size)
             .clip(CircleShape)
             .background(bg),
         contentAlignment = Alignment.Center,

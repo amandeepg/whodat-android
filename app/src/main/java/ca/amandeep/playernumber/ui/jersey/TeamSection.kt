@@ -75,8 +75,7 @@ internal fun TeamSection(
     }
     val nameAccent = team.colors.nameAccent
     Box(
-        modifier = modifier
-            .fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .background(backgroundColor),
     ) {
         val shortTeamName = remember(team.name) { team.nickname() }
@@ -129,8 +128,7 @@ internal fun TeamSection(
             }
 
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
                     .padding(horizontal = 24.dp)
                     .padding(contentPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,

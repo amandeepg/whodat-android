@@ -72,13 +72,11 @@ internal fun AppScreenshotPreviewContent(darkTheme: Boolean) {
                     state = previewState,
                     onJerseyInputChange = { },
                     onTeamSelectorClick = { },
-                    modifier = Modifier
-                        .fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                         .consumeWindowInsets(WindowInsets(top = SyntheticStatusBarHeight)),
                 )
                 SyntheticStatusBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                         .align(Alignment.TopCenter),
                 )
             }
@@ -91,8 +89,7 @@ private fun SyntheticStatusBar(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .height(SyntheticStatusBarHeight)
+        modifier = modifier.height(SyntheticStatusBarHeight)
             .fillMaxWidth(),
         contentAlignment = Alignment.TopCenter,
     ) {
@@ -101,8 +98,7 @@ private fun SyntheticStatusBar(
             modifier = Modifier.fillMaxSize(),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
                     .padding(
                         horizontal = StatusBarHorizontalPadding,
                         vertical = StatusBarVerticalPadding

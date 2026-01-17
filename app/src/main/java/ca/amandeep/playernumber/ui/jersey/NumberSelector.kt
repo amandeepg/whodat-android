@@ -157,8 +157,7 @@ internal fun NumberEntryCircle(
             ),
             textStyle = textStyle,
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-            modifier = Modifier
-                .widthIn(max = diameter + 5.dp)
+            modifier = Modifier.widthIn(max = diameter + 5.dp)
                 .heightIn(max = diameter + 5.dp)
                 .semantics { this.contentDescription = contentDescription }
                 .then(focusRequester?.let { Modifier.focusRequester(it) } ?: Modifier),

@@ -54,8 +54,7 @@ internal fun FloatingAssistBubble(
     val textStyle = MaterialTheme.typography.bodyLarge.copy(lineHeightStyle = SingleLineHeightStyle)
 
     Column(
-        modifier = modifier
-            .onSizeChanged { hintHeightPxState.intValue = it.height }
+        modifier = modifier.onSizeChanged { hintHeightPxState.intValue = it.height }
             .graphicsLayer { this.translationY = translationY }
             .clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -78,13 +78,11 @@ internal class EspnTeamResolver(
     }
 }
 
-private fun normalizeAbbreviation(value: String): String = value
-    .trim()
+private fun normalizeAbbreviation(value: String): String = value.trim()
     .uppercase(Locale.US)
     .replace(Regex("[^A-Z0-9]"), "")
 
-private fun normalizeName(value: String): String = value
-    .trim()
+private fun normalizeName(value: String): String = value.trim()
     .lowercase(Locale.US)
     .replace(Regex("[^a-z0-9]"), "")
 

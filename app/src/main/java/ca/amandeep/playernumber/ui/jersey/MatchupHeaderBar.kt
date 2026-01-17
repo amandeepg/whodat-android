@@ -48,8 +48,7 @@ internal fun MatchupHeaderBar(
     onPillPosition: (Rect) -> Unit = {},
 ) {
     Box(
-        modifier = modifier
-            .fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .padding(4.dp),
         contentAlignment = Alignment.TopCenter,
     ) {
@@ -109,8 +108,7 @@ internal fun MatchupHeaderBar(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = stringResource(R.string.select_teams_content_description),
                     tint = baseContentColor.copy(alpha = 0.7f),
-                    modifier = Modifier
-                        .size(20.dp)
+                    modifier = Modifier.size(20.dp)
                         .onGloballyPositioned { coordinates ->
                             val position = coordinates.positionInWindow()
                             val center = Offset(

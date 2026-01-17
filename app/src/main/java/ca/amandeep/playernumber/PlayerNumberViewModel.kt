@@ -55,13 +55,11 @@ class PlayerNumberViewModel(
     val awayTeam: StateFlow<AnyTeam> = awayTeamFlow.asStateFlow()
     val homeTeam: StateFlow<AnyTeam> = homeTeamFlow.asStateFlow()
 
-    private val awayRosterFlow: Flow<RosterState> = awayTeamFlow
-        .flatMapLatest { team ->
+    private val awayRosterFlow: Flow<RosterState> = awayTeamFlow.flatMapLatest { team ->
             rosterRepository.rosterState(team).onStart { rosterRepository.refresh(team) }
         }
 
-    private val homeRosterFlow: Flow<RosterState> = homeTeamFlow
-        .flatMapLatest { team ->
+    private val homeRosterFlow: Flow<RosterState> = homeTeamFlow.flatMapLatest { team ->
             rosterRepository.rosterState(team).onStart { rosterRepository.refresh(team) }
         }
 
@@ -145,13 +143,11 @@ class PlayerNumberViewModel(
     )
 
     private fun createRosterRepository(): RosterRepository {
-        val moshi = Moshi
-            .Builder()
+        val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .build()
         val okHttpClient = OkHttpClient.Builder().build()
-        val retrofit = Retrofit
-            .Builder()
+        val retrofit = Retrofit.Builder()
             .baseUrl("https://site.api.espn.com/")
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))

@@ -56,8 +56,7 @@ internal fun MatchupVsBadge(
     val backgroundBorderWidthPx = with(LocalDensity.current) { TeamSelectionVsBackgroundBorderWidth.toPx() }
     val innerRadiusPx = with(LocalDensity.current) { TeamSelectionVsSize.toPx() } / 2f
     Box(
-        modifier = modifier
-            .size(TeamSelectionVsOuterSize)
+        modifier = modifier.size(TeamSelectionVsOuterSize)
             .drawWithContent {
                 drawContent()
                 if (backgroundBorderWidthPx > 0f) {

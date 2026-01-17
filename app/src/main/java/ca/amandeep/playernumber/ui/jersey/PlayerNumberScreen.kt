@@ -99,8 +99,7 @@ private fun PlayerNumberScreenContent(
     )
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
+        modifier = modifier.fillMaxSize()
             .onGloballyPositioned { coordinates ->
                 rootBoundsState.value = LayoutBounds(
                     topLeft = coordinates.positionInWindow(),
@@ -134,8 +133,7 @@ private fun PlayerNumberScreenContent(
                         layoutState.value = layout
                     }
                 },
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
                     .padding(innerPadding)
                     .imePadding(),
             )
@@ -148,8 +146,7 @@ private fun PlayerNumberScreenContent(
             jerseyAnchorFraction = assistTargets.jerseyAnchorFraction,
             teamSelectorArrowOffsetFromTop = assistTargets.teamBaseOffset,
             teamSelectorAnchorFraction = assistTargets.teamAnchorFraction,
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
                 .zIndex(ASSIST_HINTS_OVERLAY_Z_INDEX),
         )
     }

@@ -56,8 +56,7 @@ internal fun TeamSearchResults(
     val textMeasurer = rememberTextMeasurer()
     val fadeModifier = Modifier.fadingEdges(listState)
     LazyColumn(
-        modifier = modifier
-            .fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .then(fadeModifier),
         state = listState,
         contentPadding = contentPadding,
@@ -170,8 +169,7 @@ private fun TeamResultRow(
         color = colors.surfaceContainerHigh,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
                 .clickable { onTeamSelect(team) }
                 .padding(horizontal = 14.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),

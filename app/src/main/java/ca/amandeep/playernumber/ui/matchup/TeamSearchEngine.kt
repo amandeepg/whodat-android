@@ -234,8 +234,7 @@ class TeamSearchEngine {
             }
         }
         val prefixIndex = prefixMap.mapValues { it.value.toIntArray() }
-        val prefixTop2 = prefixIndex
-            .filterKeys { it.length == 1 }
+        val prefixTop2 = prefixIndex.filterKeys { it.length == 1 }
             .mapValues { (_, list) -> list.copyOf(min(2, list.size)) }
         val index = LeagueSearchIndex(
             leagueLabel = league.displayName,
