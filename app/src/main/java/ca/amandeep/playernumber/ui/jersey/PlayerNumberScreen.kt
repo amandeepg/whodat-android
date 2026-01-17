@@ -39,7 +39,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import ca.amandeep.playernumber.data.JerseyNumber
 import ca.amandeep.playernumber.data.MlbTeams
+import ca.amandeep.playernumber.data.StaticRosterLookup
+import ca.amandeep.playernumber.data.teamId
 import ca.amandeep.playernumber.data.api.RosterSource
 import ca.amandeep.playernumber.ui.adaptive.PreviewWindowSizeClassHint
 import ca.amandeep.playernumber.ui.adaptive.SizeBucket
@@ -506,19 +509,24 @@ private fun rememberPlayerNumberActions(
 @Composable
 private fun PlayerNumberSizedPreview() {
     PlayerNumberTheme {
+        val previewNumber = JerseyNumber.from(PREVIEW_JERSEY_NUMBER)
+        val awayPlayer =
+            previewNumber?.let { StaticRosterLookup.findPlayer(PreviewAwayTeam.teamId(), it) }
+        val homePlayer =
+            previewNumber?.let { StaticRosterLookup.findPlayer(PreviewHomeTeam.teamId(), it) }
         val state =
             PlayerNumberUiState(
                 jerseyNumber = PREVIEW_JERSEY_NUMBER,
                 away =
                     TeamRosterUiState(
                         team = PreviewAwayTeam,
-                        player = PreviewAwayTeam.playerByNumber[PREVIEW_JERSEY_NUMBER],
+                        player = awayPlayer,
                         rosterStatus = PreviewRosterStatus,
                     ),
                 home =
                     TeamRosterUiState(
                         team = PreviewHomeTeam,
-                        player = PreviewHomeTeam.playerByNumber[PREVIEW_JERSEY_NUMBER],
+                        player = homePlayer,
                         rosterStatus = PreviewRosterStatus,
                     ),
             )

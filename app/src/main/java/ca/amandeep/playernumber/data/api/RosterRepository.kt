@@ -3,10 +3,16 @@ package ca.amandeep.playernumber.data.api
 import android.util.Log
 import ca.amandeep.playernumber.data.AnyPlayer
 import ca.amandeep.playernumber.data.AnyTeam
+import ca.amandeep.playernumber.data.JerseyNumber
 import ca.amandeep.playernumber.data.Player
+import ca.amandeep.playernumber.data.RosterLookup
+import ca.amandeep.playernumber.data.TeamId
 import ca.amandeep.playernumber.data.cache.CachedPlayer
 import ca.amandeep.playernumber.data.cache.CachedRoster
 import ca.amandeep.playernumber.data.cache.RosterCacheStore
+import ca.amandeep.playernumber.data.findPlayerInRoster
+import ca.amandeep.playernumber.data.teamForId
+import ca.amandeep.playernumber.data.teamId
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -27,11 +33,9 @@ data class RosterState(
     val players: List<AnyPlayer>,
     val source: RosterSource,
     val lastUpdatedMillis: Long?,
-) {
-    val playersByNumber: Map<String, AnyPlayer> = players.associateBy { it.jerseyNumber }
-}
+)
 
-interface RosterRepository {
+interface RosterRepository : RosterLookup {
     fun rosterState(team: AnyTeam): StateFlow<RosterState>
 
     fun refresh(
@@ -49,12 +53,12 @@ class EspnRosterRepository(
     private val expireAfterMillis: Long = 14L * 24 * 60 * 60 * 1000,
     private val clock: () -> Long = { System.currentTimeMillis() },
 ) : RosterRepository {
-    private val stateByTeam = ConcurrentHashMap<String, MutableStateFlow<RosterState>>()
-    private val refreshJobs = ConcurrentHashMap<String, Job>()
+    private val stateByTeam = ConcurrentHashMap<TeamId, MutableStateFlow<RosterState>>()
+    private val refreshJobs = ConcurrentHashMap<TeamId, Job>()
 
     override fun rosterState(team: AnyTeam): StateFlow<RosterState> {
-        val key = keyFor(team)
-        return stateByTeam.getOrPut(key) {
+        val teamId = team.teamId()
+        return stateByTeam.getOrPut(teamId) {
             MutableStateFlow(staticState(team)).also { flow ->
                 scope.launch(ioDispatcher) {
                     val cached = readCache(team)
@@ -70,11 +74,11 @@ class EspnRosterRepository(
         team: AnyTeam,
         force: Boolean,
     ) {
-        val key = keyFor(team)
+        val teamId = team.teamId()
         val flow = stateFlowFor(team)
-        if (refreshJobs[key]?.isActive == true) return
+        if (refreshJobs[teamId]?.isActive == true) return
 
-        refreshJobs[key] =
+        refreshJobs[teamId] =
             scope.launch(ioDispatcher) {
                 val cached = readCache(team)
                 val now = clock()
@@ -107,8 +111,17 @@ class EspnRosterRepository(
             }
     }
 
+    override fun findPlayer(
+        team: TeamId,
+        number: JerseyNumber,
+    ): AnyPlayer? {
+        val resolvedTeam = teamForId(team) ?: return null
+        val rosterState = rosterState(resolvedTeam).value
+        return findPlayerInRoster(rosterState.players, number)
+    }
+
     private fun stateFlowFor(team: AnyTeam): MutableStateFlow<RosterState> =
-        stateByTeam.getOrPut(keyFor(team)) { MutableStateFlow(staticState(team)) }
+        stateByTeam.getOrPut(team.teamId()) { MutableStateFlow(staticState(team)) }
 
     private fun decideRefresh(
         team: AnyTeam,
@@ -147,8 +160,6 @@ class EspnRosterRepository(
             }
         return RefreshDecision(preRefreshState = preState, shouldRefresh = true)
     }
-
-    private fun keyFor(team: AnyTeam): String = "${espnLeagueFor(team).leagueId}:${team.abbreviation.uppercase()}"
 
     private fun staticState(team: AnyTeam): RosterState =
         buildRosterState(

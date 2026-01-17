@@ -143,8 +143,6 @@ data class Team<out P : Position>(
     val venue: TeamVenue,
     val roster: List<Player<P>>,
 ) {
-    val playerByNumber: Map<String, Player<P>> = roster.associateBy { it.jerseyNumber }
-
     fun nickname(): String {
         val parts = name.trim().split(Regex("\\s+"))
         if (parts.size <= 1) {

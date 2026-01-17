@@ -9,8 +9,10 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import ca.amandeep.playernumber.data.AnyTeam
+import ca.amandeep.playernumber.data.JerseyNumber
 import ca.amandeep.playernumber.data.LeagueCatalog
 import ca.amandeep.playernumber.data.MlbTeamRefs
+import ca.amandeep.playernumber.data.teamId
 import ca.amandeep.playernumber.data.api.EspnRosterApi
 import ca.amandeep.playernumber.data.api.EspnRosterRepository
 import ca.amandeep.playernumber.data.api.EspnRosterService
@@ -81,19 +83,21 @@ class PlayerNumberViewModel(
         awayRosterFlow,
         homeRosterFlow,
     ) { jerseyInput, awayTeam, homeTeam, awayRosterState, homeRosterState ->
-        val jerseyKey = jerseyInput.takeIf { it.isNotBlank() }
+        val jerseyNumber = JerseyNumber.from(jerseyInput)
+        val awayTeamId = awayTeam.teamId()
+        val homeTeamId = homeTeam.teamId()
         PlayerNumberUiState(
             jerseyNumber = jerseyInput,
             away =
                 TeamRosterUiState(
                     team = awayTeam,
-                    player = jerseyKey?.let { awayRosterState.playersByNumber[it] },
+                    player = jerseyNumber?.let { rosterRepository.findPlayer(awayTeamId, it) },
                     rosterStatus = awayRosterState.toStatus(),
                 ),
             home =
                 TeamRosterUiState(
                     team = homeTeam,
-                    player = jerseyKey?.let { homeRosterState.playersByNumber[it] },
+                    player = jerseyNumber?.let { rosterRepository.findPlayer(homeTeamId, it) },
                     rosterStatus = homeRosterState.toStatus(),
                 ),
         )
