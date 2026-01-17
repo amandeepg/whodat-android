@@ -11,10 +11,13 @@ data class RosterStatus(
 )
 
 data class PlayerNumberUiState(
-    val jerseyNumber: Int?,
+    val jerseyInput: String,
     val away: TeamRosterUiState,
     val home: TeamRosterUiState,
-)
+) {
+    val jerseyNumber: Int?
+        get() = jerseyInput.toIntOrNull()
+}
 
 data class TeamRosterUiState(
     val team: AnyTeam,

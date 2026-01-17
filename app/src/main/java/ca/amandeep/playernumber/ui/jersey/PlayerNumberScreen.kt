@@ -222,7 +222,7 @@ private fun PlayerNumberBody(
             modifier = Modifier.fillMaxSize(),
         )
         NumberEntryOverlay(
-            jerseyInput = state.jerseyNumber?.toString().orEmpty(),
+            jerseyInput = state.jerseyInput,
             onJerseyInputChange = actions.onJerseyInputChange,
             focusRequester = focusRequester,
             layout = layout,
@@ -508,7 +508,7 @@ private fun PlayerNumberSizedPreview() {
     PlayerNumberTheme {
         val state =
             PlayerNumberUiState(
-                jerseyNumber = PREVIEW_JERSEY_NUMBER,
+                jerseyInput = PREVIEW_JERSEY_NUMBER.toString(),
                 away =
                     TeamRosterUiState(
                         team = PreviewAwayTeam,
@@ -532,7 +532,7 @@ private fun PlayerNumberEmptyPreview() {
     PlayerNumberTheme {
         val state =
             PlayerNumberUiState(
-                jerseyNumber = null,
+                jerseyInput = "",
                 away =
                     TeamRosterUiState(
                         team = PreviewAwayTeam,

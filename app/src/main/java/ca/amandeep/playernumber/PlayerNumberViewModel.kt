@@ -34,7 +34,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import okhttp3.OkHttpClient
@@ -61,10 +60,6 @@ class PlayerNumberViewModel(
     private val jerseyInputFlow = snapshotFlow { jerseyInput }.distinctUntilChanged()
     private val awayTeamFlow = snapshotFlow { awayTeam }.distinctUntilChanged()
     private val homeTeamFlow = snapshotFlow { homeTeam }.distinctUntilChanged()
-    private val jerseyNumberFlow =
-        jerseyInputFlow
-            .map { it.toIntOrNull() }
-            .distinctUntilChanged()
 
     private val awayRosterFlow: Flow<RosterState> =
         awayTeamFlow
@@ -80,14 +75,15 @@ class PlayerNumberViewModel(
 
     val uiState: StateFlow<PlayerNumberUiState> =
         combine(
-            jerseyNumberFlow,
+            jerseyInputFlow,
             awayTeamFlow,
             homeTeamFlow,
             awayRosterFlow,
             homeRosterFlow,
-        ) { jerseyNumber, awayTeam, homeTeam, awayRosterState, homeRosterState ->
+        ) { jerseyInput, awayTeam, homeTeam, awayRosterState, homeRosterState ->
+            val jerseyNumber = jerseyInput.toIntOrNull()
             PlayerNumberUiState(
-                jerseyNumber = jerseyNumber,
+                jerseyInput = jerseyInput,
                 away =
                     TeamRosterUiState(
                         team = awayTeam,
@@ -139,7 +135,7 @@ class PlayerNumberViewModel(
 
     private fun emptyUiState(): PlayerNumberUiState =
         PlayerNumberUiState(
-            jerseyNumber = null,
+            jerseyInput = "",
             away =
                 TeamRosterUiState(
                     team = awayTeam,
