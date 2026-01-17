@@ -60,7 +60,7 @@ import java.util.Locale.ROOT
 @Composable
 internal fun TeamSection(
     player: AnyPlayer?,
-    jerseyNumber: Int?,
+    jerseyNumber: String,
     team: AnyTeam,
     heightBucket: SizeBucket,
     contentPadding: PaddingValues,
@@ -146,7 +146,7 @@ internal fun TeamSection(
 
                 if (displayPlayer == null) {
                     val displayNumber = content.jerseyNumber
-                    if (displayNumber != null) {
+                    if (displayNumber.isNotEmpty()) {
                         Text(
                             text =
                                 stringResource(
@@ -276,7 +276,7 @@ private fun PositionLabel(
 
 private data class TeamSectionContent(
     val player: AnyPlayer?,
-    val jerseyNumber: Int?,
+    val jerseyNumber: String,
 )
 
 @PreviewLightDark
@@ -291,7 +291,7 @@ private fun TeamSectionWithPlayerPreview(
         ) {
             TeamSection(
                 player = previewPlayer,
-                jerseyNumber = previewPlayer?.jerseyNumber,
+                jerseyNumber = previewPlayer?.jerseyNumber.orEmpty(),
                 team = team,
                 heightBucket = SizeBucket.Medium,
                 contentPadding = PaddingValues(),

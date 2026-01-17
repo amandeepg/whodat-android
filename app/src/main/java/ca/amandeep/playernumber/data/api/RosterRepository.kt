@@ -28,7 +28,7 @@ data class RosterState(
     val source: RosterSource,
     val lastUpdatedMillis: Long?,
 ) {
-    val playersByNumber: Map<Int, AnyPlayer> = players.associateBy { it.jerseyNumber }
+    val playersByNumber: Map<String, AnyPlayer> = players.associateBy { it.jerseyNumber }
 }
 
 interface RosterRepository {

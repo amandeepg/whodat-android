@@ -78,26 +78,26 @@ class PlayerNumberViewModel(
             jerseyInputFlow,
             awayTeamFlow,
             homeTeamFlow,
-            awayRosterFlow,
-            homeRosterFlow,
-        ) { jerseyInput, awayTeam, homeTeam, awayRosterState, homeRosterState ->
-            val jerseyNumber = jerseyInput.toIntOrNull()
-            PlayerNumberUiState(
-                jerseyInput = jerseyInput,
-                away =
-                    TeamRosterUiState(
-                        team = awayTeam,
-                        player = jerseyNumber?.let { awayRosterState.playersByNumber[it] },
-                        rosterStatus = awayRosterState.toStatus(),
-                    ),
-                home =
-                    TeamRosterUiState(
-                        team = homeTeam,
-                        player = jerseyNumber?.let { homeRosterState.playersByNumber[it] },
-                        rosterStatus = homeRosterState.toStatus(),
-                    ),
-            )
-        }.stateIn(
+        awayRosterFlow,
+        homeRosterFlow,
+    ) { jerseyInput, awayTeam, homeTeam, awayRosterState, homeRosterState ->
+        val jerseyKey = jerseyInput.takeIf { it.isNotBlank() }
+        PlayerNumberUiState(
+            jerseyNumber = jerseyInput,
+            away =
+                TeamRosterUiState(
+                    team = awayTeam,
+                    player = jerseyKey?.let { awayRosterState.playersByNumber[it] },
+                    rosterStatus = awayRosterState.toStatus(),
+                ),
+            home =
+                TeamRosterUiState(
+                    team = homeTeam,
+                    player = jerseyKey?.let { homeRosterState.playersByNumber[it] },
+                    rosterStatus = homeRosterState.toStatus(),
+                ),
+        )
+    }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyUiState(),
@@ -135,7 +135,7 @@ class PlayerNumberViewModel(
 
     private fun emptyUiState(): PlayerNumberUiState =
         PlayerNumberUiState(
-            jerseyInput = "",
+            jerseyNumber = "",
             away =
                 TeamRosterUiState(
                     team = awayTeam,

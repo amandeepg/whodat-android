@@ -21,7 +21,7 @@ data class CachedPlayer(
     val lastName: String,
     val positionShortName: String,
     val positionLongName: String,
-    val jerseyNumber: Int,
+    val jerseyNumber: String,
     val suffix: String?,
 )
 
@@ -49,10 +49,16 @@ class FileRosterCacheStore(
             if (!file.exists()) {
                 return@withContext null
             }
-            return@withContext adapter.fromJson(file.readText()).also { roster ->
-                if (roster == null) {
-                    Log.e(LOG_TAG, "Cache decode failed team=${team.abbreviation}")
+            return@withContext try {
+                adapter.fromJson(file.readText()).also { roster ->
+                    if (roster == null) {
+                        Log.e(LOG_TAG, "Cache decode failed team=${team.abbreviation}")
+                    }
                 }
+            } catch (error: Exception) {
+                Log.e(LOG_TAG, "Cache decode failed team=${team.abbreviation}", error)
+                file.delete()
+                null
             }
         }
 

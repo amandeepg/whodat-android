@@ -88,7 +88,7 @@ data class Player<out P : Position>(
     val firstName: String,
     val lastName: String,
     val position: P,
-    val jerseyNumber: Int,
+    val jerseyNumber: String,
     val suffix: String? = null,
 ) {
     val lastNameWithSuffix: String
@@ -143,7 +143,7 @@ data class Team<out P : Position>(
     val venue: TeamVenue,
     val roster: List<Player<P>>,
 ) {
-    val playerByNumber: Map<Int, Player<P>> = roster.associateBy { it.jerseyNumber }
+    val playerByNumber: Map<String, Player<P>> = roster.associateBy { it.jerseyNumber }
 
     fun nickname(): String {
         val parts = name.trim().split(Regex("\\s+"))

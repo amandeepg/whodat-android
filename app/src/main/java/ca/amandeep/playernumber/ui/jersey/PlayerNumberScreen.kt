@@ -70,7 +70,7 @@ private fun PlayerNumberScreenContent(
     actions: PlayerNumberActions,
     modifier: Modifier = Modifier,
 ) {
-    val showHints = state.jerseyNumber == null
+    val showHints = state.jerseyNumber.isBlank()
     val focusRequester = rememberNumberEntryFocusRequester(showHints)
     val chevronCenterInWindow: MutableState<Offset?> = remember { mutableStateOf(null) }
     val pillBoundsInWindow: MutableState<Rect?> = remember { mutableStateOf(null) }
@@ -222,7 +222,7 @@ private fun PlayerNumberBody(
             modifier = Modifier.fillMaxSize(),
         )
         NumberEntryOverlay(
-            jerseyInput = state.jerseyInput,
+            jerseyInput = state.jerseyNumber,
             onJerseyInputChange = actions.onJerseyInputChange,
             focusRequester = focusRequester,
             layout = layout,
@@ -508,7 +508,7 @@ private fun PlayerNumberSizedPreview() {
     PlayerNumberTheme {
         val state =
             PlayerNumberUiState(
-                jerseyInput = PREVIEW_JERSEY_NUMBER.toString(),
+                jerseyNumber = PREVIEW_JERSEY_NUMBER,
                 away =
                     TeamRosterUiState(
                         team = PreviewAwayTeam,
@@ -532,7 +532,7 @@ private fun PlayerNumberEmptyPreview() {
     PlayerNumberTheme {
         val state =
             PlayerNumberUiState(
-                jerseyInput = "",
+                jerseyNumber = "",
                 away =
                     TeamRosterUiState(
                         team = PreviewAwayTeam,
@@ -550,7 +550,7 @@ private fun PlayerNumberEmptyPreview() {
     }
 }
 
-private const val PREVIEW_JERSEY_NUMBER = 27
+private const val PREVIEW_JERSEY_NUMBER = "27"
 
 private val PreviewAwayTeam = MlbTeams.first { it.abbreviation == "TOR" }
 private val PreviewHomeTeam = MlbTeams.first { it.abbreviation == "LAA" }

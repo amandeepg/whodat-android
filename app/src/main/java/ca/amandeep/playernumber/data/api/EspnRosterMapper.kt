@@ -22,7 +22,8 @@ internal fun EspnRosterResponse.toPlayers(league: EspnLeague): List<AnyPlayer> {
 }
 
 private fun EspnRosterEntry.toPlayer(league: EspnLeague): AnyPlayer? {
-    val jerseyNumber = jersey?.trim()?.toIntOrNull() ?: return null
+    val jerseyNumber = jersey?.trim().orEmpty()
+    if (jerseyNumber.isBlank()) return null
     val resolvedNames =
         resolveNames(
             firstName = firstName,
