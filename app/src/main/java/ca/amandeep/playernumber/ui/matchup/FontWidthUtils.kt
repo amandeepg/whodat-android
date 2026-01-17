@@ -21,44 +21,38 @@ internal fun computeFittingFontWidth(
     maxWidthPx: Float,
 ): FontWidth? {
     val safeWidth = maxWidthPx.coerceAtLeast(0f)
-    val fontSize =
-        if (textStyle.fontSize.isUnspecified) {
-            0f
-        } else {
-            textStyle.fontSize.value
-        }
-    val cacheKey =
-        FontWidthCacheKey(
-            maxWidthPx = safeWidth.roundToInt(),
-            fontSizeSp = fontSize,
-            fontWeight = textStyle.fontWeight?.weight,
-        )
+    val fontSize = if (textStyle.fontSize.isUnspecified) {
+        0f
+    } else {
+        textStyle.fontSize.value
+    }
+    val cacheKey = FontWidthCacheKey(
+        maxWidthPx = safeWidth.roundToInt(),
+        fontSizeSp = fontSize,
+        fontWeight = textStyle.fontWeight?.weight,
+    )
     return synchronized(FontWidthCache) {
-        val cached =
-            FontWidthCache.values.getOrPut(cacheKey) {
-                val text = NbaTeamRefs.POR.name
-                val defaultMeasured =
-                    textMeasurer.measure(
+        val cached = FontWidthCache.values.getOrPut(cacheKey) {
+            val text = NbaTeamRefs.POR.name
+            val defaultMeasured = textMeasurer.measure(
+                text = text,
+                style = textStyle,
+                maxLines = 1,
+            )
+            if (defaultMeasured.size.width <= safeWidth) {
+                FontWidthCacheValue.NoChange
+            } else {
+                val width = WidthOptions.firstOrNull { width ->
+                    val measured = textMeasurer.measure(
                         text = text,
-                        style = textStyle,
+                        style = textStyle.withFontWidth(width),
                         maxLines = 1,
                     )
-                if (defaultMeasured.size.width <= safeWidth) {
-                    FontWidthCacheValue.NoChange
-                } else {
-                    val width =
-                        WidthOptions.firstOrNull { width ->
-                            val measured =
-                                textMeasurer.measure(
-                                    text = text,
-                                    style = textStyle.withFontWidth(width),
-                                    maxLines = 1,
-                                )
-                            measured.size.width <= safeWidth
-                        } ?: FontWidth.SuperCondensed
-                    FontWidthCacheValue.Width(width)
-                }
+                    measured.size.width <= safeWidth
+                } ?: FontWidth.SuperCondensed
+                FontWidthCacheValue.Width(width)
             }
+        }
         when (cached) {
             FontWidthCacheValue.NoChange -> null
             is FontWidthCacheValue.Width -> cached.value

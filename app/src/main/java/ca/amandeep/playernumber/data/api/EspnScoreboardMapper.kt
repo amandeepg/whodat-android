@@ -20,9 +20,8 @@ internal fun EspnScoreboardResponse.toTodayGames(league: EspnLeague): List<Today
         if (awayTeam == null || homeTeam == null) {
             return@forEach
         }
-        val eventId =
-            event.id
-                ?: "${league.leagueId}-${awayTeam.abbreviation}-${homeTeam.abbreviation}"
+        val eventId = event.id
+            ?: "${league.leagueId}-${awayTeam.abbreviation}-${homeTeam.abbreviation}"
         games.add(
             TodayGame(
                 eventId = eventId,
@@ -79,16 +78,14 @@ internal class EspnTeamResolver(
     }
 }
 
-private fun normalizeAbbreviation(value: String): String =
-    value
-        .trim()
-        .uppercase(Locale.US)
-        .replace(Regex("[^A-Z0-9]"), "")
+private fun normalizeAbbreviation(value: String): String = value
+    .trim()
+    .uppercase(Locale.US)
+    .replace(Regex("[^A-Z0-9]"), "")
 
-private fun normalizeName(value: String): String =
-    value
-        .trim()
-        .lowercase(Locale.US)
-        .replace(Regex("[^a-z0-9]"), "")
+private fun normalizeName(value: String): String = value
+    .trim()
+    .lowercase(Locale.US)
+    .replace(Regex("[^a-z0-9]"), "")
 
 private const val LOG_TAG = "EspnScoreboard"

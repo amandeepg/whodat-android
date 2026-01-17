@@ -12,26 +12,25 @@ class EspnRosterApi(
     suspend fun fetchRoster(
         league: EspnLeague,
         teamAbbreviation: String,
-    ): List<AnyPlayer> =
-        withContext(ioDispatcher) {
-            val start = System.currentTimeMillis()
-            try {
-                service
-                    .fetchRoster(
-                        sport = league.sportSlug,
-                        league = league.leagueSlug,
-                        abbreviation = teamAbbreviation.lowercase(),
-                    ).toPlayers(league)
-            } catch (error: Exception) {
-                val durationMs = System.currentTimeMillis() - start
-                Log.e(
-                    LOG_TAG,
-                    "Failed roster fetch league=${league.leagueId} team=$teamAbbreviation after ${durationMs}ms",
-                    error,
-                )
-                throw error
-            }
+    ): List<AnyPlayer> = withContext(ioDispatcher) {
+        val start = System.currentTimeMillis()
+        try {
+            service
+                .fetchRoster(
+                    sport = league.sportSlug,
+                    league = league.leagueSlug,
+                    abbreviation = teamAbbreviation.lowercase(),
+                ).toPlayers(league)
+        } catch (error: Exception) {
+            val durationMs = System.currentTimeMillis() - start
+            Log.e(
+                LOG_TAG,
+                "Failed roster fetch league=${league.leagueId} team=$teamAbbreviation after ${durationMs}ms",
+                error,
+            )
+            throw error
         }
+    }
 }
 
 private const val LOG_TAG = "EspnRosterApi"

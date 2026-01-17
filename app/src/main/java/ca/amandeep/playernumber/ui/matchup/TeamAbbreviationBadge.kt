@@ -118,18 +118,16 @@ private fun rememberBadgeMaxFontSize(
         if (sizePx <= 0) {
             return@remember 1.sp
         }
-        val fontSize =
-            if (textStyle.fontSize.isUnspecified) {
-                0f
-            } else {
-                textStyle.fontSize.value
-            }
-        val key =
-            BadgeFontCacheKey(
-                sizePx = sizePx,
-                fontSizeSp = fontSize,
-                fontWeight = textStyle.fontWeight?.weight,
-            )
+        val fontSize = if (textStyle.fontSize.isUnspecified) {
+            0f
+        } else {
+            textStyle.fontSize.value
+        }
+        val key = BadgeFontCacheKey(
+            sizePx = sizePx,
+            fontSizeSp = fontSize,
+            fontWeight = textStyle.fontWeight?.weight,
+        )
         synchronized(BadgeFontSizeCache) {
             BadgeFontSizeCache.values.getOrPut(key) {
                 val maxAllowed = with(density) { size.toSp() }.value.coerceAtLeast(1f)
@@ -137,13 +135,12 @@ private fun rememberBadgeMaxFontSize(
                 var high = maxAllowed
                 repeat(8) {
                     val mid = (low + high) / 2f
-                    val layout =
-                        textMeasurer.measure(
-                            text = AnnotatedString(TEAM_BADGE_MEASURE_TEXT),
-                            style = textStyle.copy(fontSize = mid.sp, lineHeight = mid.sp),
-                            maxLines = 1,
-                            softWrap = false,
-                        )
+                    val layout = textMeasurer.measure(
+                        text = AnnotatedString(TEAM_BADGE_MEASURE_TEXT),
+                        style = textStyle.copy(fontSize = mid.sp, lineHeight = mid.sp),
+                        maxLines = 1,
+                        softWrap = false,
+                    )
                     if (layout.size.width <= maxWidthPx) {
                         low = mid
                     } else {
@@ -190,32 +187,30 @@ private data class TeamAbbreviationBadgePreviewData(
 )
 
 private class TeamAbbreviationBadgePreviewProvider : PreviewParameterProvider<TeamAbbreviationBadgePreviewData> {
-    private val previewValues =
-        listOf(
-            TeamAbbreviationBadgePreviewData(MlbTeamRefs.TOR, MatchupBadgeSize),
-            TeamAbbreviationBadgePreviewData(NbaTeamRefs.BOS, MatchupBadgeSize),
-            TeamAbbreviationBadgePreviewData(NhlTeamRefs.CAR, MatchupBadgeSize),
-            TeamAbbreviationBadgePreviewData(NflTeamRefs.MIN, MatchupBadgeSize),
-            TeamAbbreviationBadgePreviewData(NbaTeamRefs.UTAH, MatchupBadgeSize),
-            TeamAbbreviationBadgePreviewData(MlbTeamRefs.TOR, ResultsBadgeSize),
-            TeamAbbreviationBadgePreviewData(NbaTeamRefs.BOS, ResultsBadgeSize),
-            TeamAbbreviationBadgePreviewData(NhlTeamRefs.CAR, ResultsBadgeSize),
-            TeamAbbreviationBadgePreviewData(NflTeamRefs.MIN, ResultsBadgeSize),
-            TeamAbbreviationBadgePreviewData(NbaTeamRefs.UTAH, ResultsBadgeSize),
-            TeamAbbreviationBadgePreviewData(NbaTeamRefs.BOS, MatchupBadgeSize, isEmpty = true),
-            TeamAbbreviationBadgePreviewData(NbaTeamRefs.BOS, ResultsBadgeSize, isEmpty = true),
-        )
+    private val previewValues = listOf(
+        TeamAbbreviationBadgePreviewData(MlbTeamRefs.TOR, MatchupBadgeSize),
+        TeamAbbreviationBadgePreviewData(NbaTeamRefs.BOS, MatchupBadgeSize),
+        TeamAbbreviationBadgePreviewData(NhlTeamRefs.CAR, MatchupBadgeSize),
+        TeamAbbreviationBadgePreviewData(NflTeamRefs.MIN, MatchupBadgeSize),
+        TeamAbbreviationBadgePreviewData(NbaTeamRefs.UTAH, MatchupBadgeSize),
+        TeamAbbreviationBadgePreviewData(MlbTeamRefs.TOR, ResultsBadgeSize),
+        TeamAbbreviationBadgePreviewData(NbaTeamRefs.BOS, ResultsBadgeSize),
+        TeamAbbreviationBadgePreviewData(NhlTeamRefs.CAR, ResultsBadgeSize),
+        TeamAbbreviationBadgePreviewData(NflTeamRefs.MIN, ResultsBadgeSize),
+        TeamAbbreviationBadgePreviewData(NbaTeamRefs.UTAH, ResultsBadgeSize),
+        TeamAbbreviationBadgePreviewData(NbaTeamRefs.BOS, MatchupBadgeSize, isEmpty = true),
+        TeamAbbreviationBadgePreviewData(NbaTeamRefs.BOS, ResultsBadgeSize, isEmpty = true),
+    )
 
     override val values: Sequence<TeamAbbreviationBadgePreviewData> = previewValues.asSequence()
 
     override fun getDisplayName(index: Int): String? {
         val value = previewValues.getOrNull(index) ?: return null
-        val sizeLabel =
-            when (value.size) {
-                MatchupBadgeSize -> "matchup"
-                ResultsBadgeSize -> "results"
-                else -> "${value.size.value.toInt()}dp"
-            }
+        val sizeLabel = when (value.size) {
+            MatchupBadgeSize -> "matchup"
+            ResultsBadgeSize -> "results"
+            else -> "${value.size.value.toInt()}dp"
+        }
         val emptyLabel = if (value.isEmpty) "-empty" else ""
         return "${value.team.abbreviation}-$sizeLabel$emptyLabel"
     }

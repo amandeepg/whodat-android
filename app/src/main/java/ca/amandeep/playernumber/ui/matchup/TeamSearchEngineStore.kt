@@ -20,27 +20,24 @@ internal object TeamSearchEngineStore {
         synchronized(lock) {
             val current = deferred
             if (current != null && !current.isCancelled) return
-            deferred =
-                scope.async(dispatcher) {
-                    delay(delayMs)
-                    TeamSearchEngine()
-                }
+            deferred = scope.async(dispatcher) {
+                delay(delayMs)
+                TeamSearchEngine()
+            }
         }
     }
 
-    suspend fun await(dispatcher: CoroutineDispatcher = Dispatchers.Default): TeamSearchEngine =
-        coroutineScope {
-            val current =
-                synchronized(lock) {
-                    val existing = deferred
-                    if (existing != null && !existing.isCancelled) {
-                        existing
-                    } else {
-                        val created = async(dispatcher) { TeamSearchEngine() }
-                        deferred = created
-                        created
-                    }
-                }
-            current.await()
+    suspend fun await(dispatcher: CoroutineDispatcher = Dispatchers.Default): TeamSearchEngine = coroutineScope {
+        val current = synchronized(lock) {
+            val existing = deferred
+            if (existing != null && !existing.isCancelled) {
+                existing
+            } else {
+                val created = async(dispatcher) { TeamSearchEngine() }
+                deferred = created
+                created
+            }
         }
+        current.await()
+    }
 }

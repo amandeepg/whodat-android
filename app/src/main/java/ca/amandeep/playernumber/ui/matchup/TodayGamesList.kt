@@ -84,18 +84,16 @@ internal fun TodayGamesSection(
         item { TodayGamesHeader() }
         val atStadium = nearbyGames?.atStadium
         val closest = nearbyGames?.closest.orEmpty()
-        val displayClosest =
-            closest.filter { it.game.eventId != atStadium?.game?.eventId }
+        val displayClosest = closest.filter { it.game.eventId != atStadium?.game?.eventId }
         if (atStadium != null) {
             item {
                 NearbyGamesSectionHeader(
                     icon = Icons.Default.Stadium,
                     label = stringResource(atStadiumLabel(atStadium.game.home.league)),
-                    subtitle =
-                        stringResource(
-                            R.string.nearby_games_at_venue_format,
-                            atStadium.game.home.venue.name,
-                        ),
+                    subtitle = stringResource(
+                        R.string.nearby_games_at_venue_format,
+                        atStadium.game.home.venue.name,
+                    ),
                 )
             }
             item {
@@ -140,8 +138,7 @@ internal fun TodayGamesSection(
     }
 }
 
-private fun leagueLabelFor(leagueId: LeagueId): String =
-    LeagueCatalog.firstOrNull { it.id == leagueId.name }?.displayName ?: leagueId.name
+private fun leagueLabelFor(leagueId: LeagueId): String = LeagueCatalog.firstOrNull { it.id == leagueId.name }?.displayName ?: leagueId.name
 
 @Composable
 private fun TodayGamesHeader(modifier: Modifier = Modifier) {
@@ -149,11 +146,10 @@ private fun TodayGamesHeader(modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
         text = stringResource(R.string.today_games_header),
-        style =
-            MaterialTheme.typography.labelLarge.copy(
-                fontWeight = FontWeight.Bold,
-                lineHeightStyle = SingleLineHeightStyle,
-            ),
+        style = MaterialTheme.typography.labelLarge.copy(
+            fontWeight = FontWeight.Bold,
+            lineHeightStyle = SingleLineHeightStyle,
+        ),
         color = colors.onSurfaceVariant,
     )
 }
@@ -171,10 +167,9 @@ private fun EnableLocationPill(
         color = colors.secondary,
     ) {
         Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 14.dp, vertical = 12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -185,12 +180,11 @@ private fun EnableLocationPill(
             )
             Text(
                 text = stringResource(R.string.enable_location_for_nearby_games),
-                style =
-                    MaterialTheme.typography.labelLarge.copy(
-                        fontWeight = FontWeight.Normal,
-                        letterSpacing = 1.sp,
-                        lineHeightStyle = SingleLineHeightStyle,
-                    ),
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontWeight = FontWeight.Normal,
+                    letterSpacing = 1.sp,
+                    lineHeightStyle = SingleLineHeightStyle,
+                ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -223,20 +217,18 @@ private fun NearbyGamesSectionHeader(
                 )
                 Text(
                     text = label.uppercase(Locale.ROOT),
-                    style =
-                        MaterialTheme.typography.labelLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            lineHeightStyle = SingleLineHeightStyle,
-                        ),
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        lineHeightStyle = SingleLineHeightStyle,
+                    ),
                 )
             }
             if (subtitle != null) {
                 Text(
                     text = subtitle,
-                    style =
-                        MaterialTheme.typography.bodySmall.copy(
-                            lineHeightStyle = SingleLineHeightStyle,
-                        ),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        lineHeightStyle = SingleLineHeightStyle,
+                    ),
                 )
             }
         }
@@ -258,11 +250,10 @@ private fun TodayGameCard(
         color = colors.surfaceContainerHigh,
     ) {
         Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .clickable(onClick = onClick)
-                    .padding(horizontal = 14.dp, vertical = 12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+                .padding(horizontal = 14.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -328,41 +319,38 @@ private fun TodayGameCard(
 @PreviewLightDark
 @Composable
 private fun TodayGamesSectionPreview() {
-    val sampleGames =
-        listOf(
-            LeagueGames(
-                leagueId = LeagueId.NBA,
-                games =
-                    listOf(
-                        TodayGame(
-                            eventId = "1",
-                            away = NbaTeamRefs.BOS,
-                            home = NbaTeamRefs.LAL,
-                        ),
-                        TodayGame(
-                            eventId = "2",
-                            away = NbaTeamRefs.GS,
-                            home = NbaTeamRefs.MIA,
-                        ),
-                    ),
+    val sampleGames = listOf(
+        LeagueGames(
+            leagueId = LeagueId.NBA,
+            games = listOf(
+                TodayGame(
+                    eventId = "1",
+                    away = NbaTeamRefs.BOS,
+                    home = NbaTeamRefs.LAL,
+                ),
+                TodayGame(
+                    eventId = "2",
+                    away = NbaTeamRefs.GS,
+                    home = NbaTeamRefs.MIA,
+                ),
             ),
-            LeagueGames(
-                leagueId = LeagueId.NHL,
-                games =
-                    listOf(
-                        TodayGame(
-                            eventId = "3",
-                            away = NhlTeamRefs.BOS,
-                            home = NhlTeamRefs.COL,
-                        ),
-                        TodayGame(
-                            eventId = "4",
-                            away = NhlTeamRefs.WPG,
-                            home = NhlTeamRefs.MIN,
-                        ),
-                    ),
+        ),
+        LeagueGames(
+            leagueId = LeagueId.NHL,
+            games = listOf(
+                TodayGame(
+                    eventId = "3",
+                    away = NhlTeamRefs.BOS,
+                    home = NhlTeamRefs.COL,
+                ),
+                TodayGame(
+                    eventId = "4",
+                    away = NhlTeamRefs.WPG,
+                    home = NhlTeamRefs.MIN,
+                ),
             ),
-        )
+        ),
+    )
     PlayerNumberTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             TodayGamesSection(
@@ -380,67 +368,61 @@ private fun TodayGamesSectionPreview() {
 @PreviewLightDark
 @Composable
 private fun TodayGamesSectionNearbyGamesPreview() {
-    val sampleGames =
-        listOf(
-            LeagueGames(
-                leagueId = LeagueId.NBA,
-                games =
-                    listOf(
-                        TodayGame(
-                            eventId = "1",
-                            away = NbaTeamRefs.BOS,
-                            home = NbaTeamRefs.LAL,
-                        ),
-                        TodayGame(
-                            eventId = "2",
-                            away = NbaTeamRefs.GS,
-                            home = NbaTeamRefs.LAC,
-                        ),
-                    ),
+    val sampleGames = listOf(
+        LeagueGames(
+            leagueId = LeagueId.NBA,
+            games = listOf(
+                TodayGame(
+                    eventId = "1",
+                    away = NbaTeamRefs.BOS,
+                    home = NbaTeamRefs.LAL,
+                ),
+                TodayGame(
+                    eventId = "2",
+                    away = NbaTeamRefs.GS,
+                    home = NbaTeamRefs.LAC,
+                ),
             ),
-            LeagueGames(
-                leagueId = LeagueId.NHL,
-                games =
-                    listOf(
-                        TodayGame(
-                            eventId = "3",
-                            away = NhlTeamRefs.BOS,
-                            home = NhlTeamRefs.WPG,
-                        ),
-                    ),
+        ),
+        LeagueGames(
+            leagueId = LeagueId.NHL,
+            games = listOf(
+                TodayGame(
+                    eventId = "3",
+                    away = NhlTeamRefs.BOS,
+                    home = NhlTeamRefs.WPG,
+                ),
             ),
-        )
+        ),
+    )
     val nbaGames = sampleGames.first().games
     val nhlGames = sampleGames[1].games
     val atStadiumGame = nhlGames.first()
     val closestGame = nbaGames[1]
-    val atStadium =
+    val atStadium = HighlightedGame(
+        game = atStadiumGame,
+        distanceMeters = 120.0,
+    )
+    val closest = listOf(
         HighlightedGame(
-            game = atStadiumGame,
-            distanceMeters = 120.0,
-        )
-    val closest =
-        listOf(
-            HighlightedGame(
-                game = closestGame,
-                distanceMeters = 480.0,
-            ),
-            HighlightedGame(
-                game = nbaGames.first(),
-                distanceMeters = 920.0,
-            ),
-        )
+            game = closestGame,
+            distanceMeters = 480.0,
+        ),
+        HighlightedGame(
+            game = nbaGames.first(),
+            distanceMeters = 920.0,
+        ),
+    )
     PlayerNumberTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             TodayGamesSection(
                 state = TodayGamesUiState.Loaded(LocalDate.now(), sampleGames),
                 modifier = Modifier.padding(20.dp),
                 onGameSelect = {},
-                nearbyGames =
-                    NearbyGames(
-                        atStadium = atStadium,
-                        closest = closest,
-                    ),
+                nearbyGames = NearbyGames(
+                    atStadium = atStadium,
+                    closest = closest,
+                ),
                 locationPermissionGranted = true,
                 onRequestLocationPermission = {},
             )
@@ -449,32 +431,29 @@ private fun TodayGamesSectionNearbyGamesPreview() {
 }
 
 @Composable
-private fun atStadiumLabel(leagueId: LeagueId): Int =
-    when (leagueId) {
-        LeagueId.NBA,
-        LeagueId.NHL,
-        -> R.string.nearby_games_at_arena_label
-        LeagueId.MLB -> R.string.nearby_games_at_ballpark_label
-        else -> R.string.nearby_games_at_stadium_label
-    }
+private fun atStadiumLabel(leagueId: LeagueId): Int = when (leagueId) {
+    LeagueId.NBA,
+    LeagueId.NHL,
+    -> R.string.nearby_games_at_arena_label
+    LeagueId.MLB -> R.string.nearby_games_at_ballpark_label
+    else -> R.string.nearby_games_at_stadium_label
+}
 
 @PreviewLightDark
 @Composable
 private fun TodayGamesSectionLocationPillPreview() {
-    val sampleGames =
-        listOf(
-            LeagueGames(
-                leagueId = LeagueId.NBA,
-                games =
-                    listOf(
-                        TodayGame(
-                            eventId = "1",
-                            away = NbaTeamRefs.BOS,
-                            home = NbaTeamRefs.LAL,
-                        ),
-                    ),
+    val sampleGames = listOf(
+        LeagueGames(
+            leagueId = LeagueId.NBA,
+            games = listOf(
+                TodayGame(
+                    eventId = "1",
+                    away = NbaTeamRefs.BOS,
+                    home = NbaTeamRefs.LAL,
+                ),
             ),
-        )
+        ),
+    )
     PlayerNumberTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             TodayGamesSection(

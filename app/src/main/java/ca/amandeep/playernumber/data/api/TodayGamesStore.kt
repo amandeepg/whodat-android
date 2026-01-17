@@ -27,58 +27,53 @@ internal object TodayGamesStore {
         synchronized(lock) {
             val current = deferred
             if (current != null && !current.isCancelled) return
-            deferred =
-                scope.async(dispatcher) {
-                    delay(delayMs)
-                    repository.fetchTodayGames()
-                }
+            deferred = scope.async(dispatcher) {
+                delay(delayMs)
+                repository.fetchTodayGames()
+            }
         }
     }
 
     suspend fun await(
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
         force: Boolean = false,
-    ): TodayGamesResult =
-        coroutineScope {
-            val current =
-                synchronized(lock) {
-                    val existing = deferred
-                    if (!force && existing != null && !existing.isCancelled) {
-                        existing
-                    } else {
-                        val created = async(dispatcher) { repository.fetchTodayGames() }
-                        deferred = created
-                        created
-                    }
-                }
-            val result = current.await()
-            val today = LocalDate.now()
-            return@coroutineScope if (result.date != today) {
-                synchronized(lock) {
-                    if (deferred === current) {
-                        deferred = null
-                    }
-                }
-                await(dispatcher, force = true)
+    ): TodayGamesResult = coroutineScope {
+        val current = synchronized(lock) {
+            val existing = deferred
+            if (!force && existing != null && !existing.isCancelled) {
+                existing
             } else {
-                result
+                val created = async(dispatcher) { repository.fetchTodayGames() }
+                deferred = created
+                created
             }
         }
+        val result = current.await()
+        val today = LocalDate.now()
+        return@coroutineScope if (result.date != today) {
+            synchronized(lock) {
+                if (deferred === current) {
+                    deferred = null
+                }
+            }
+            await(dispatcher, force = true)
+        } else {
+            result
+        }
+    }
 
     private fun createRepository(): EspnTodayGamesRepository {
-        val moshi =
-            Moshi
-                .Builder()
-                .add(KotlinJsonAdapterFactory())
-                .build()
+        val moshi = Moshi
+            .Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
         val okHttpClient = OkHttpClient.Builder().build()
-        val retrofit =
-            Retrofit
-                .Builder()
-                .baseUrl("https://site.api.espn.com/")
-                .client(okHttpClient)
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .build()
+        val retrofit = Retrofit
+            .Builder()
+            .baseUrl("https://site.api.espn.com/")
+            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
 
         val service = retrofit.create(EspnScoreboardService::class.java)
         return EspnTodayGamesRepository(

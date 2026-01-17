@@ -77,15 +77,14 @@ internal fun rememberNumberEntryDiameter(
     val textMeasurer = rememberTextMeasurer()
 
     // Measure a fixed sample string instead of the actual value
-    val sampleLayout =
-        remember(textMeasurer, density, textStyle) {
-            textMeasurer.measure(
-                text = AnnotatedString("99"),
-                style = textStyle,
-                maxLines = 1,
-                softWrap = false,
-            )
-        }
+    val sampleLayout = remember(textMeasurer, density, textStyle) {
+        textMeasurer.measure(
+            text = AnnotatedString("99"),
+            style = textStyle,
+            maxLines = 1,
+            softWrap = false,
+        )
+    }
 
     val sampleW = with(density) { sampleLayout.size.width.toDp() }
     val sampleH = with(density) { sampleLayout.size.height.toDp() }
@@ -99,12 +98,11 @@ internal fun rememberNumberEntryDiameter(
     textStyle: TextStyle,
     heightBucket: SizeBucket,
 ): Dp {
-    val innerPadding =
-        when (heightBucket) {
-            SizeBucket.Small -> 10.dp
-            SizeBucket.Medium -> 14.dp
-            SizeBucket.Large -> 20.dp
-        }
+    val innerPadding = when (heightBucket) {
+        SizeBucket.Small -> 10.dp
+        SizeBucket.Medium -> 14.dp
+        SizeBucket.Large -> 20.dp
+    }
     return rememberNumberEntryDiameter(textStyle = textStyle, innerPadding = innerPadding)
 }
 
@@ -122,14 +120,13 @@ internal fun NumberEntryCircle(
     val keyboardController = LocalSoftwareKeyboardController.current
     val contentDescription = stringResource(R.string.enter_jersey_number)
     val dialBackground = MaterialTheme.colorScheme.surfaceContainerHighest
-    val shape =
-        remember(heightBucket) {
-            if (heightBucket == SizeBucket.Small) {
-                NumberEntrySquircleShape
-            } else {
-                CircleShape
-            }
+    val shape = remember(heightBucket) {
+        if (heightBucket == SizeBucket.Small) {
+            NumberEntrySquircleShape
+        } else {
+            CircleShape
         }
+    }
 
     Box(
         modifier = modifier,
@@ -148,26 +145,23 @@ internal fun NumberEntryCircle(
             value = value,
             onValueChange = onValueChange,
             singleLine = true,
-            keyboardOptions =
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done,
-                ),
-            keyboardActions =
-                KeyboardActions(
-                    onDone = {
-                        keyboardController?.hide()
-                        focusManager.clearFocus()
-                    },
-                ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done,
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                },
+            ),
             textStyle = textStyle,
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-            modifier =
-                Modifier
-                    .widthIn(max = diameter + 5.dp)
-                    .heightIn(max = diameter + 5.dp)
-                    .semantics { this.contentDescription = contentDescription }
-                    .then(focusRequester?.let { Modifier.focusRequester(it) } ?: Modifier),
+            modifier = Modifier
+                .widthIn(max = diameter + 5.dp)
+                .heightIn(max = diameter + 5.dp)
+                .semantics { this.contentDescription = contentDescription }
+                .then(focusRequester?.let { Modifier.focusRequester(it) } ?: Modifier),
         )
     }
 }
@@ -196,12 +190,11 @@ private fun NumberSelectorPreview(
 }
 
 private class SizeBucketPreviewProvider : PreviewParameterProvider<SizeBucket> {
-    private val previewValues =
-        listOf(
-            SizeBucket.Small,
-            SizeBucket.Medium,
-            SizeBucket.Large,
-        )
+    private val previewValues = listOf(
+        SizeBucket.Small,
+        SizeBucket.Medium,
+        SizeBucket.Large,
+    )
 
     override val values: Sequence<SizeBucket> = previewValues.asSequence()
 

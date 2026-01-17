@@ -44,22 +44,20 @@ internal fun FloatingAssistBubble(
     val basePx = with(density) { baseOffset.toPx() }
     val hintHeightPxState = remember { mutableIntStateOf(0) }
     val hintHeightPx = hintHeightPxState.intValue
-    val translationY =
-        if (arrowDirection == AssistBubbleDirection.Down) {
-            if (hintHeightPx == 0) basePx else basePx - hintHeightPx
-        } else {
-            basePx
-        }
+    val translationY = if (arrowDirection == AssistBubbleDirection.Down) {
+        if (hintHeightPx == 0) basePx else basePx - hintHeightPx
+    } else {
+        basePx
+    }
     val lineColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
     val textColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f)
     val textStyle = MaterialTheme.typography.bodyLarge.copy(lineHeightStyle = SingleLineHeightStyle)
 
     Column(
-        modifier =
-            modifier
-                .onSizeChanged { hintHeightPxState.intValue = it.height }
-                .graphicsLayer { this.translationY = translationY }
-                .clickable(onClick = onClick),
+        modifier = modifier
+            .onSizeChanged { hintHeightPxState.intValue = it.height }
+            .graphicsLayer { this.translationY = translationY }
+            .clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if (arrowDirection == AssistBubbleDirection.Up) {
@@ -101,47 +99,41 @@ private fun AssistHintLine(
         val direction = if (arrowDirection == AssistBubbleDirection.Down) 1f else -1f
         val curveOffset = size.width * 0.26f
         val curveHeight = size.height * 0.32f
-        val control1 =
-            Offset(
-                x = anchorX + curveOffset,
-                y = startY + direction * curveHeight,
+        val control1 = Offset(
+            x = anchorX + curveOffset,
+            y = startY + direction * curveHeight,
+        )
+        val control2 = Offset(
+            x = anchorX + curveOffset,
+            y = endY - direction * curveHeight,
+        )
+        val path = Path().apply {
+            moveTo(anchorX, startY)
+            cubicTo(
+                control1.x,
+                control1.y,
+                control2.x,
+                control2.y,
+                anchorX,
+                endY,
             )
-        val control2 =
-            Offset(
-                x = anchorX + curveOffset,
-                y = endY - direction * curveHeight,
-            )
-        val path =
-            Path().apply {
-                moveTo(anchorX, startY)
-                cubicTo(
-                    control1.x,
-                    control1.y,
-                    control2.x,
-                    control2.y,
-                    anchorX,
-                    endY,
-                )
-            }
+        }
         val chalkStroke = Stroke(width = strokeWidth, cap = StrokeCap.Round, join = StrokeJoin.Round)
-        val edgeStroke =
-            Stroke(
-                width = strokeWidth * 1.4f,
-                cap = StrokeCap.Round,
-                join = StrokeJoin.Round,
-            )
-        val dustEffect =
-            PathEffect.dashPathEffect(
-                intervals = floatArrayOf(strokeWidth * 2.2f, strokeWidth * 1.6f),
-                phase = strokeWidth * 0.6f,
-            )
-        val dustStroke =
-            Stroke(
-                width = strokeWidth * 0.9f,
-                cap = StrokeCap.Round,
-                join = StrokeJoin.Round,
-                pathEffect = dustEffect,
-            )
+        val edgeStroke = Stroke(
+            width = strokeWidth * 1.4f,
+            cap = StrokeCap.Round,
+            join = StrokeJoin.Round,
+        )
+        val dustEffect = PathEffect.dashPathEffect(
+            intervals = floatArrayOf(strokeWidth * 2.2f, strokeWidth * 1.6f),
+            phase = strokeWidth * 0.6f,
+        )
+        val dustStroke = Stroke(
+            width = strokeWidth * 0.9f,
+            cap = StrokeCap.Round,
+            join = StrokeJoin.Round,
+            pathEffect = dustEffect,
+        )
 
         fun drawChalkPath(path: Path) {
             drawPath(
@@ -172,11 +164,10 @@ private fun AssistHintLine(
             start: Offset,
             end: Offset,
         ) {
-            val linePath =
-                Path().apply {
-                    moveTo(start.x, start.y)
-                    lineTo(end.x, end.y)
-                }
+            val linePath = Path().apply {
+                moveTo(start.x, start.y)
+                lineTo(end.x, end.y)
+            }
             drawChalkPath(linePath)
         }
         drawChalkPath(path)

@@ -98,11 +98,10 @@ internal fun LeagueSectionHeader(
         )
         Text(
             text = leagueLabel,
-            style =
-                MaterialTheme.typography.labelLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    lineHeightStyle = SingleLineHeightStyle,
-                ),
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontWeight = FontWeight.Bold,
+                lineHeightStyle = SingleLineHeightStyle,
+            ),
         )
     }
 }
@@ -171,11 +170,10 @@ private fun TeamResultRow(
         color = colors.surfaceContainerHigh,
     ) {
         Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .clickable { onTeamSelect(team) }
-                    .padding(horizontal = 14.dp, vertical = 12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onTeamSelect(team) }
+                .padding(horizontal = 14.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -221,10 +219,9 @@ private fun highlightMatch(
 private fun TeamSearchResultsPreview() {
     val query = "New"
     val searchEngine = remember { TeamSearchEngine() }
-    val groupedMatches =
-        remember(searchEngine, query) {
-            searchEngine.search(query, "")
-        }
+    val groupedMatches = remember(searchEngine, query) {
+        searchEngine.search(query, "")
+    }
     PlayerNumberTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             TeamSearchResults(

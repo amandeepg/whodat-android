@@ -86,8 +86,7 @@ private fun PlayerNumberScreenContent(
             val rootBounds = rootBoundsState.value
             val bodyBounds = bodyBoundsState.value
             val layout = layoutState.value
-            val teamTargetReady =
-                pillBoundsInWindow.value != null || chevronCenterInWindow.value != null
+            val teamTargetReady = pillBoundsInWindow.value != null || chevronCenterInWindow.value != null
             rootBounds != null && bodyBounds != null && layout != null && teamTargetReady
         }
     }
@@ -103,11 +102,10 @@ private fun PlayerNumberScreenContent(
         modifier = modifier
             .fillMaxSize()
             .onGloballyPositioned { coordinates ->
-                rootBoundsState.value =
-                    LayoutBounds(
-                        topLeft = coordinates.positionInWindow(),
-                        size = coordinates.size,
-                    )
+                rootBoundsState.value = LayoutBounds(
+                    topLeft = coordinates.positionInWindow(),
+                    size = coordinates.size,
+                )
             },
     ) {
         Scaffold(
@@ -201,15 +199,14 @@ private fun PlayerNumberBody(
     modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints(
-        modifier =
-            modifier.onGloballyPositioned { coordinates ->
-                onBodyBoundsChange(
-                    LayoutBounds(
-                        topLeft = coordinates.positionInWindow(),
-                        size = coordinates.size,
-                    ),
-                )
-            },
+        modifier = modifier.onGloballyPositioned { coordinates ->
+            onBodyBoundsChange(
+                LayoutBounds(
+                    topLeft = coordinates.positionInWindow(),
+                    size = coordinates.size,
+                ),
+            )
+        },
     ) {
         val layout = rememberPlayerNumberLayout(maxWidth = maxWidth, maxHeight = maxHeight)
         SideEffect { onLayoutChange(layout) }
@@ -310,11 +307,10 @@ private fun rememberPlayerNumberLayout(
     val widthBucket = resolveWidthBucket(maxWidth, maxHeight, WidthBreakpoints)
     val chipSpacing = heightBucket.chipSpacing
     val numberEntryTextStyle = rememberNumberEntryTextStyle()
-    val numberEntryDiameter =
-        rememberNumberEntryDiameter(
-            textStyle = numberEntryTextStyle,
-            heightBucket = heightBucket,
-        )
+    val numberEntryDiameter = rememberNumberEntryDiameter(
+        textStyle = numberEntryTextStyle,
+        heightBucket = heightBucket,
+    )
     val awayPaddingBottom = numberEntryDiameter / 2
     val helperArrowOffset = numberEntryDiameter / 2 + HelperChipSpacing / 2 - 8.dp
     val helperArrowOffsetFromTop = maxHeight / 2f - helperArrowOffset
@@ -387,72 +383,66 @@ private fun rememberAssistHintTargets(
         val teamNudgeX = with(density) { TeamArrowNudgeX.toPx() }
         val teamNudgeY = with(density) { TeamArrowNudgeY.toPx() }
 
-        val teamTarget =
-            if (pillBoundsInWindow != null) {
-                val cornerOffset = visualGapPx / sqrt(2f)
-                Offset(
-                    x = pillBoundsInWindow.right + cornerOffset + teamNudgeX,
-                    y = pillBoundsInWindow.bottom + cornerOffset - teamNudgeY,
-                )
-            } else if (chevronCenterInWindow != null) {
-                Offset(
-                    x = chevronCenterInWindow.x + teamNudgeX,
-                    y = chevronCenterInWindow.y + visualGapPx - teamNudgeY,
-                )
-            } else {
-                null
-            }
-        val teamAnchorFraction =
-            if (teamTarget != null && rootBounds != null) {
-                targetAnchor(teamTarget.x)
-            } else {
-                DEFAULT_TEAM_HINT_ANCHOR_FRACTION
-            }
-        val teamBaseOffset =
-            if (teamTarget != null && rootBounds != null) {
-                with(density) { (teamTarget.y - rootTop).toDp() }
-            } else {
-                DefaultTeamSelectorAssistOffset
-            }
+        val teamTarget = if (pillBoundsInWindow != null) {
+            val cornerOffset = visualGapPx / sqrt(2f)
+            Offset(
+                x = pillBoundsInWindow.right + cornerOffset + teamNudgeX,
+                y = pillBoundsInWindow.bottom + cornerOffset - teamNudgeY,
+            )
+        } else if (chevronCenterInWindow != null) {
+            Offset(
+                x = chevronCenterInWindow.x + teamNudgeX,
+                y = chevronCenterInWindow.y + visualGapPx - teamNudgeY,
+            )
+        } else {
+            null
+        }
+        val teamAnchorFraction = if (teamTarget != null && rootBounds != null) {
+            targetAnchor(teamTarget.x)
+        } else {
+            DEFAULT_TEAM_HINT_ANCHOR_FRACTION
+        }
+        val teamBaseOffset = if (teamTarget != null && rootBounds != null) {
+            with(density) { (teamTarget.y - rootTop).toDp() }
+        } else {
+            DefaultTeamSelectorAssistOffset
+        }
 
-        val jerseyTarget =
-            if (layout != null && bodyBounds != null && rootBounds != null) {
-                val centerX = bodyBounds.topLeft.x + bodyBounds.size.width / 2f
-                val centerY = bodyBounds.topLeft.y + bodyBounds.size.height / 2f
-                val radiusPx = with(density) { layout.numberEntryDiameter.toPx() / 2f }
-                val offset = (radiusPx + bottomVisualGapPx) / sqrt(2f)
-                Offset(centerX + offset, centerY - offset)
-            } else {
-                null
-            }
-        val jerseyAnchorFraction =
-            if (jerseyTarget != null && rootBounds != null) {
-                targetAnchor(jerseyTarget.x)
-            } else {
-                DEFAULT_JERSEY_HINT_ANCHOR_FRACTION
-            }
-        val jerseyBaseOffset =
-            when {
-                jerseyTarget != null && rootBounds != null -> {
-                    with(density) {
-                        (jerseyTarget.y - rootTop).toDp()
-                    }
-                }
-
-                layout != null && bodyBounds != null && rootBounds != null -> {
-                    with(density) {
-                        (bodyBounds.topLeft.y - rootTop + layout.helperArrowOffsetFromTop.toPx()).toDp()
-                    }
-                }
-
-                layout != null -> {
-                    layout.helperArrowOffsetFromTop
-                }
-
-                else -> {
-                    DefaultJerseyAssistOffset
+        val jerseyTarget = if (layout != null && bodyBounds != null && rootBounds != null) {
+            val centerX = bodyBounds.topLeft.x + bodyBounds.size.width / 2f
+            val centerY = bodyBounds.topLeft.y + bodyBounds.size.height / 2f
+            val radiusPx = with(density) { layout.numberEntryDiameter.toPx() / 2f }
+            val offset = (radiusPx + bottomVisualGapPx) / sqrt(2f)
+            Offset(centerX + offset, centerY - offset)
+        } else {
+            null
+        }
+        val jerseyAnchorFraction = if (jerseyTarget != null && rootBounds != null) {
+            targetAnchor(jerseyTarget.x)
+        } else {
+            DEFAULT_JERSEY_HINT_ANCHOR_FRACTION
+        }
+        val jerseyBaseOffset = when {
+            jerseyTarget != null && rootBounds != null -> {
+                with(density) {
+                    (jerseyTarget.y - rootTop).toDp()
                 }
             }
+
+            layout != null && bodyBounds != null && rootBounds != null -> {
+                with(density) {
+                    (bodyBounds.topLeft.y - rootTop + layout.helperArrowOffsetFromTop.toPx()).toDp()
+                }
+            }
+
+            layout != null -> {
+                layout.helperArrowOffsetFromTop
+            }
+
+            else -> {
+                DefaultJerseyAssistOffset
+            }
+        }
 
         AssistHintTargets(
             jerseyBaseOffset = jerseyBaseOffset,
@@ -472,12 +462,11 @@ private val TeamArrowNudgeX = 4.dp
 private val TeamArrowNudgeY = 2.dp
 private val HelperChipSpacing = 70.dp
 private val SizeBucket.chipSpacing: Dp
-    get() =
-        when (this) {
-            SizeBucket.Small -> 2.dp
-            SizeBucket.Medium -> 5.dp
-            SizeBucket.Large -> 12.dp
-        }
+    get() = when (this) {
+        SizeBucket.Small -> 2.dp
+        SizeBucket.Medium -> 5.dp
+        SizeBucket.Large -> 12.dp
+    }
 
 private data class PlayerNumberActions(
     val onJerseyInputChange: (String) -> Unit,
@@ -488,13 +477,12 @@ private data class PlayerNumberActions(
 private fun rememberPlayerNumberActions(
     onJerseyInputChange: (String) -> Unit,
     onTeamSelectorClick: () -> Unit,
-): PlayerNumberActions =
-    remember(onJerseyInputChange, onTeamSelectorClick) {
-        PlayerNumberActions(
-            onJerseyInputChange = onJerseyInputChange,
-            onTeamSelectorClick = onTeamSelectorClick,
-        )
-    }
+): PlayerNumberActions = remember(onJerseyInputChange, onTeamSelectorClick) {
+    PlayerNumberActions(
+        onJerseyInputChange = onJerseyInputChange,
+        onTeamSelectorClick = onTeamSelectorClick,
+    )
+}
 
 @PreviewLightDark
 @Preview(name = "Small", widthDp = 320, heightDp = HEIGHT_MEDIUM_LOWER_BOUND - 50)
@@ -527,20 +515,19 @@ private fun PlayerNumberSizedPreview() {
 @Composable
 private fun PlayerNumberEmptyPreview() {
     PlayerNumberTheme {
-        val state =
-            PlayerNumberUiState(
-                jerseyNumber = "",
-                away = TeamRosterUiState(
-                    team = PreviewAwayTeam,
-                    player = null,
-                    rosterStatus = PreviewRosterStatus,
-                ),
-                home = TeamRosterUiState(
-                    team = PreviewHomeTeam,
-                    player = null,
-                    rosterStatus = PreviewRosterStatus,
-                ),
-            )
+        val state = PlayerNumberUiState(
+            jerseyNumber = "",
+            away = TeamRosterUiState(
+                team = PreviewAwayTeam,
+                player = null,
+                rosterStatus = PreviewRosterStatus,
+            ),
+            home = TeamRosterUiState(
+                team = PreviewHomeTeam,
+                player = null,
+                rosterStatus = PreviewRosterStatus,
+            ),
+        )
         PlayerNumberPreview(state)
     }
 }
@@ -550,17 +537,15 @@ private const val PREVIEW_JERSEY_NUMBER = "27"
 private val PreviewAwayTeam = MlbTeamRefs.TOR
 private val PreviewHomeTeam = MlbTeamRefs.LAA
 
-private val PreviewRosterStatus =
-    RosterStatus(
-        source = RosterSource.STATIC,
-        lastUpdatedMillis = null,
-    )
+private val PreviewRosterStatus = RosterStatus(
+    source = RosterSource.STATIC,
+    lastUpdatedMillis = null,
+)
 
-private val PreviewPlayerNumberActions =
-    PlayerNumberActions(
-        onJerseyInputChange = {},
-        onTeamSelectorClick = {},
-    )
+private val PreviewPlayerNumberActions = PlayerNumberActions(
+    onJerseyInputChange = {},
+    onTeamSelectorClick = {},
+)
 
 @Composable
 private fun PlayerNumberPreview(state: PlayerNumberUiState) {

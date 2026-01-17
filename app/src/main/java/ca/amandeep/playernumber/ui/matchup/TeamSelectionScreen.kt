@@ -161,22 +161,20 @@ internal class TeamSelectionViewModel(
         val isHomeActive: Boolean
             get() = activeSlot == TeamSlot.Home
         val activeQuery: String
-            get() =
-                when (activeSlot) {
-                    TeamSlot.Away -> awayQuery
-                    TeamSlot.Home -> homeQuery
-                    null -> ""
-                }
+            get() = when (activeSlot) {
+                TeamSlot.Away -> awayQuery
+                TeamSlot.Home -> homeQuery
+                null -> ""
+            }
 
         fun activeSelectedName(
             awayTeam: AnyTeam,
             homeTeam: AnyTeam,
-        ): String =
-            when (activeSlot) {
-                TeamSlot.Away -> if (awayCleared || awayQuery.isNotBlank()) "" else awayTeam.name
-                TeamSlot.Home -> if (homeCleared || homeQuery.isNotBlank()) "" else homeTeam.name
-                null -> ""
-            }
+        ): String = when (activeSlot) {
+            TeamSlot.Away -> if (awayCleared || awayQuery.isNotBlank()) "" else awayTeam.name
+            TeamSlot.Home -> if (homeCleared || homeQuery.isNotBlank()) "" else homeTeam.name
+            null -> ""
+        }
     }
 
     internal sealed interface Intent {
@@ -291,22 +289,20 @@ internal class TeamSelectionViewModel(
     private fun refreshLocation() {
         if (locationJob?.isActive == true) return
         locationJob?.cancel()
-        locationJob =
-            viewModelScope.launch {
-                locationRepository.locationFlow().collect { result ->
-                    updateLocationResult(result)
-                }
+        locationJob = viewModelScope.launch {
+            locationRepository.locationFlow().collect { result ->
+                updateLocationResult(result)
             }
+        }
     }
 
     private fun updateLocationResult(result: LocationFetchResult) {
         val todayGamesState = _uiState.value.todayGamesState
-        val nearbyGames =
-            if (todayGamesState is TodayGamesUiState.Loaded && result is LocationFetchResult.Available) {
-                computeNearbyGames(todayGamesState.leagues, result.location)
-            } else {
-                null
-            }
+        val nearbyGames = if (todayGamesState is TodayGamesUiState.Loaded && result is LocationFetchResult.Available) {
+            computeNearbyGames(todayGamesState.leagues, result.location)
+        } else {
+            null
+        }
         _uiState.update {
             it.copy(
                 locationFetchResult = result,
@@ -333,52 +329,48 @@ internal class TeamSelectionViewModel(
         }
         val selectedName = state.activeSelectedName(away, home)
         searchJob?.cancel()
-        searchJob =
-            viewModelScope.launch {
-                val results = runSearch(query, selectedName)
-                _uiState.update { it.copy(groupedMatches = results) }
-            }
+        searchJob = viewModelScope.launch {
+            val results = runSearch(query, selectedName)
+            _uiState.update { it.copy(groupedMatches = results) }
+        }
     }
 
     private fun refreshTodayGames() {
         if (todayGamesJob?.isActive == true) return
         todayGamesJob?.cancel()
         updateTodayGamesState(TodayGamesUiState.Loading)
-        todayGamesJob =
-            viewModelScope.launch {
-                try {
-                    val result = TodayGamesStore.await(ioDispatcher)
-                    updateTodayGamesState(result.toUiState())
-                } catch (cancelled: CancellationException) {
-                    throw cancelled
-                } catch (error: Exception) {
-                    Log.e(LOG_TAG, "Failed to load today's games", error)
-                    updateTodayGamesState(TodayGamesUiState.Error())
-                }
+        todayGamesJob = viewModelScope.launch {
+            try {
+                val result = TodayGamesStore.await(ioDispatcher)
+                updateTodayGamesState(result.toUiState())
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (error: Exception) {
+                Log.e(LOG_TAG, "Failed to load today's games", error)
+                updateTodayGamesState(TodayGamesUiState.Error())
             }
+        }
     }
 
     private suspend fun runSearch(
         query: String,
         selectedName: String,
-    ): List<TeamSearchEngine.LeagueMatches> =
-        withContext(searchDispatcher) {
-            TeamSearchEngineStore.await(searchDispatcher).search(query, selectedName)
-        }
+    ): List<TeamSearchEngine.LeagueMatches> = withContext(searchDispatcher) {
+        TeamSearchEngineStore.await(searchDispatcher).search(query, selectedName)
+    }
 
     private fun updateTodayGamesState(state: TodayGamesUiState) {
         _uiState.update { current ->
-            val nearbyGames =
-                if (state is TodayGamesUiState.Loaded) {
-                    val location = (current.locationFetchResult as? LocationFetchResult.Available)?.location
-                    if (location != null) {
-                        computeNearbyGames(state.leagues, location)
-                    } else {
-                        null
-                    }
+            val nearbyGames = if (state is TodayGamesUiState.Loaded) {
+                val location = (current.locationFetchResult as? LocationFetchResult.Available)?.location
+                if (location != null) {
+                    computeNearbyGames(state.leagues, location)
                 } else {
                     null
                 }
+            } else {
+                null
+            }
             current.copy(
                 todayGamesState = state,
                 nearbyGames = nearbyGames,
@@ -417,11 +409,10 @@ internal class TeamSelectionViewModel(
     }
 }
 
-private fun TodayGamesResult.toUiState(): TodayGamesUiState =
-    TodayGamesUiState.Loaded(
-        date = date,
-        leagues = leagues,
-    )
+private fun TodayGamesResult.toUiState(): TodayGamesUiState = TodayGamesUiState.Loaded(
+    date = date,
+    leagues = leagues,
+)
 
 private class TeamSelectionViewModelFactory(
     private val appContext: Context,
@@ -441,9 +432,8 @@ private class TeamSelectionViewModelFactory(
 @Composable
 private fun rememberTeamSelectionViewModel(): TeamSelectionViewModel {
     val context = LocalContext.current
-    val storeOwner =
-        context as? ViewModelStoreOwner
-            ?: error("ViewModelStoreOwner not found for TeamSelectionScreen")
+    val storeOwner = context as? ViewModelStoreOwner
+        ?: error("ViewModelStoreOwner not found for TeamSelectionScreen")
     val appContext = remember(context) { context.applicationContext }
     val factory = remember(appContext) { TeamSelectionViewModelFactory(appContext) }
     return remember(storeOwner, factory) {
@@ -457,32 +447,31 @@ private fun rememberTeamSelectionActions(
     state: TeamSelectionViewModel.State,
     onAwayTeamSelect: (AnyTeam) -> Unit,
     onHomeTeamSelect: (AnyTeam) -> Unit,
-): TeamSelectionActions =
-    remember(
-        viewModel,
-        state.activeSlot,
-        onAwayTeamSelect,
-        onHomeTeamSelect,
-    ) {
-        TeamSelectionActions(
-            dispatch = viewModel::dispatch,
-            onTeamSelect = { team ->
-                val slot = state.activeSlot
-                if (slot != null) {
-                    viewModel.dispatch(TeamSelectionViewModel.Intent.FinishSelection(slot))
-                    when (slot) {
-                        TeamSlot.Away -> onAwayTeamSelect(team)
-                        TeamSlot.Home -> onHomeTeamSelect(team)
-                    }
+): TeamSelectionActions = remember(
+    viewModel,
+    state.activeSlot,
+    onAwayTeamSelect,
+    onHomeTeamSelect,
+) {
+    TeamSelectionActions(
+        dispatch = viewModel::dispatch,
+        onTeamSelect = { team ->
+            val slot = state.activeSlot
+            if (slot != null) {
+                viewModel.dispatch(TeamSelectionViewModel.Intent.FinishSelection(slot))
+                when (slot) {
+                    TeamSlot.Away -> onAwayTeamSelect(team)
+                    TeamSlot.Home -> onHomeTeamSelect(team)
                 }
-            },
-            onGameSelect = { game ->
-                onAwayTeamSelect(game.away)
-                onHomeTeamSelect(game.home)
-                viewModel.dispatch(TeamSelectionViewModel.Intent.ResetSession)
-            },
-        )
-    }
+            }
+        },
+        onGameSelect = { game ->
+            onAwayTeamSelect(game.away)
+            onHomeTeamSelect(game.home)
+            viewModel.dispatch(TeamSelectionViewModel.Intent.ResetSession)
+        },
+    )
+}
 
 @Composable
 fun TeamSelectionScreen(
@@ -501,13 +490,12 @@ fun TeamSelectionScreen(
         viewModel.dispatch(TeamSelectionViewModel.Intent.ResetSession)
     }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val actions =
-        rememberTeamSelectionActions(
-            viewModel = viewModel,
-            state = state,
-            onAwayTeamSelect = onAwayTeamSelect,
-            onHomeTeamSelect = onHomeTeamSelect,
-        )
+    val actions = rememberTeamSelectionActions(
+        viewModel = viewModel,
+        state = state,
+        onAwayTeamSelect = onAwayTeamSelect,
+        onHomeTeamSelect = onHomeTeamSelect,
+    )
 
     TeamSelectionScreenContent(
         awayTeam = awayTeam,
@@ -527,52 +515,47 @@ private fun TeamSelectionScreenContent(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val permissionGranted =
-        ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-        ) == PackageManager.PERMISSION_GRANTED
-    val permissionLauncher =
-        rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission(),
-            onResult = { granted ->
-                actions.dispatch(TeamSelectionViewModel.Intent.UpdateLocationPermission(granted))
-            },
-        )
-    val requestLocationPermission =
-        remember(permissionLauncher) {
-            {
-                permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }
+    val permissionGranted = ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+    ) == PackageManager.PERMISSION_GRANTED
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { granted ->
+            actions.dispatch(TeamSelectionViewModel.Intent.UpdateLocationPermission(granted))
+        },
+    )
+    val requestLocationPermission = remember(permissionLauncher) {
+        {
+            permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
+    }
     LaunchedEffect(permissionGranted) {
         actions.dispatch(TeamSelectionViewModel.Intent.UpdateLocationPermission(permissionGranted))
     }
     val activeQuery = state.activeQuery
     val groupedMatches = state.groupedMatches
-    val barEntries =
-        remember(
-            awayTeam,
-            homeTeam,
-            state.awayQuery,
-            state.homeQuery,
-            state.awayCleared,
-            state.homeCleared,
-            state.activeSlot,
-        ) {
-            teamSelectionBarEntries(
-                awayTeam = awayTeam,
-                homeTeam = homeTeam,
-                state = state,
-            )
-        }
+    val barEntries = remember(
+        awayTeam,
+        homeTeam,
+        state.awayQuery,
+        state.homeQuery,
+        state.awayCleared,
+        state.homeCleared,
+        state.activeSlot,
+    ) {
+        teamSelectionBarEntries(
+            awayTeam = awayTeam,
+            homeTeam = homeTeam,
+            state = state,
+        )
+    }
 
     Box(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .imePadding(),
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .imePadding(),
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             TeamSelectionBars(
@@ -580,13 +563,12 @@ private fun TeamSelectionScreenContent(
                 actions = actions,
             )
 
-            val contentPadding =
-                PaddingValues(
-                    start = 20.dp,
-                    end = 20.dp,
-                    top = 18.dp,
-                    bottom = 160.dp,
-                )
+            val contentPadding = PaddingValues(
+                start = 20.dp,
+                end = 20.dp,
+                top = 18.dp,
+                bottom = 160.dp,
+            )
             val showSearchResults = groupedMatches.isNotEmpty() || activeQuery.isNotBlank()
             Crossfade(
                 targetState = showSearchResults,
@@ -634,37 +616,33 @@ private fun TeamSelectionBars(
     val bottomBorderAlpha = if (activeSlot == TeamSlot.Home) ACTIVE_BORDER_ALPHA else 0f
     val topBorderColor = primary.copy(alpha = topBorderAlpha)
     val bottomBorderColor = primary.copy(alpha = bottomBorderAlpha)
-    val awayBadgeClip =
-        remember(awayBounds.value, badgeBounds.value) {
-            badgeBorderClip(awayBounds.value, badgeBounds.value)
-        }
-    val homeBadgeClip =
-        remember(homeBounds.value, badgeBounds.value) {
-            badgeBorderClip(homeBounds.value, badgeBounds.value)
-        }
+    val awayBadgeClip = remember(awayBounds.value, badgeBounds.value) {
+        badgeBorderClip(awayBounds.value, badgeBounds.value)
+    }
+    val homeBadgeClip = remember(homeBounds.value, badgeBounds.value) {
+        badgeBorderClip(homeBounds.value, badgeBounds.value)
+    }
     Box(modifier = modifier.fillMaxWidth()) {
         Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             entries.forEach { entry ->
-                val entryModifier =
-                    when (entry.slot) {
-                        TeamSlot.Away -> {
-                            Modifier.onGloballyPositioned { coordinates ->
-                                awayBounds.value = coordinates.rectInWindow()
-                            }
-                        }
-
-                        TeamSlot.Home -> {
-                            Modifier.onGloballyPositioned { coordinates ->
-                                homeBounds.value = coordinates.rectInWindow()
-                            }
+                val entryModifier = when (entry.slot) {
+                    TeamSlot.Away -> {
+                        Modifier.onGloballyPositioned { coordinates ->
+                            awayBounds.value = coordinates.rectInWindow()
                         }
                     }
+
+                    TeamSlot.Home -> {
+                        Modifier.onGloballyPositioned { coordinates ->
+                            homeBounds.value = coordinates.rectInWindow()
+                        }
+                    }
+                }
                 TeamSelectionBar(
                     entry = entry,
                     actions = actions,
@@ -681,12 +659,11 @@ private fun TeamSelectionBars(
                 topBorderClip = awayBadgeClip,
                 bottomBorderClip = homeBadgeClip,
                 textColor = textColor,
-                modifier =
-                    Modifier
-                        .align(Alignment.Center)
-                        .onGloballyPositioned { coordinates ->
-                            badgeBounds.value = coordinates.rectInWindow()
-                        },
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .onGloballyPositioned { coordinates ->
+                        badgeBounds.value = coordinates.rectInWindow()
+                    },
             )
         }
     }
@@ -709,48 +686,43 @@ private fun TeamSelectionBar(
     val isActive = entry.isActive
     val isCleared = entry.isCleared
     val slot = entry.slot
-    val onQueryChange =
-        remember(actions, slot) {
-            { updated: String -> actions.dispatch(TeamSelectionViewModel.Intent.QueryChanged(slot, updated)) }
-        }
-    val onActivate =
-        remember(actions, slot) {
-            { actions.dispatch(TeamSelectionViewModel.Intent.Activate(slot)) }
-        }
+    val onQueryChange = remember(actions, slot) {
+        { updated: String -> actions.dispatch(TeamSelectionViewModel.Intent.QueryChanged(slot, updated)) }
+    }
+    val onActivate = remember(actions, slot) {
+        { actions.dispatch(TeamSelectionViewModel.Intent.Activate(slot)) }
+    }
     val focusRequester = remember { FocusRequester() }
     val isSearching = isActive && query.isNotBlank()
     val showSearchPlaceholder = isCleared && isActive
     val trailingIconModifier = remember { Modifier.size(32.dp) }
 
     val cardColor = if (isActive) surface else surface.copy(alpha = 0.92f)
-    val activeBorder =
-        if (isActive) {
-            BorderStroke(TeamSelectionActiveBorderWidth, primary.copy(alpha = ACTIVE_BORDER_ALPHA))
-        } else {
-            null
-        }
+    val activeBorder = if (isActive) {
+        BorderStroke(TeamSelectionActiveBorderWidth, primary.copy(alpha = ACTIVE_BORDER_ALPHA))
+    } else {
+        null
+    }
 
     Surface(
         onClick = onActivate,
         enabled = !isActive,
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .heightIn(min = 96.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = 96.dp),
         shape = RoundedCornerShape(30.dp),
         color = cardColor,
         border = activeBorder,
     ) {
         Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        PaddingValues(
-                            horizontal = 20.dp,
-                            vertical = 18.dp,
-                        ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    PaddingValues(
+                        horizontal = 20.dp,
+                        vertical = 18.dp,
                     ),
+                ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             TeamBarLabel(
@@ -765,26 +737,23 @@ private fun TeamSelectionBar(
                 BoxWithConstraints(modifier = Modifier.weight(1f)) {
                     val textStyleBase = teamSelectionInputTextStyle()
                     val textMaxWidth = maxWidth - TeamSelectionBadgeSize - 14.dp
-                    val fontWidth =
-                        rememberFittingFontWidth(
-                            textStyle = textStyleBase,
-                            maxWidth = textMaxWidth,
-                        )
+                    val fontWidth = rememberFittingFontWidth(
+                        textStyle = textStyleBase,
+                        maxWidth = textMaxWidth,
+                    )
                     val textStyle = textStyleBase.withFontWidth(fontWidth)
 
                     val showPlaceholderBadge = showSearchPlaceholder || isSearching
-                    val placeholderText =
-                        if (showSearchPlaceholder) {
-                            stringResource(R.string.team_search_placeholder)
-                        } else {
-                            team.name
-                        }
-                    val placeholderColor =
-                        when {
-                            showSearchPlaceholder -> muted.copy(alpha = 0.7f)
-                            isActive -> textColor.copy(alpha = 0.6f)
-                            else -> textColor
-                        }
+                    val placeholderText = if (showSearchPlaceholder) {
+                        stringResource(R.string.team_search_placeholder)
+                    } else {
+                        team.name
+                    }
+                    val placeholderColor = when {
+                        showSearchPlaceholder -> muted.copy(alpha = 0.7f)
+                        isActive -> textColor.copy(alpha = 0.6f)
+                        else -> textColor
+                    }
                     if (isActive) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -863,12 +832,11 @@ private fun TeamBarLabel(
         ) {
             Text(
                 text = label.uppercase(Locale.ROOT),
-                style =
-                    MaterialTheme.typography.labelSmall.copy(
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 3.sp,
-                        lineHeightStyle = SingleLineHeightStyle,
-                    ),
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 3.sp,
+                    lineHeightStyle = SingleLineHeightStyle,
+                ),
             )
         }
     }
@@ -942,11 +910,10 @@ private fun CloseIconButton(
     background: Color? = null,
 ) {
     Box(
-        modifier =
-            modifier
-                .clip(CircleShape)
-                .then(if (background != null) Modifier.background(background) else Modifier)
-                .clickable(onClick = onClick),
+        modifier = modifier
+            .clip(CircleShape)
+            .then(if (background != null) Modifier.background(background) else Modifier)
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Icon(
@@ -1011,10 +978,9 @@ internal fun rememberFittingFontWidth(
 ): FontWidth? {
     val textMeasurer = rememberTextMeasurer()
     val density = LocalDensity.current
-    val maxWidthPx =
-        remember(maxWidth, density) {
-            with(density) { maxWidth.toPx() }.roundToInt().toFloat().coerceAtLeast(0f)
-        }
+    val maxWidthPx = remember(maxWidth, density) {
+        with(density) { maxWidth.toPx() }.roundToInt().toFloat().coerceAtLeast(0f)
+    }
     return remember(textStyle, maxWidthPx) {
         computeFittingFontWidth(
             textMeasurer = textMeasurer,
@@ -1024,12 +990,11 @@ internal fun rememberFittingFontWidth(
     }
 }
 
-private val PreviewTeamSelectionActions =
-    TeamSelectionActions(
-        dispatch = {},
-        onTeamSelect = {},
-        onGameSelect = {},
-    )
+private val PreviewTeamSelectionActions = TeamSelectionActions(
+    dispatch = {},
+    onTeamSelect = {},
+    onGameSelect = {},
+)
 
 @PreviewLightDark
 @Composable
@@ -1104,26 +1069,23 @@ private fun TeamSelectionBarsPreviewContent(
     homeCleared: Boolean = false,
 ) {
     val colors = MaterialTheme.colorScheme
-    val state =
-        TeamSelectionViewModel.State(
-            awayQuery = awayQuery,
-            homeQuery = homeQuery,
-            awayCleared = awayCleared,
-            homeCleared = homeCleared,
-            activeSlot = activeSlot,
-        )
+    val state = TeamSelectionViewModel.State(
+        awayQuery = awayQuery,
+        homeQuery = homeQuery,
+        awayCleared = awayCleared,
+        homeCleared = homeCleared,
+        activeSlot = activeSlot,
+    )
     Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .background(colors.background),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(colors.background),
     ) {
-        val entries =
-            teamSelectionBarEntries(
-                awayTeam = awayTeam,
-                homeTeam = homeTeam,
-                state = state,
-            )
+        val entries = teamSelectionBarEntries(
+            awayTeam = awayTeam,
+            homeTeam = homeTeam,
+            state = state,
+        )
         TeamSelectionBars(
             entries = entries,
             actions = PreviewTeamSelectionActions,
@@ -1136,25 +1098,24 @@ private fun teamSelectionBarEntries(
     awayTeam: AnyTeam,
     homeTeam: AnyTeam,
     state: TeamSelectionViewModel.State,
-): List<TeamSelectionBarEntry> =
-    listOf(
-        TeamSelectionBarEntry(
-            slot = TeamSlot.Away,
-            labelRes = R.string.away_team_label,
-            team = awayTeam,
-            query = state.awayQuery,
-            isActive = state.isAwayActive,
-            isCleared = state.awayCleared,
-        ),
-        TeamSelectionBarEntry(
-            slot = TeamSlot.Home,
-            labelRes = R.string.home_team_label,
-            team = homeTeam,
-            query = state.homeQuery,
-            isActive = state.isHomeActive,
-            isCleared = state.homeCleared,
-        ),
-    )
+): List<TeamSelectionBarEntry> = listOf(
+    TeamSelectionBarEntry(
+        slot = TeamSlot.Away,
+        labelRes = R.string.away_team_label,
+        team = awayTeam,
+        query = state.awayQuery,
+        isActive = state.isAwayActive,
+        isCleared = state.awayCleared,
+    ),
+    TeamSelectionBarEntry(
+        slot = TeamSlot.Home,
+        labelRes = R.string.home_team_label,
+        team = homeTeam,
+        query = state.homeQuery,
+        isActive = state.isHomeActive,
+        isCleared = state.homeCleared,
+    ),
+)
 
 private fun LayoutCoordinates.rectInWindow(): Rect {
     val topLeft = positionInWindow()

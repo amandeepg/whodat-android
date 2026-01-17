@@ -43,8 +43,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 class PlayerNumberViewModel(
     application: Application,
 ) : AndroidViewModel(application) {
-    private val sharedPreferences =
-        application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    private val sharedPreferences = application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     private val rosterRepository: RosterRepository by lazy { createRosterRepository() }
 
@@ -56,43 +55,38 @@ class PlayerNumberViewModel(
     val awayTeam: StateFlow<AnyTeam> = awayTeamFlow.asStateFlow()
     val homeTeam: StateFlow<AnyTeam> = homeTeamFlow.asStateFlow()
 
-    private val awayRosterFlow: Flow<RosterState> =
-        awayTeamFlow
-            .flatMapLatest { team ->
-                rosterRepository.rosterState(team).onStart { rosterRepository.refresh(team) }
-            }
+    private val awayRosterFlow: Flow<RosterState> = awayTeamFlow
+        .flatMapLatest { team ->
+            rosterRepository.rosterState(team).onStart { rosterRepository.refresh(team) }
+        }
 
-    private val homeRosterFlow: Flow<RosterState> =
-        homeTeamFlow
-            .flatMapLatest { team ->
-                rosterRepository.rosterState(team).onStart { rosterRepository.refresh(team) }
-            }
+    private val homeRosterFlow: Flow<RosterState> = homeTeamFlow
+        .flatMapLatest { team ->
+            rosterRepository.rosterState(team).onStart { rosterRepository.refresh(team) }
+        }
 
-    val uiState: StateFlow<PlayerNumberUiState> =
-        combine(
-            jerseyInputFlow,
-            awayTeamFlow,
-            homeTeamFlow,
-        awayRosterFlow,
-        homeRosterFlow,
+    val uiState: StateFlow<PlayerNumberUiState> = combine(
+        jerseyInputFlow,
+        awayTeamFlow,
+        homeTeamFlow,
+    awayRosterFlow,
+    homeRosterFlow,
     ) { jerseyInput, awayTeam, homeTeam, awayRosterState, homeRosterState ->
         val jerseyNumber = JerseyNumber.from(jerseyInput)
         val awayTeamId = awayTeam.teamId()
         val homeTeamId = homeTeam.teamId()
         PlayerNumberUiState(
             jerseyNumber = jerseyInput,
-            away =
-                TeamRosterUiState(
-                    team = awayTeam,
-                    player = jerseyNumber?.let { rosterRepository.findPlayer(awayTeamId, it) },
-                    rosterStatus = awayRosterState.toStatus(),
-                ),
-            home =
-                TeamRosterUiState(
-                    team = homeTeam,
-                    player = jerseyNumber?.let { rosterRepository.findPlayer(homeTeamId, it) },
-                    rosterStatus = homeRosterState.toStatus(),
-                ),
+            away = TeamRosterUiState(
+                team = awayTeam,
+                player = jerseyNumber?.let { rosterRepository.findPlayer(awayTeamId, it) },
+                rosterStatus = awayRosterState.toStatus(),
+            ),
+            home = TeamRosterUiState(
+                team = homeTeam,
+                player = jerseyNumber?.let { rosterRepository.findPlayer(homeTeamId, it) },
+                rosterStatus = homeRosterState.toStatus(),
+            ),
         )
     }.stateIn(
             scope = viewModelScope,
@@ -130,45 +124,38 @@ class PlayerNumberViewModel(
         persistTeam(KEY_HOME_LEAGUE, KEY_HOME_ABBR, team)
     }
 
-    private fun emptyUiState(): PlayerNumberUiState =
-        PlayerNumberUiState(
-            jerseyNumber = "",
-            away =
-                TeamRosterUiState(
-                    team = awayTeamFlow.value,
-                    player = null,
-                    rosterStatus =
-                        RosterStatus(
-                            source = RosterSource.STATIC,
-                            lastUpdatedMillis = null,
-                        ),
-                ),
-            home =
-                TeamRosterUiState(
-                    team = homeTeamFlow.value,
-                    player = null,
-                    rosterStatus =
-                        RosterStatus(
-                            source = RosterSource.STATIC,
-                            lastUpdatedMillis = null,
-                        ),
-                ),
-        )
+    private fun emptyUiState(): PlayerNumberUiState = PlayerNumberUiState(
+        jerseyNumber = "",
+        away = TeamRosterUiState(
+            team = awayTeamFlow.value,
+            player = null,
+            rosterStatus = RosterStatus(
+                source = RosterSource.STATIC,
+                lastUpdatedMillis = null,
+            ),
+        ),
+        home = TeamRosterUiState(
+            team = homeTeamFlow.value,
+            player = null,
+            rosterStatus = RosterStatus(
+                source = RosterSource.STATIC,
+                lastUpdatedMillis = null,
+            ),
+        ),
+    )
 
     private fun createRosterRepository(): RosterRepository {
-        val moshi =
-            Moshi
-                .Builder()
-                .add(KotlinJsonAdapterFactory())
-                .build()
+        val moshi = Moshi
+            .Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
         val okHttpClient = OkHttpClient.Builder().build()
-        val retrofit =
-            Retrofit
-                .Builder()
-                .baseUrl("https://site.api.espn.com/")
-                .client(okHttpClient)
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .build()
+        val retrofit = Retrofit
+            .Builder()
+            .baseUrl("https://site.api.espn.com/")
+            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
 
         val service = retrofit.create(EspnRosterService::class.java)
         val api = EspnRosterApi(service, Dispatchers.IO)

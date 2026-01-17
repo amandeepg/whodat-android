@@ -22,8 +22,7 @@ data class TeamRosterUiState(
     val rosterStatus: RosterStatus,
 )
 
-fun RosterState.toStatus() =
-    RosterStatus(
-        source = source,
-        lastUpdatedMillis = lastUpdatedMillis,
-    )
+fun RosterState.toStatus() = RosterStatus(
+    source = source,
+    lastUpdatedMillis = lastUpdatedMillis,
+)
