@@ -90,26 +90,7 @@ data class Player<out P : Position>(
     val position: P,
     val jerseyNumber: String,
     val suffix: String? = null,
-) {
-    val lastNameWithSuffix: String
-        get() {
-            val trimmedSuffix = suffix?.trim().orEmpty()
-            return if (trimmedSuffix.isNotEmpty()) {
-                "$lastName $trimmedSuffix"
-            } else {
-                lastName
-            }
-        }
-    val firstNameWithSuffix: String
-        get() {
-            val trimmedSuffix = suffix?.trim().orEmpty()
-            return if (trimmedSuffix.isNotEmpty()) {
-                "$firstName $trimmedSuffix"
-            } else {
-                firstName
-            }
-        }
-}
+)
 
 data class TeamColors(
     val primary: Color,

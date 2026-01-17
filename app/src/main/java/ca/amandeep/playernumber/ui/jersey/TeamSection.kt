@@ -157,22 +157,27 @@ internal fun TeamSection(
                         )
                     }
                 } else {
+                    val suffixText = displayPlayer.suffix?.trim().orEmpty()
+                    val showSuffix = suffixText.isNotEmpty() &&
+                        !(heightBucket == SizeBucket.Small && positionLabel != null)
+                    val firstNameStyle = MaterialTheme.typography.titleMedium.copy(
+                        letterSpacing = 3.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = firstNameMaxSize,
+                        lineHeight = firstNameMaxSize,
+                        platformStyle = PlatformTextStyle(includeFontPadding = false),
+                        lineHeightStyle = SingleLineHeightStyle,
+                    )
+                    val firstNameColor = legibleBlendToward(
+                        background = backgroundColor,
+                        onBackground = MaterialTheme.colorScheme.onSurface,
+                        desiredTextColor = nameAccent.copy(alpha = 0.75f),
+                        minContrast = 5.5,
+                    )
                     Text(
-                        text = displayPlayer.firstNameWithSuffix.uppercase(Locale.ROOT),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            letterSpacing = 3.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = firstNameMaxSize,
-                            lineHeight = firstNameMaxSize,
-                            platformStyle = PlatformTextStyle(includeFontPadding = false),
-                            lineHeightStyle = SingleLineHeightStyle,
-                        ),
-                        color = legibleBlendToward(
-                            background = backgroundColor,
-                            onBackground = MaterialTheme.colorScheme.onSurface,
-                            desiredTextColor = nameAccent.copy(alpha = 0.75f),
-                            minContrast = 5.5,
-                        ),
+                        text = displayPlayer.firstName.uppercase(Locale.ROOT),
+                        style = firstNameStyle,
+                        color = firstNameColor,
                         lineHeight = firstNameMaxSize,
                         maxLines = 1,
                         autoSize = firstNameAutoSize,
@@ -203,6 +208,16 @@ internal fun TeamSection(
                             lineHeight = lastNameMaxSize,
                             maxLines = 1,
                             autoSize = lastNameAutoSize,
+                        )
+                    }
+                    if (showSuffix) {
+                        Text(
+                            text = suffixText.uppercase(ROOT),
+                            style = firstNameStyle,
+                            color = firstNameColor,
+                            lineHeight = firstNameMaxSize,
+                            maxLines = 1,
+                            autoSize = firstNameAutoSize,
                         )
                     }
                 }
@@ -273,18 +288,18 @@ private data class TeamSectionContent(
 @PreviewLightDark
 @Composable
 private fun TeamSectionWithPlayerPreview(
-    @PreviewParameter(TeamSectionWithPlayerPreviewProvider::class) team: AnyTeam,
+    @PreviewParameter(TeamSectionWithPlayerPreviewStateProvider::class) previewState: TeamSectionWithPlayerPreviewState,
 ) {
     PlayerNumberTheme {
-        val previewPlayer = team.roster.firstOrNull()
+        val previewPlayer = previewState.team.roster.firstOrNull()
         Box(
             modifier = Modifier.size(320.dp, 220.dp),
         ) {
             TeamSection(
                 player = previewPlayer,
                 jerseyNumber = previewPlayer?.jerseyNumber.orEmpty(),
-                team = team,
-                heightBucket = SizeBucket.Medium,
+                team = previewState.team,
+                heightBucket = previewState.heightBucket,
                 contentPadding = PaddingValues(),
                 centerBiasTopWeight = 1f,
                 modifier = Modifier.fillMaxSize(),
@@ -330,6 +345,32 @@ private class TeamSectionWithPlayerPreviewProvider : PreviewParameterProvider<An
         val value = previewValues.getOrNull(index) ?: return null
         return value.abbreviation
     }
+}
+
+private data class TeamSectionWithPlayerPreviewState(
+    val team: AnyTeam,
+    val heightBucket: SizeBucket,
+)
+
+private class TeamSectionWithPlayerPreviewStateProvider : PreviewParameterProvider<TeamSectionWithPlayerPreviewState> {
+    private val previewValues = TeamSectionWithPlayerPreviewProvider().values.toList()
+    private val heightBuckets = listOf(
+        SizeBucket.Small,
+        SizeBucket.Medium,
+        SizeBucket.Large,
+    )
+
+    override val values: Sequence<TeamSectionWithPlayerPreviewState> = sequence {
+        for (team in previewValues) {
+            for (bucket in heightBuckets) {
+                yield(TeamSectionWithPlayerPreviewState(team = team, heightBucket = bucket))
+            }
+        }
+    }
+
+    override fun getDisplayName(index: Int): String? = values.toList()
+        .getOrNull(index)
+        ?.let { "${it.team.abbreviation}-${it.heightBucket.name.lowercase()}" }
 }
 
 internal const val CENTER_BIAS_TOTAL_WEIGHT = 2f
