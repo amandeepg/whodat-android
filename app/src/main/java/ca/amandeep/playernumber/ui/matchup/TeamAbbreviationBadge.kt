@@ -55,11 +55,10 @@ internal fun TeamAbbreviationBadge(
         val background = colors.surfaceVariant.copy(alpha = 0.55f)
         val iconTint = colors.onSurfaceVariant.copy(alpha = 0.8f)
         Box(
-            modifier =
-                modifier
-                    .size(size)
-                    .clip(CircleShape)
-                    .background(background),
+            modifier = modifier
+                .size(size)
+                .clip(CircleShape)
+                .background(background),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
@@ -72,31 +71,27 @@ internal fun TeamAbbreviationBadge(
         return
     }
     val bg = team.colors.primary.copy(alpha = 0.85f)
-    val textColor =
-        legibleBlendToward(
-            background = bg,
-            desiredTextColor = team.colors.nameAccent,
-        )
+    val textColor = legibleBlendToward(
+        background = bg,
+        desiredTextColor = team.colors.nameAccent,
+    )
     val labelStyle = MaterialTheme.typography.labelLarge
-    val textStyle =
-        labelStyle.copy(
-            fontWeight = FontWeight.Black,
-            letterSpacing = (-0.5).sp,
-            lineHeight = labelStyle.fontSize,
-            lineHeightStyle = SingleLineHeightStyle,
-        )
+    val textStyle = labelStyle.copy(
+        fontWeight = FontWeight.Black,
+        letterSpacing = (-0.5).sp,
+        lineHeight = labelStyle.fontSize,
+        lineHeightStyle = SingleLineHeightStyle,
+    )
     val maxFontSize = rememberBadgeMaxFontSize(size = size, textStyle = textStyle)
-    val autoSize =
-        remember(maxFontSize) {
-            TextAutoSize.StepBased(minFontSize = 1.sp, maxFontSize = maxFontSize)
-        }
+    val autoSize = remember(maxFontSize) {
+        TextAutoSize.StepBased(minFontSize = 1.sp, maxFontSize = maxFontSize)
+    }
 
     Box(
-        modifier =
-            modifier
-                .size(size)
-                .clip(CircleShape)
-                .background(bg),
+        modifier = modifier
+            .size(size)
+            .clip(CircleShape)
+            .background(bg),
         contentAlignment = Alignment.Center,
     ) {
         Text(

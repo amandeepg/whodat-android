@@ -118,32 +118,38 @@ internal fun RowScope.TeamResultRowContent(
     val titleStyleBase = MaterialTheme.typography.titleLarge
     TeamAbbreviationBadge(team = team, size = 36.dp)
     BoxWithConstraints(modifier = modifier.weight(1f)) {
-        val textStyleBase =
-            titleStyleBase.copy(
-                fontWeight = FontWeight.Normal,
-                lineHeight = titleStyleBase.fontSize,
-                lineHeightStyle = SingleLineHeightStyle,
-            )
-        val fontWidth =
-            if (textMeasurer != null) {
-                val maxWidthPx = constraints.maxWidth.toFloat().coerceAtLeast(0f)
+        val textStyleBase = titleStyleBase.copy(
+            fontWeight = FontWeight.Normal,
+            lineHeight = titleStyleBase.fontSize,
+            lineHeightStyle = SingleLineHeightStyle,
+        )
+        val fontWidth = if (textMeasurer != null) {
+            val maxWidthPx = constraints.maxWidth.toFloat().coerceAtLeast(0f)
+            remember(textMeasurer, textStyleBase, maxWidthPx) {
                 computeFittingFontWidth(
                     textMeasurer = textMeasurer,
                     textStyle = textStyleBase,
                     maxWidthPx = maxWidthPx,
                 )
-            } else {
-                rememberFittingFontWidth(
-                    textStyle = textStyleBase,
-                    maxWidth = maxWidth,
-                )
             }
+        } else {
+            rememberFittingFontWidth(
+                textStyle = textStyleBase,
+                maxWidth = maxWidth,
+            )
+        }
+        val baseStyle = textStyleBase.withFontWidth(fontWidth)
+        val adjustedStyle = reduceFontWidthIfNeeded(
+            text = team.name,
+            textStyle = baseStyle,
+            fontWidth = fontWidth,
+        )
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = highlightMatch(team.name, query, colors.primary),
-            style = textStyleBase.withFontWidth(fontWidth),
+            style = adjustedStyle,
             color = colors.onSurface,
-            autoSize = TextAutoSize.StepBased(maxFontSize = textStyleBase.fontSize),
+            autoSize = TextAutoSize.StepBased(maxFontSize = adjustedStyle.fontSize),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )

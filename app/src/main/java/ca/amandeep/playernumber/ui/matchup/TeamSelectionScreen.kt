@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
@@ -96,7 +95,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -803,6 +801,7 @@ private fun TeamSelectionBar(
                                 textStyle = textStyle,
                                 placeholder = placeholderText,
                                 placeholderColor = placeholderColor,
+                                fontWidth = fontWidth,
                                 onQueryChange = onQueryChange,
                                 focusRequester = focusRequester,
                                 modifier = Modifier.weight(1f),
@@ -816,6 +815,7 @@ private fun TeamSelectionBar(
                             TeamSelectionSummary(
                                 team = selectedTeam,
                                 textStyle = textStyle,
+                                fontWidth = fontWidth,
                             )
                         }
                     }
@@ -880,6 +880,7 @@ private fun TeamSearchField(
     textStyle: TextStyle,
     placeholder: String,
     placeholderColor: Color,
+    fontWidth: FontWidth?,
     onQueryChange: (String) -> Unit,
     focusRequester: FocusRequester,
     modifier: Modifier = Modifier,
@@ -911,13 +912,20 @@ private fun TeamSearchField(
                 contentAlignment = Alignment.CenterStart,
             ) {
                 if (fieldValue.text.isEmpty()) {
-                    Text(
-                        text = placeholder,
-                        color = placeholderColor,
-                        style = textStyle,
-                        maxLines = 1,
-                        autoSize = TextAutoSize.StepBased(maxFontSize = textStyle.fontSize),
-                    )
+                    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                        val placeholderStyle = reduceFontWidthIfNeeded(
+                            text = placeholder,
+                            textStyle = textStyle,
+                            fontWidth = fontWidth,
+                        )
+                        Text(
+                            text = placeholder,
+                            color = placeholderColor,
+                            style = placeholderStyle,
+                            maxLines = 1,
+                            autoSize = TextAutoSize.StepBased(maxFontSize = placeholderStyle.fontSize),
+                        )
+                    }
                 }
                 innerTextField()
             }
@@ -953,6 +961,7 @@ private fun CloseIconButton(
 private fun TeamSelectionSummary(
     team: AnyTeam,
     textStyle: TextStyle,
+    fontWidth: FontWidth?,
 ) {
     CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
         Row(
@@ -964,14 +973,21 @@ private fun TeamSelectionSummary(
                 team = team,
                 size = TeamSelectionBadgeSize,
             )
-            Text(
-                modifier = Modifier.weight(1f),
-                text = team.name,
-                style = textStyle,
-                autoSize = TextAutoSize.StepBased(maxFontSize = textStyle.fontSize),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            BoxWithConstraints(modifier = Modifier.weight(1f)) {
+                val textStyle = reduceFontWidthIfNeeded(
+                    text = team.name,
+                    textStyle = textStyle,
+                    fontWidth = fontWidth,
+                )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = team.name,
+                    style = textStyle,
+                    autoSize = TextAutoSize.StepBased(maxFontSize = textStyle.fontSize),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }

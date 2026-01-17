@@ -1,8 +1,15 @@
 package ca.amandeep.playernumber.ui.matchup
 
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.isUnspecified
+import androidx.compose.ui.unit.sp
+import ca.amandeep.playernumber.data.AnyTeam
 import ca.amandeep.playernumber.data.NbaTeamRefs
 import ca.amandeep.playernumber.ui.theme.FontWidth
 import ca.amandeep.playernumber.ui.theme.withFontWidth
@@ -77,4 +84,41 @@ private sealed interface FontWidthCacheValue {
     data class Width(
         val value: FontWidth,
     ) : FontWidthCacheValue
+}
+
+@Composable
+fun BoxWithConstraintsScope.reduceFontWidthIfNeeded(
+    text: String,
+    textStyle: TextStyle,
+    fontWidth: FontWidth?
+): TextStyle {
+    val textMeasurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+    val maxWidthPx = remember(maxWidth, density) {
+        with(density) { maxWidth.toPx() }.coerceAtLeast(0f)
+    }
+    val shouldNarrowWidth = remember(text, textStyle, textMeasurer, maxWidthPx) {
+        val measured = textMeasurer.measure(
+            text = text,
+            style = textStyle,
+            maxLines = 1,
+        )
+        measured.size.width > maxWidthPx
+    }
+    return if (shouldNarrowWidth) {
+        textStyle
+            .withFontWidth(fontWidth.stepNarrower())
+            .copy(letterSpacing = (-0.5).sp)
+    } else {
+        textStyle
+    }
+}
+
+private fun FontWidth?.stepNarrower(): FontWidth = when (this) {
+    FontWidth.SemiCondensed -> FontWidth.Condensed
+    FontWidth.Condensed -> FontWidth.ExtraCondensed
+    FontWidth.ExtraCondensed -> FontWidth.UltraCondensed
+    FontWidth.UltraCondensed -> FontWidth.SuperCondensed
+    FontWidth.SuperCondensed -> FontWidth.SuperCondensed
+    null -> FontWidth.SemiCondensed
 }
