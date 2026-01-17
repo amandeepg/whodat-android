@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -26,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.amandeep.playernumber.PlayerNumberViewModel
 import ca.amandeep.playernumber.R
 import ca.amandeep.playernumber.data.AnyTeam
@@ -57,7 +57,9 @@ fun MainScreen(
             }
         }
     val closeMatchup = popBackStack
-    val playerNumberState by viewModel.uiState.collectAsState()
+    val playerNumberState by viewModel.uiState.collectAsStateWithLifecycle()
+    val awayTeam by viewModel.awayTeam.collectAsStateWithLifecycle()
+    val homeTeam by viewModel.homeTeam.collectAsStateWithLifecycle()
 
     NavDisplay(
         backStack = backStack,
@@ -67,8 +69,8 @@ fun MainScreen(
             entryProvider {
                 entry<MainDestination.Matchup> {
                     MatchupDestination(
-                        awayTeam = viewModel.awayTeam,
-                        homeTeam = viewModel.homeTeam,
+                        awayTeam = awayTeam,
+                        homeTeam = homeTeam,
                         onAwayTeamSelect = viewModel::updateAwayTeam,
                         onHomeTeamSelect = viewModel::updateHomeTeam,
                         onDismiss = closeMatchup,

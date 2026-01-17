@@ -2,10 +2,6 @@ package ca.amandeep.playernumber
 
 import android.app.Application
 import android.content.Context
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import ca.amandeep.playernumber.data.AnyTeam
@@ -31,10 +27,11 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -49,19 +46,15 @@ class PlayerNumberViewModel(
     private val sharedPreferences =
         application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    private var jerseyInput by mutableStateOf("")
-
     private val rosterRepository: RosterRepository by lazy { createRosterRepository() }
 
-    var awayTeam: AnyTeam by mutableStateOf(MlbTeamRefs.LAA)
-        private set
+    private val jerseyInputFlow = MutableStateFlow("")
+    private val awayTeamFlow = MutableStateFlow<AnyTeam>(MlbTeamRefs.LAA)
+    private val homeTeamFlow = MutableStateFlow<AnyTeam>(MlbTeamRefs.TOR)
 
-    var homeTeam: AnyTeam by mutableStateOf(MlbTeamRefs.TOR)
-        private set
-
-    private val jerseyInputFlow = snapshotFlow { jerseyInput }.distinctUntilChanged()
-    private val awayTeamFlow = snapshotFlow { awayTeam }.distinctUntilChanged()
-    private val homeTeamFlow = snapshotFlow { homeTeam }.distinctUntilChanged()
+    val jerseyInput: StateFlow<String> = jerseyInputFlow.asStateFlow()
+    val awayTeam: StateFlow<AnyTeam> = awayTeamFlow.asStateFlow()
+    val homeTeam: StateFlow<AnyTeam> = homeTeamFlow.asStateFlow()
 
     private val awayRosterFlow: Flow<RosterState> =
         awayTeamFlow
@@ -122,18 +115,18 @@ class PlayerNumberViewModel(
     }
 
     fun onJerseyInputChange(updated: String) {
-        jerseyInput = updated.filter(Char::isDigit).take(2)
+        jerseyInputFlow.value = updated.filter(Char::isDigit).take(2)
     }
 
     fun updateAwayTeam(team: AnyTeam) {
-        if (awayTeam == team) return
-        awayTeam = team
+        if (awayTeamFlow.value == team) return
+        awayTeamFlow.value = team
         persistTeam(KEY_AWAY_LEAGUE, KEY_AWAY_ABBR, team)
     }
 
     fun updateHomeTeam(team: AnyTeam) {
-        if (homeTeam == team) return
-        homeTeam = team
+        if (homeTeamFlow.value == team) return
+        homeTeamFlow.value = team
         persistTeam(KEY_HOME_LEAGUE, KEY_HOME_ABBR, team)
     }
 
@@ -142,7 +135,7 @@ class PlayerNumberViewModel(
             jerseyNumber = "",
             away =
                 TeamRosterUiState(
-                    team = awayTeam,
+                    team = awayTeamFlow.value,
                     player = null,
                     rosterStatus =
                         RosterStatus(
@@ -152,7 +145,7 @@ class PlayerNumberViewModel(
                 ),
             home =
                 TeamRosterUiState(
-                    team = homeTeam,
+                    team = homeTeamFlow.value,
                     player = null,
                     rosterStatus =
                         RosterStatus(
@@ -198,8 +191,8 @@ class PlayerNumberViewModel(
     }
 
     private fun restoreMatchup() {
-        loadSavedTeam(KEY_AWAY_LEAGUE, KEY_AWAY_ABBR)?.let { awayTeam = it }
-        loadSavedTeam(KEY_HOME_LEAGUE, KEY_HOME_ABBR)?.let { homeTeam = it }
+        loadSavedTeam(KEY_AWAY_LEAGUE, KEY_AWAY_ABBR)?.let { awayTeamFlow.value = it }
+        loadSavedTeam(KEY_HOME_LEAGUE, KEY_HOME_ABBR)?.let { homeTeamFlow.value = it }
     }
 
     private fun loadSavedTeam(
