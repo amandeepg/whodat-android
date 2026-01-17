@@ -53,7 +53,7 @@ import ca.amandeep.playernumber.ui.utils.SquircleShape
 internal fun rememberNumberEntryTextStyle(): TextStyle {
     val baseStyle = MaterialTheme.typography.displayMedium
     val color = MaterialTheme.colorScheme.onSurface
-    return remember(baseStyle) {
+    return remember(baseStyle, color) {
         baseStyle.copy(
             textAlign = TextAlign.Center,
             color = color,
