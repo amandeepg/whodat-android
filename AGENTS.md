@@ -30,17 +30,3 @@
 ## Update Dependencies
 - Refresh available updates with refreshVersions: `./gradlew refreshVersions`
 - Review and adjust version entries in `versions.properties`.
-
-## Landing the Plane (Session Completion)
-
-**When ending a work session**, you MUST complete ALL steps below.
-
-**MANDATORY WORKFLOW:**
-
-1. **File issues for remaining work** - Create issues for anything that needs follow-up
-2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
-4. **Hand off** - Provide context for next session
-
-Use 'bd' for task tracking. Never create a task just to immediately close in the same turn.
-Also never use background terminal to interact with 'bd'
