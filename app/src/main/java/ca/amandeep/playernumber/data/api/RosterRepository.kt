@@ -58,7 +58,7 @@ class EspnRosterRepository(
             MutableStateFlow(staticState(team)).also { flow ->
                 scope.launch(ioDispatcher) {
                     val cached = readCache(team)
-                    if (cached != null && !isExpired(cached, clock())) {
+                    if (cached != null) {
                         flow.value = cachedState(team, cached)
                     }
                 }
@@ -139,7 +139,13 @@ class EspnRosterRepository(
                 }
             return RefreshDecision(preRefreshState = preState, shouldRefresh = true)
         }
-        return RefreshDecision(preRefreshState = staticState(team), shouldRefresh = true)
+        val preState =
+            if (current.source != RosterSource.CACHE) {
+                cachedState(team, cached)
+            } else {
+                null
+            }
+        return RefreshDecision(preRefreshState = preState, shouldRefresh = true)
     }
 
     private fun keyFor(team: AnyTeam): String = "${espnLeagueFor(team).leagueId}:${team.abbreviation.uppercase()}"
@@ -230,10 +236,6 @@ class EspnRosterRepository(
             null
         }
 
-    private fun isExpired(
-        cached: CachedRoster,
-        now: Long,
-    ): Boolean = now - cached.fetchedAtMillis >= expireAfterMillis
 }
 
 private data class RefreshDecision(
