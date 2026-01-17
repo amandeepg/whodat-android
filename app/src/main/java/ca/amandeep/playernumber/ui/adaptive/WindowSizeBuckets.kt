@@ -61,7 +61,7 @@ internal fun PreviewWindowSizeClassHint(
     modifier: Modifier = Modifier,
 ) {
     @Suppress("ConstantConditionIf")
-    if (false) return
+    if (true) return
 
     if (!LocalInspectionMode.current) return
 

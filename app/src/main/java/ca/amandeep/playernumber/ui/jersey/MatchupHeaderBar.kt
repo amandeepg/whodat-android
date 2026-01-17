@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.amandeep.playernumber.R
 import ca.amandeep.playernumber.data.AnyTeam
+import ca.amandeep.playernumber.data.MlbTeamRefs
 import ca.amandeep.playernumber.data.MlbTeams
 import ca.amandeep.playernumber.ui.theme.PlayerNumberTheme
 import ca.amandeep.playernumber.ui.utils.SingleLineHeightStyle
@@ -165,16 +166,16 @@ private class MatchupHeaderBarPreviewProvider : PreviewParameterProvider<Matchup
     private val previewValues =
         listOf(
             MatchupHeaderBarPreviewData(
-                awayTeam = MlbTeams.first { it.abbreviation == "TOR" },
-                homeTeam = MlbTeams.first { it.abbreviation == "LAA" },
+                awayTeam = MlbTeamRefs.TOR,
+                homeTeam = MlbTeamRefs.LAA,
             ),
             MatchupHeaderBarPreviewData(
-                awayTeam = MlbTeams.first { it.abbreviation == "NYY" },
-                homeTeam = MlbTeams.first { it.abbreviation == "BOS" },
+                awayTeam = MlbTeamRefs.NYY,
+                homeTeam = MlbTeamRefs.BOS,
             ),
             MatchupHeaderBarPreviewData(
-                awayTeam = MlbTeams.first { it.abbreviation == "LAD" },
-                homeTeam = MlbTeams.first { it.abbreviation == "CHC" },
+                awayTeam = MlbTeamRefs.LAD,
+                homeTeam = MlbTeamRefs.CHC,
             ),
         )
 

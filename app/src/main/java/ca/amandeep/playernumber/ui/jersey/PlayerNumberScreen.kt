@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import ca.amandeep.playernumber.data.JerseyNumber
+import ca.amandeep.playernumber.data.MlbTeamRefs
 import ca.amandeep.playernumber.data.MlbTeams
 import ca.amandeep.playernumber.data.StaticRosterLookup
 import ca.amandeep.playernumber.data.teamId
@@ -90,26 +91,24 @@ private fun PlayerNumberScreenContent(
             rootBounds != null && bodyBounds != null && layout != null && teamTargetReady
         }
     }
-    val assistTargets =
-        rememberAssistHintTargets(
-            chevronCenterInWindow = chevronCenterInWindow.value,
-            pillBoundsInWindow = pillBoundsInWindow.value,
-            rootBounds = rootBoundsState.value,
-            bodyBounds = bodyBoundsState.value,
-            layout = layoutState.value,
-        )
+    val assistTargets = rememberAssistHintTargets(
+        chevronCenterInWindow = chevronCenterInWindow.value,
+        pillBoundsInWindow = pillBoundsInWindow.value,
+        rootBounds = rootBoundsState.value,
+        bodyBounds = bodyBoundsState.value,
+        layout = layoutState.value,
+    )
 
     Box(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .onGloballyPositioned { coordinates ->
-                    rootBoundsState.value =
-                        LayoutBounds(
-                            topLeft = coordinates.positionInWindow(),
-                            size = coordinates.size,
-                        )
-                },
+        modifier = modifier
+            .fillMaxSize()
+            .onGloballyPositioned { coordinates ->
+                rootBoundsState.value =
+                    LayoutBounds(
+                        topLeft = coordinates.positionInWindow(),
+                        size = coordinates.size,
+                    )
+            },
     ) {
         Scaffold(
             topBar = {
@@ -137,11 +136,10 @@ private fun PlayerNumberScreenContent(
                         layoutState.value = layout
                     }
                 },
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                        .imePadding(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .imePadding(),
             )
         }
         AssistHintsOverlay(
@@ -152,10 +150,9 @@ private fun PlayerNumberScreenContent(
             jerseyAnchorFraction = assistTargets.jerseyAnchorFraction,
             teamSelectorArrowOffsetFromTop = assistTargets.teamBaseOffset,
             teamSelectorAnchorFraction = assistTargets.teamAnchorFraction,
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .zIndex(ASSIST_HINTS_OVERLAY_Z_INDEX),
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(ASSIST_HINTS_OVERLAY_Z_INDEX),
         )
     }
 }
@@ -170,14 +167,12 @@ private fun PlayerNumberTopBar(
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface
     val isDarkTheme = isSystemInDarkTheme()
-    val awayBaseColor =
-        remember(state.away.team.colors.primary, isDarkTheme) {
-            themedTeamBackground(state.away.team.colors.primary, isDarkTheme)
-        }
-    val topBarContainerColor =
-        remember(awayBaseColor, surfaceColor) {
-            lerp(awayBaseColor, surfaceColor, TOP_BAR_BLEND_FRACTION)
-        }
+    val awayBaseColor = remember(state.away.team.colors.primary, isDarkTheme) {
+        themedTeamBackground(state.away.team.colors.primary, isDarkTheme)
+    }
+    val topBarContainerColor = remember(awayBaseColor, surfaceColor) {
+        lerp(awayBaseColor, surfaceColor, TOP_BAR_BLEND_FRACTION)
+    }
 
     TopAppBar(
         title = {
@@ -189,11 +184,10 @@ private fun PlayerNumberTopBar(
                 onPillPosition = onPillPosition,
             )
         },
-        colors =
-            TopAppBarDefaults.topAppBarColors(
-                containerColor = topBarContainerColor,
-                scrolledContainerColor = topBarContainerColor,
-            ),
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = topBarContainerColor,
+            scrolledContainerColor = topBarContainerColor,
+        ),
     )
 }
 
@@ -509,27 +503,22 @@ private fun rememberPlayerNumberActions(
 @Composable
 private fun PlayerNumberSizedPreview() {
     PlayerNumberTheme {
-        val previewNumber = JerseyNumber.from(PREVIEW_JERSEY_NUMBER)
-        val awayPlayer =
-            previewNumber?.let { StaticRosterLookup.findPlayer(PreviewAwayTeam.teamId(), it) }
-        val homePlayer =
-            previewNumber?.let { StaticRosterLookup.findPlayer(PreviewHomeTeam.teamId(), it) }
-        val state =
-            PlayerNumberUiState(
-                jerseyNumber = PREVIEW_JERSEY_NUMBER,
-                away =
-                    TeamRosterUiState(
-                        team = PreviewAwayTeam,
-                        player = awayPlayer,
-                        rosterStatus = PreviewRosterStatus,
-                    ),
-                home =
-                    TeamRosterUiState(
-                        team = PreviewHomeTeam,
-                        player = homePlayer,
-                        rosterStatus = PreviewRosterStatus,
-                    ),
-            )
+        val previewNumber = JerseyNumber.from(PREVIEW_JERSEY_NUMBER)!!
+        val awayPlayer = StaticRosterLookup.findPlayer(PreviewAwayTeam.teamId(), previewNumber)
+        val homePlayer = StaticRosterLookup.findPlayer(PreviewHomeTeam.teamId(), previewNumber)
+        val state = PlayerNumberUiState(
+            jerseyNumber = PREVIEW_JERSEY_NUMBER,
+            away = TeamRosterUiState(
+                team = PreviewAwayTeam,
+                player = awayPlayer,
+                rosterStatus = PreviewRosterStatus,
+            ),
+            home = TeamRosterUiState(
+                team = PreviewHomeTeam,
+                player = homePlayer,
+                rosterStatus = PreviewRosterStatus,
+            ),
+        )
         PlayerNumberPreview(state)
     }
 }
@@ -541,18 +530,16 @@ private fun PlayerNumberEmptyPreview() {
         val state =
             PlayerNumberUiState(
                 jerseyNumber = "",
-                away =
-                    TeamRosterUiState(
-                        team = PreviewAwayTeam,
-                        player = null,
-                        rosterStatus = PreviewRosterStatus,
-                    ),
-                home =
-                    TeamRosterUiState(
-                        team = PreviewHomeTeam,
-                        player = null,
-                        rosterStatus = PreviewRosterStatus,
-                    ),
+                away = TeamRosterUiState(
+                    team = PreviewAwayTeam,
+                    player = null,
+                    rosterStatus = PreviewRosterStatus,
+                ),
+                home = TeamRosterUiState(
+                    team = PreviewHomeTeam,
+                    player = null,
+                    rosterStatus = PreviewRosterStatus,
+                ),
             )
         PlayerNumberPreview(state)
     }
@@ -560,8 +547,8 @@ private fun PlayerNumberEmptyPreview() {
 
 private const val PREVIEW_JERSEY_NUMBER = "27"
 
-private val PreviewAwayTeam = MlbTeams.first { it.abbreviation == "TOR" }
-private val PreviewHomeTeam = MlbTeams.first { it.abbreviation == "LAA" }
+private val PreviewAwayTeam = MlbTeamRefs.TOR
+private val PreviewHomeTeam = MlbTeamRefs.LAA
 
 private val PreviewRosterStatus =
     RosterStatus(

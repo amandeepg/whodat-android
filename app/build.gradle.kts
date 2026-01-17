@@ -7,6 +7,8 @@ plugins {
     id("org.jmailen.kotlinter")
 }
 
+apply(plugin = "com.android.compose.screenshot")
+
 android {
     namespace = "ca.amandeep.playernumber"
     compileSdk {
@@ -47,6 +49,7 @@ android {
     buildFeatures {
         compose = true
     }
+    experimentalProperties["android.experimental.enableScreenshotTest"] = true
 }
 
 dependencies {
@@ -72,4 +75,6 @@ dependencies {
     testImplementation(Testing.junit4)
     debugImplementation(AndroidX.compose.ui.tooling)
     debugImplementation(AndroidX.compose.ui.testManifest)
+    screenshotTestImplementation(AndroidX.compose.ui.tooling)
+    screenshotTestImplementation("com.android.tools.screenshot:screenshot-validation-api:_")
 }
