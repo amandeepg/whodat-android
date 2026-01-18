@@ -1,0 +1,27 @@
+name: Build with Gradle
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version-file: '.java-version'
+          distribution: temurin
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+      - name: Build
+        run: ./gradlew assembleDebug --quiet --console=plain
