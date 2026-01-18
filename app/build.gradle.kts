@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.testing.Test
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -76,4 +77,13 @@ dependencies {
     debugImplementation(AndroidX.compose.ui.testManifest)
     screenshotTestImplementation(AndroidX.compose.ui.tooling)
     screenshotTestImplementation("com.android.tools.screenshot:screenshot-validation-api:_")
+}
+
+tasks.withType<Test>().configureEach {
+    if (name.contains("ScreenshotTest")) {
+        isScanForTestClasses = true
+        doFirst {
+            isScanForTestClasses = true
+        }
+    }
 }
