@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -13,6 +12,7 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import ca.amandeep.playernumber.PlayerNumberViewModel
+import ca.amandeep.playernumber.ui.theme.LocalSystemDarkTheme
 import ca.amandeep.playernumber.ui.theme.PlayerNumberTheme
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -33,13 +33,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val darkTheme = isSystemInDarkTheme()
-            SideEffect {
-                val controller = WindowCompat.getInsetsController(window, window.decorView)
-                controller.isAppearanceLightStatusBars = !darkTheme
-                controller.isAppearanceLightNavigationBars = !darkTheme
-            }
-            PlayerNumberTheme(darkTheme = darkTheme) {
+            PlayerNumberTheme {
+                val darkTheme = LocalSystemDarkTheme.current
+                SideEffect {
+                    val controller = WindowCompat.getInsetsController(window, window.decorView)
+                    controller.isAppearanceLightStatusBars = !darkTheme
+                    controller.isAppearanceLightNavigationBars = !darkTheme
+                }
                 AppRoot(
                     viewModel = viewModel,
                     onFirstFrameDrawn = { keepSplashOn.set(false) },

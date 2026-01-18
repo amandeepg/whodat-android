@@ -28,7 +28,7 @@ import ca.amandeep.playernumber.ui.theme.PlayerNumberTheme
 
 internal val TeamSelectionActiveBorderWidth = 2.dp
 private val TeamSelectionVsSize = 48.dp
-private val TeamSelectionVsOuterSize = TeamSelectionVsSize + TeamSelectionActiveBorderWidth * 2
+internal val TeamSelectionVsOuterSize = TeamSelectionVsSize + TeamSelectionActiveBorderWidth * 2
 private val TeamSelectionVsBackgroundBorderWidth = 6.dp
 
 private enum class MatchupVsBorderHalf {

@@ -1,0 +1,30 @@
+defaults:
+  default_color: '#ffffff'
+  font: Google Sans
+  color: center
+  tolerance: 80
+  zero_alpha_threshold: 50
+  device_width_ratio: 0.8
+  pngquant_speed: 10
+  oxipng_level: 0
+  search_root: ../..
+  screenshot_directory: ../../app/src/screenshotTestDebug/reference/ca/amandeep/playernumber/ui/main/MarketingScreenshotsKt
+jobs:
+  - name: jersey_number
+    text: Find the player, by the jersey <color="#7051B3">number</color>.
+    device_width_ratio: 0.72
+    device_frame: frame.webp
+    output: output/jersey_number.webp
+    screenshot: PlayerNumberScreenshotTorLaa_Pixel_9_Night_.*_0\.png
+  - name: night_and_day
+    text: Material design. <color="#2E003E">Dark</color> & <color="#311B92">light</color> mode.
+    device_width_ratio: 0.78
+    device_frame: frame.webp
+    output: output/night_and_day.webp
+    screenshot: PlayerNumberScreenshotLacOkc_Pixel_9_Night_.*_0\.png
+  - name: search_game
+    text: Select the <color="#7051B3">game</color> you're at.
+    device_width_ratio: 0.78
+    device_frame: frame.webp
+    output: output/search_game.webp
+    screenshot: PlayerNumberScreenshotTeamSelection_Pixel_9_Night_.*_0\.png

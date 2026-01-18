@@ -1,6 +1,7 @@
 package ca.amandeep.playernumber.ui.preview
 
-import android.content.res.Configuration
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -9,74 +10,49 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.drawscope.clipPath
 import ca.amandeep.playernumber.R
-import ca.amandeep.playernumber.data.JerseyNumber
-import ca.amandeep.playernumber.data.MlbTeamRefs
-import ca.amandeep.playernumber.data.MlbTeams
-import ca.amandeep.playernumber.data.StaticRosterLookup
-import ca.amandeep.playernumber.data.teamId
-import ca.amandeep.playernumber.data.api.RosterSource
-import ca.amandeep.playernumber.ui.jersey.PlayerNumberScreen
-import ca.amandeep.playernumber.ui.jersey.PlayerNumberUiState
-import ca.amandeep.playernumber.ui.jersey.RosterStatus
-import ca.amandeep.playernumber.ui.jersey.TeamRosterUiState
+import ca.amandeep.playernumber.ui.theme.LocalSystemDarkTheme
 import ca.amandeep.playernumber.ui.theme.PlayerNumberTheme
 import ca.amandeep.playernumber.ui.utils.SingleLineHeightStyle
 
 @Composable
-@Preview(
-    name = "Pixel 9 Day",
-    device = Devices.PIXEL_9,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-)
-@Preview(
-    name = "Pixel 9 Night",
-    device = Devices.PIXEL_9,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
-private fun AppScreenshotPreview() {
-    val uiMode = LocalConfiguration.current.uiMode
-    val isDark = (uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-    AppScreenshotPreviewContent(darkTheme = isDark)
-}
-
-@Composable
-internal fun AppScreenshotPreviewContent(darkTheme: Boolean) {
+internal fun DeviceScreenshot(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit,
+) {
     PlayerNumberTheme(darkTheme = darkTheme) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                val previewState = remember { buildPreviewState() }
-                PlayerNumberScreen(
-                    state = previewState,
-                    onJerseyInputChange = { },
-                    onTeamSelectorClick = { },
-                    modifier = Modifier.fillMaxSize()
-                        .consumeWindowInsets(WindowInsets(top = SyntheticStatusBarHeight)),
-                )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .consumeWindowInsets(WindowInsets(top = SyntheticStatusBarHeight / 2))
+                ,
+            ) {
+                content()
                 SyntheticStatusBar(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .align(Alignment.TopCenter),
                 )
             }
@@ -85,11 +61,68 @@ internal fun AppScreenshotPreviewContent(darkTheme: Boolean) {
 }
 
 @Composable
+internal fun DiagonalSplitDeviceScreenshot(
+    content: @Composable () -> Unit,
+) {
+    val dividerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = DiagonalDividerAlpha)
+    Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .diagonalClip(clipTopRight = true),
+        ) {
+            DeviceScreenshot(
+                darkTheme = isSystemInDarkTheme(),
+                content = content,
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .diagonalClip(clipTopRight = false),
+        ) {
+            DeviceScreenshot(
+                darkTheme = !isSystemInDarkTheme(),
+                content = content,
+            )
+        }
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawLine(
+                color = dividerColor,
+                start = Offset.Zero,
+                end = Offset(size.width, size.height),
+                strokeWidth = DiagonalDividerStrokeWidth.toPx(),
+            )
+        }
+    }
+}
+
+
+private fun Modifier.diagonalClip(clipTopRight: Boolean): Modifier = drawWithContent {
+    val path = Path().apply {
+        if (clipTopRight) {
+            moveTo(0f, 0f)
+            lineTo(size.width, 0f)
+            lineTo(size.width, size.height)
+        } else {
+            moveTo(0f, 0f)
+            lineTo(0f, size.height)
+            lineTo(size.width, size.height)
+        }
+        close()
+    }
+    clipPath(path) {
+        this@drawWithContent.drawContent()
+    }
+}
+
+@Composable
 private fun SyntheticStatusBar(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier.height(SyntheticStatusBarHeight)
+        modifier = modifier
+            .height(SyntheticStatusBarHeight)
             .fillMaxWidth(),
         contentAlignment = Alignment.TopCenter,
     ) {
@@ -98,7 +131,8 @@ private fun SyntheticStatusBar(
             modifier = Modifier.fillMaxSize(),
         ) {
             Row(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .padding(
                         horizontal = StatusBarHorizontalPadding,
                         vertical = StatusBarVerticalPadding
@@ -138,36 +172,11 @@ private fun SyntheticStatusBar(
     }
 }
 
-private fun buildPreviewState(): PlayerNumberUiState {
-    val previewNumber = JerseyNumber.from(PREVIEW_JERSEY_NUMBER)!!
-    val awayPlayer = StaticRosterLookup.findPlayer(PreviewAwayTeam.teamId(), previewNumber)
-    val homePlayer = StaticRosterLookup.findPlayer(PreviewHomeTeam.teamId(), previewNumber)
-
-    return PlayerNumberUiState(
-        jerseyNumber = PREVIEW_JERSEY_NUMBER,
-        away = TeamRosterUiState(
-            team = PreviewAwayTeam,
-            player = awayPlayer,
-            rosterStatus = PreviewRosterStatus,
-        ),
-        home = TeamRosterUiState(
-            team = PreviewHomeTeam,
-            player = homePlayer,
-            rosterStatus = PreviewRosterStatus,
-        ),
-    )
-}
-
 private const val PREVIEW_TIME = "9:06"
-private const val PREVIEW_JERSEY_NUMBER = "27"
-private val PreviewAwayTeam = MlbTeamRefs.TOR
-private val PreviewHomeTeam = MlbTeamRefs.LAA
-private val PreviewRosterStatus = RosterStatus(
-    source = RosterSource.STATIC,
-    lastUpdatedMillis = null,
-)
-private val SyntheticStatusBarHeight = 34.dp
-private val StatusBarHorizontalPadding = 18.dp
+private const val DiagonalDividerAlpha = 0.6f
+private val DiagonalDividerStrokeWidth: Dp = 4.dp
+private val SyntheticStatusBarHeight = 45.dp
+private val StatusBarHorizontalPadding = 25.dp
 private val StatusBarVerticalPadding = 6.dp
 private val StatusBarIconSpacing = 6.dp
 private val StatusBarIconSize = 16.dp

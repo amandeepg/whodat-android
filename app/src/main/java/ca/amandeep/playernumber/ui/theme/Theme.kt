@@ -10,6 +10,8 @@ import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
@@ -25,6 +27,8 @@ import ca.amandeep.playernumber.R
 private val ACCENT_RED = Color(0xFFD62839)
 private val ACCENT_BLUE = Color(0xFF1D63D5)
 private val ACCENT_GOLD = Color(0xFFE0B24A)
+
+val LocalSystemDarkTheme = staticCompositionLocalOf { false }
 
 // Colorful backgrounds (farther from pure white/black)
 private val LIGHT_BG = Color(0xFFEAF0FF) // airy periwinkle paper
@@ -278,10 +282,12 @@ fun PlayerNumberTheme(
         else -> PlayerNumberLightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colors,
-        typography = PlayerNumberTypography,
-        shapes = PlayerNumberShapes,
-        content = content,
-    )
+    CompositionLocalProvider(LocalSystemDarkTheme provides darkTheme) {
+        MaterialTheme(
+            colorScheme = colors,
+            typography = PlayerNumberTypography,
+            shapes = PlayerNumberShapes,
+            content = content,
+        )
+    }
 }

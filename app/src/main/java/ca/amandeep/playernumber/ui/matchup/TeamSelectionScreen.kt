@@ -38,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -50,11 +51,10 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
@@ -124,7 +124,7 @@ private val TeamSelectionBadgeSize = 54.dp
 private const val ACTIVE_BORDER_ALPHA = 0.6f
 private const val LOG_TAG = "TeamSelection"
 
-private data class TeamSelectionActions(
+internal data class TeamSelectionActions(
     val dispatch: (TeamSelectionViewModel.Intent) -> Unit,
     val onTeamSelect: (AnyTeam) -> Unit,
     val onGameSelect: (TodayGame) -> Unit,
@@ -507,7 +507,7 @@ fun TeamSelectionScreen(
 }
 
 @Composable
-private fun TeamSelectionScreenContent(
+internal fun TeamSelectionScreenContent(
     awayTeam: AnyTeam,
     homeTeam: AnyTeam,
     state: TeamSelectionViewModel.State,
@@ -607,43 +607,77 @@ private fun TeamSelectionBars(
     val background = colors.background
     val surface = colors.surfaceContainerHigh
     val textColor = colors.onSurface
-    val awayBounds = remember { mutableStateOf<Rect?>(null) }
-    val homeBounds = remember { mutableStateOf<Rect?>(null) }
-    val badgeBounds = remember { mutableStateOf<Rect?>(null) }
+    val barMinHeight = 96.dp
+    val barSpacing = 12.dp
+    val awayHeightPx = remember { mutableIntStateOf(0) }
+    val homeHeightPx = remember { mutableIntStateOf(0) }
+    val inspectionMode = LocalInspectionMode.current
+    val density = LocalDensity.current
+    val badgeSizePx = with(density) { TeamSelectionVsOuterSize.toPx() }
+    val spacingPx = with(density) { barSpacing.toPx() }
+    val fallbackBarHeightPx = with(density) { barMinHeight.toPx() }
+    fun resolveBarHeight(measuredPx: Float): Float {
+        val resolved = if (measuredPx > 0f) measuredPx else fallbackBarHeightPx
+        return if (inspectionMode) minOf(resolved, fallbackBarHeightPx) else resolved
+    }
+    val resolvedAwayHeightPx = resolveBarHeight(awayHeightPx.intValue.toFloat())
+    val resolvedHomeHeightPx = resolveBarHeight(homeHeightPx.intValue.toFloat())
+    val columnHeightPx = resolvedAwayHeightPx + spacingPx + resolvedHomeHeightPx
+    val badgeTop = (columnHeightPx - badgeSizePx) / 2f
+    val badgeBounds = Rect(
+        left = 0f,
+        top = badgeTop,
+        right = badgeSizePx,
+        bottom = badgeTop + badgeSizePx,
+    )
+    val awayBounds = Rect(
+        left = 0f,
+        top = 0f,
+        right = badgeSizePx,
+        bottom = resolvedAwayHeightPx,
+    )
+    val homeTop = awayBounds.bottom + spacingPx
+    val homeBounds = Rect(
+        left = 0f,
+        top = homeTop,
+        right = badgeSizePx,
+        bottom = homeTop + resolvedHomeHeightPx,
+    )
     val activeSlot = entries.firstOrNull { it.isActive }?.slot
     val topBorderAlpha = if (activeSlot == TeamSlot.Away) ACTIVE_BORDER_ALPHA else 0f
     val bottomBorderAlpha = if (activeSlot == TeamSlot.Home) ACTIVE_BORDER_ALPHA else 0f
     val topBorderColor = primary.copy(alpha = topBorderAlpha)
     val bottomBorderColor = primary.copy(alpha = bottomBorderAlpha)
-    val awayBadgeClip = remember(awayBounds.value, badgeBounds.value) {
-        badgeBorderClip(awayBounds.value, badgeBounds.value)
-    }
-    val homeBadgeClip = remember(homeBounds.value, badgeBounds.value) {
-        badgeBorderClip(homeBounds.value, badgeBounds.value)
-    }
+    val awayBadgeClip = badgeBorderClip(awayBounds, badgeBounds)
+    val homeBadgeClip = badgeBorderClip(homeBounds, badgeBounds)
     Box(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(barSpacing),
         ) {
             entries.forEach { entry ->
                 val entryModifier = when (entry.slot) {
                     TeamSlot.Away -> {
-                        Modifier.onGloballyPositioned { coordinates ->
-                            awayBounds.value = coordinates.rectInWindow()
+                        Modifier.onSizeChanged { size ->
+                            if (awayHeightPx.intValue != size.height) {
+                                awayHeightPx.intValue = size.height
+                            }
                         }
                     }
 
                     TeamSlot.Home -> {
-                        Modifier.onGloballyPositioned { coordinates ->
-                            homeBounds.value = coordinates.rectInWindow()
+                        Modifier.onSizeChanged { size ->
+                            if (homeHeightPx.intValue != size.height) {
+                                homeHeightPx.intValue = size.height
+                            }
                         }
                     }
                 }
                 TeamSelectionBar(
                     entry = entry,
                     actions = actions,
+                    minHeight = barMinHeight,
                     modifier = entryModifier,
                 )
             }
@@ -657,10 +691,7 @@ private fun TeamSelectionBars(
                 topBorderClip = awayBadgeClip,
                 bottomBorderClip = homeBadgeClip,
                 textColor = textColor,
-                modifier = Modifier.align(Alignment.Center)
-                    .onGloballyPositioned { coordinates ->
-                        badgeBounds.value = coordinates.rectInWindow()
-                    },
+                modifier = Modifier.align(Alignment.Center),
             )
         }
     }
@@ -671,6 +702,7 @@ private fun TeamSelectionBar(
     entry: TeamSelectionBarEntry,
     actions: TeamSelectionActions,
     modifier: Modifier = Modifier,
+    minHeight: Dp,
 ) {
     val colors = MaterialTheme.colorScheme
     val primary = colors.primary
@@ -705,7 +737,7 @@ private fun TeamSelectionBar(
         onClick = onActivate,
         enabled = !isActive,
         modifier = modifier.fillMaxWidth()
-            .heightIn(min = 96.dp),
+            .heightIn(min = minHeight),
         shape = RoundedCornerShape(30.dp),
         color = cardColor,
         border = activeBorder,
@@ -1109,11 +1141,3 @@ private fun teamSelectionBarEntries(
         isCleared = state.homeCleared,
     ),
 )
-
-private fun LayoutCoordinates.rectInWindow(): Rect {
-    val topLeft = positionInWindow()
-    return Rect(
-        offset = topLeft,
-        size = Size(size.width.toFloat(), size.height.toFloat()),
-    )
-}

@@ -1,6 +1,7 @@
 package ca.amandeep.playernumber.ui.main
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,7 +31,10 @@ import ca.amandeep.playernumber.PlayerNumberViewModel
 import ca.amandeep.playernumber.R
 import ca.amandeep.playernumber.data.AnyTeam
 import ca.amandeep.playernumber.ui.jersey.PlayerNumberScreen
+import ca.amandeep.playernumber.ui.matchup.TeamSelectionActions
 import ca.amandeep.playernumber.ui.matchup.TeamSelectionScreen
+import ca.amandeep.playernumber.ui.matchup.TeamSelectionScreenContent
+import ca.amandeep.playernumber.ui.matchup.TeamSelectionViewModel
 import ca.amandeep.playernumber.ui.utils.SingleLineHeightStyle
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
@@ -102,6 +106,60 @@ private fun MatchupDestination(
         onHomeTeamSelect(initialHome)
         resetCounter.intValue += 1
     }
+    MatchupDestinationScaffold(
+        onDismiss = onDismiss,
+        onResetTeams = { onResetTeams.value.invoke() },
+        modifier = modifier,
+    ) { innerPadding ->
+        TeamSelectionScreen(
+            awayTeam = awayTeam,
+            homeTeam = homeTeam,
+            onAwayTeamSelect = onAwayTeamSelect,
+            onHomeTeamSelect = onHomeTeamSelect,
+            resetSignal = resetCounter.intValue,
+            modifier = Modifier.padding(innerPadding),
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun MatchupDestinationPreview(
+    awayTeam: AnyTeam,
+    homeTeam: AnyTeam,
+    state: TeamSelectionViewModel.State,
+    modifier: Modifier = Modifier,
+) {
+    val previewActions = remember {
+        TeamSelectionActions(
+            dispatch = {},
+            onTeamSelect = {},
+            onGameSelect = {},
+        )
+    }
+    MatchupDestinationScaffold(
+        onDismiss = {},
+        onResetTeams = {},
+        modifier = modifier,
+    ) { innerPadding ->
+        TeamSelectionScreenContent(
+            awayTeam = awayTeam,
+            homeTeam = homeTeam,
+            state = state,
+            actions = previewActions,
+            modifier = Modifier.padding(innerPadding),
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MatchupDestinationScaffold(
+    onDismiss: () -> Unit,
+    onResetTeams: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable (PaddingValues) -> Unit,
+) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
@@ -125,7 +183,7 @@ private fun MatchupDestination(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { onResetTeams.value.invoke() }) {
+                    IconButton(onClick = onResetTeams) {
                         Icon(
                             imageVector = Icons.Default.Refresh,
                             contentDescription = stringResource(R.string.reset_matchup_content_description),
@@ -139,16 +197,8 @@ private fun MatchupDestination(
                 ),
             )
         },
-    ) { innerPadding ->
-        TeamSelectionScreen(
-            awayTeam = awayTeam,
-            homeTeam = homeTeam,
-            onAwayTeamSelect = onAwayTeamSelect,
-            onHomeTeamSelect = onHomeTeamSelect,
-            resetSignal = resetCounter.intValue,
-            modifier = Modifier.padding(innerPadding),
-        )
-    }
+        content = content,
+    )
 }
 
 private sealed interface MainDestination {

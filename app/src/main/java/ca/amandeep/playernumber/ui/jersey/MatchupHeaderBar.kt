@@ -21,9 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -68,7 +68,7 @@ internal fun MatchupHeaderBar(
             shape = RoundedCornerShape(12.dp),
             border = BorderStroke(1.dp, borderColor),
             modifier = Modifier.onGloballyPositioned { coordinates ->
-                onPillPosition(coordinates.boundsInWindow())
+                onPillPosition(coordinates.boundsInRoot())
             },
         ) {
             Row(
@@ -110,7 +110,7 @@ internal fun MatchupHeaderBar(
                     tint = baseContentColor.copy(alpha = 0.7f),
                     modifier = Modifier.size(20.dp)
                         .onGloballyPositioned { coordinates ->
-                            val position = coordinates.positionInWindow()
+                            val position = coordinates.positionInRoot()
                             val center = Offset(
                                 x = position.x + coordinates.size.width / 2f,
                                 y = position.y + coordinates.size.height / 2f,

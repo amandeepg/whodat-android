@@ -11,7 +11,6 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -49,6 +48,7 @@ import ca.amandeep.playernumber.data.MlbTeamRefs
 import ca.amandeep.playernumber.data.NbaTeamRefs
 import ca.amandeep.playernumber.data.NflTeamRefs
 import ca.amandeep.playernumber.ui.adaptive.SizeBucket
+import ca.amandeep.playernumber.ui.theme.LocalSystemDarkTheme
 import ca.amandeep.playernumber.ui.theme.PlayerNumberTheme
 import ca.amandeep.playernumber.ui.matchup.reduceFontWidthIfNeeded
 import ca.amandeep.playernumber.ui.utils.SingleLineHeightStyle
@@ -69,7 +69,7 @@ internal fun TeamSection(
     chipSpacing: Dp = 12.dp,
 ) {
     val centerBiasBottomWeight = CENTER_BIAS_TOTAL_WEIGHT - centerBiasTopWeight
-    val isDarkTheme = isSystemInDarkTheme()
+    val isDarkTheme = LocalSystemDarkTheme.current
     val backgroundColor = remember(team.colors.primary, isDarkTheme) {
         themedTeamBackground(team.colors.primary, isDarkTheme)
     }
@@ -256,15 +256,16 @@ private fun PositionLabel(
             maxLines = 1,
         )
     } else {
+        val isDarkTheme = LocalSystemDarkTheme.current
         Surface(
-            color = Color.White.copy(alpha = if (isSystemInDarkTheme()) 0.10f else 0.45f),
+            color = Color.White.copy(alpha = if (isDarkTheme) 0.10f else 0.45f),
             contentColor = MaterialTheme.colorScheme.onSurface.copy(
-                alpha = if (isSystemInDarkTheme()) 0.92f else 0.90f,
+                alpha = if (isDarkTheme) 0.92f else 0.90f,
             ),
             shape = CircleShape,
             border = BorderStroke(
                 width = 1.dp,
-                color = Color.White.copy(alpha = if (isSystemInDarkTheme()) 0.1f else 0.3f),
+                color = Color.White.copy(alpha = if (isDarkTheme) 0.1f else 0.3f),
             ),
         ) {
             Text(

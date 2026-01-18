@@ -1,6 +1,5 @@
 package ca.amandeep.playernumber.ui.jersey
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -29,7 +28,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
@@ -38,6 +37,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import ca.amandeep.playernumber.ui.theme.LocalSystemDarkTheme
 import androidx.compose.ui.zIndex
 import ca.amandeep.playernumber.data.JerseyNumber
 import ca.amandeep.playernumber.data.MlbTeamRefs
@@ -102,7 +102,7 @@ private fun PlayerNumberScreenContent(
         modifier = modifier.fillMaxSize()
             .onGloballyPositioned { coordinates ->
                 rootBoundsState.value = LayoutBounds(
-                    topLeft = coordinates.positionInWindow(),
+                    topLeft = coordinates.positionInRoot(),
                     size = coordinates.size,
                 )
             },
@@ -161,7 +161,7 @@ private fun PlayerNumberTopBar(
     onPillPosition: (Rect) -> Unit,
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface
-    val isDarkTheme = isSystemInDarkTheme()
+    val isDarkTheme = LocalSystemDarkTheme.current
     val awayBaseColor = remember(state.away.team.colors.primary, isDarkTheme) {
         themedTeamBackground(state.away.team.colors.primary, isDarkTheme)
     }
@@ -199,7 +199,7 @@ private fun PlayerNumberBody(
         modifier = modifier.onGloballyPositioned { coordinates ->
             onBodyBoundsChange(
                 LayoutBounds(
-                    topLeft = coordinates.positionInWindow(),
+                    topLeft = coordinates.positionInRoot(),
                     size = coordinates.size,
                 ),
             )
