@@ -1,5 +1,5 @@
 defaults:
-  default_color: '#ffffff'
+  default_color: '#ffffffe6'
   font: Google Sans
   color: center
   tolerance: 80
