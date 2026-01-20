@@ -1,3 +1,5 @@
+import org.gradle.caching.http.HttpBuildCache
+
 pluginManagement {
     repositories {
         google {
@@ -22,6 +24,15 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+    }
+}
+
+buildCache {
+    local {
+        isEnabled = true
+    }
+    remote<HttpBuildCache> {
+        isEnabled = false
     }
 }
 
