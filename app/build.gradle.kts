@@ -37,6 +37,12 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+    flavorDimensions += "tier"
+    productFlavors {
+        create("slim") {
+            dimension = "tier"
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -50,6 +56,17 @@ android {
         compose = true
     }
     experimentalProperties["android.experimental.enableScreenshotTest"] = true
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        if (variant.productFlavors.any { it.second == "slim" }) {
+            variant.androidResources?.apply {
+                localeFilters.addAll(listOf("en"))
+                aaptAdditionalParameters.addAll(listOf("--preferred-density", "xxxhdpi"))
+            }
+        }
+    }
 }
 
 dependencies {

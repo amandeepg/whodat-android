@@ -5,6 +5,7 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+    types: [ ready_for_review ]
   workflow_dispatch:
 
 permissions:
@@ -12,7 +13,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
 
     steps:
       - uses: actions/checkout@v6
@@ -24,4 +25,4 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Build
-        run: ./gradlew assembleDebug --quiet --console=plain
+        run: ./gradlew build --scan
