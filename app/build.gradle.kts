@@ -42,6 +42,9 @@ android {
         create("slim") {
             dimension = "tier"
         }
+        create("full") {
+            dimension = "tier"
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
