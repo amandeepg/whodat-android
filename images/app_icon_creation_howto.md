@@ -1,12 +1,12 @@
-# ic_launcher_foreground regeneration
+# App icon asset regeneration
 
-Source image:
-- `images/flat-icon.webp`
-- `images/monochrome-icon.svg`
+Source images:
+- `images/flat-icon.webp` (foreground WebP assets)
+- `images/monochrome-icon.svg` (vector monochrome drawable)
 
 Output targets:
 - `app/src/main/res/mipmap-{mdpi,hdpi,xhdpi,xxhdpi,xxxhdpi}/ic_launcher_foreground.webp`
-- `app/src/main/res/mipmap-{mdpi,hdpi,xhdpi,xxhdpi,xxxhdpi}/ic_launcher_monochrome.webp`
+Note: The monochrome launcher asset is provided only as a vector drawable; do not generate monochrome WebP mipmaps.
 
 Current sizing rules:
 - Adaptive canvas size: 108/162/216/324/432 px per density.
@@ -30,19 +30,12 @@ for i in "${!densities[@]}"; do
   offset=$((adaptive * 2 / 100))
 
   magick -size ${adaptive}x${adaptive} xc:none \
-    \( "$src" -trim +repage -resize ${inner}x${inner} \) \
+    \( "$src" -trim +repage -filter Lanczos -resize ${inner}x${inner} \) \
     -gravity center -geometry +0+${offset} -composite \
     "$tmpdir/ic_launcher_foreground_${d}.png"
 
-  magick -size ${adaptive}x${adaptive} xc:none \
-    \( "$src" -trim +repage -resize ${inner}x${inner} -alpha on -channel RGB -fill white -colorize 100 \) \
-    -gravity center -geometry +0+${offset} -composite \
-    "$tmpdir/ic_launcher_monochrome_${d}.png"
-
   cwebp -lossless -z 9 -m 6 "$tmpdir/ic_launcher_foreground_${d}.png" \
     -o "app/src/main/res/mipmap-${d}/ic_launcher_foreground.webp" >/dev/null
-  cwebp -lossless -z 9 -m 6 "$tmpdir/ic_launcher_monochrome_${d}.png" \
-    -o "app/src/main/res/mipmap-${d}/ic_launcher_monochrome.webp" >/dev/null
 done
 
 rm -rf "$tmpdir"
@@ -134,3 +127,52 @@ PY
 
 Then update `app/src/main/res/drawable/ic_launcher_monochrome.xml` to wrap the paths in an outer `<group>`
 with the printed `scaleX/scaleY` and `translateX/translateY` values. Keep the inner path data unchanged.
+
+## Play Store icon exports (3D)
+
+Source image:
+- `images/3d-icon.webp`
+Optional override:
+- `images/play-store.override.webp` (if present, use this directly as `images/play-store.webp` with no padding, background, or resizing; only apply rounding for the rounded variant)
+
+Output targets:
+- `images/play-store.webp`
+- `images/play-store-rounded.webp`
+
+Rules:
+- Canvas: 512x512.
+- Background color: `@color/ic_launcher_background` (`#55A658`).
+- Padding: 10% on all sides (icon art is 80% of canvas, rounded to nearest pixel).
+- Rounded variant: 20% corner radius with antialiasing.
+- Output: WebP, lossless, highest compression.
+- Override rule: if `images/play-store.override.webp` exists, do not add any border or padding and do not resize; use it as-is for `images/play-store.webp`, then only round it for `images/play-store-rounded.webp`.
+
+Regenerate (requires ImageMagick):
+
+```bash
+size=512
+bg="#55A658"
+inner=410 # 80% of 512 rounded to nearest pixel
+
+# Square play-store icon
+src="images/3d-icon.webp"
+if [ -f images/play-store.override.webp ]; then
+  # Use override directly without resizing/padding/background.
+  cp images/play-store.override.webp images/play-store.webp
+else
+  magick -size ${size}x${size} xc:"$bg" \
+    \( "$src" -filter Lanczos -resize ${inner}x${inner} \) \
+    -gravity center -composite \
+    -define webp:lossless=true -define webp:method=6 \
+    images/play-store.webp
+fi
+
+# Rounded variant (20% radius, antialiased via high-res mask)
+magick images/play-store.webp \
+  \( -size 4096x4096 xc:none -fill white -antialias \
+     -draw "roundrectangle 0,0 4096,4096 819,819" \
+     -filter Lanczos -resize ${size}x${size} \) \
+  -alpha set -compose DstIn -composite \
+  -define webp:lossless=true -define webp:method=6 \
+  images/play-store-rounded.webp
+```
