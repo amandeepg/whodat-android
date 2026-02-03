@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application")
+    id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jmailen.kotlinter")
 }
@@ -92,7 +93,7 @@ dependencies {
     implementation(Square.retrofit2)
     implementation(Square.retrofit2.converter.moshi)
     implementation(Square.moshi)
-    implementation(Square.moshi.kotlinReflect)
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:_")
     testImplementation(Testing.junit4)
     debugImplementation(AndroidX.compose.ui.tooling)
     debugImplementation(AndroidX.compose.ui.testManifest)

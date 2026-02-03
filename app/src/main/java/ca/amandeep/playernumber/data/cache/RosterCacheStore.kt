@@ -4,11 +4,13 @@ import android.content.Context
 import android.util.Log
 import ca.amandeep.playernumber.data.AnyTeam
 import ca.amandeep.playernumber.data.api.espnLeagueFor
+import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.File
 
+@JsonClass(generateAdapter = true)
 data class CachedRoster(
     val leagueId: String,
     val teamAbbreviation: String,
@@ -16,6 +18,7 @@ data class CachedRoster(
     val players: List<CachedPlayer>,
 )
 
+@JsonClass(generateAdapter = true)
 data class CachedPlayer(
     val firstName: String,
     val lastName: String,

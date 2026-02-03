@@ -23,7 +23,6 @@ import ca.amandeep.playernumber.ui.jersey.TeamRosterUiState
 import ca.amandeep.playernumber.ui.jersey.toStatus
 import ca.amandeep.playernumber.ui.matchup.TeamSearchEngineStore
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -143,9 +142,7 @@ class PlayerNumberViewModel(
     )
 
     private fun createRosterRepository(): RosterRepository {
-        val moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        val moshi = Moshi.Builder().build()
         val okHttpClient = OkHttpClient.Builder().build()
         val retrofit = Retrofit.Builder()
             .baseUrl("https://site.api.espn.com/")

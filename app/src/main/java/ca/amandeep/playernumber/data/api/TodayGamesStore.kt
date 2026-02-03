@@ -1,7 +1,6 @@
 package ca.amandeep.playernumber.data.api
 
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -63,9 +62,7 @@ internal object TodayGamesStore {
     }
 
     private fun createRepository(): EspnTodayGamesRepository {
-        val moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        val moshi = Moshi.Builder().build()
         val okHttpClient = OkHttpClient.Builder().build()
         val retrofit = Retrofit.Builder()
             .baseUrl("https://site.api.espn.com/")
