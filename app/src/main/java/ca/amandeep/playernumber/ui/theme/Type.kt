@@ -7,15 +7,17 @@ import androidx.compose.ui.unit.sp
 
 // Set of Material typography styles to start with
 private val GoogleSansFlex = googleSansFlexFamily()
-val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = GoogleSansFlex,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp,
-    ),
-/* Other default text styles to override
+val Typography =
+    Typography(
+        bodyLarge =
+            TextStyle(
+                fontFamily = GoogleSansFlex,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                letterSpacing = 0.5.sp,
+            ),
+        /* Other default text styles to override
 titleLarge = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Normal,
@@ -30,5 +32,5 @@ labelSmall = TextStyle(
     lineHeight = 16.sp,
     letterSpacing = 0.5.sp
 )
- */
-)
+         */
+    )

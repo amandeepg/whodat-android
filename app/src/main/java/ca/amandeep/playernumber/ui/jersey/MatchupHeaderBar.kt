@@ -21,8 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,8 +48,10 @@ internal fun MatchupHeaderBar(
     onPillPosition: (Rect) -> Unit = {},
 ) {
     Box(
-        modifier = modifier.fillMaxWidth()
-            .padding(4.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(4.dp),
         contentAlignment = Alignment.TopCenter,
     ) {
         val pillColor = MaterialTheme.colorScheme.surfaceVariant
@@ -57,27 +59,30 @@ internal fun MatchupHeaderBar(
         val borderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
         val glassColor = pillColor.copy(alpha = 0.28f)
         val labelStyle = MaterialTheme.typography.labelLarge
-        val singleLineLabelStyle = labelStyle.copy(
-            lineHeight = labelStyle.fontSize,
-            lineHeightStyle = SingleLineHeightStyle,
-        )
+        val singleLineLabelStyle =
+            labelStyle.copy(
+                lineHeight = labelStyle.fontSize,
+                lineHeightStyle = SingleLineHeightStyle,
+            )
         Surface(
             onClick = onTeamSelectorClick,
             color = glassColor,
             contentColor = pillContentColor,
             shape = RoundedCornerShape(12.dp),
             border = BorderStroke(1.dp, borderColor),
-            modifier = Modifier.onGloballyPositioned { coordinates ->
-                onPillPosition(coordinates.boundsInRoot())
-            },
+            modifier =
+                Modifier.onGloballyPositioned { coordinates ->
+                    onPillPosition(coordinates.boundsInRoot())
+                },
         ) {
             Row(
-                modifier = Modifier.padding(
-                    start = 15.dp,
-                    end = 8.dp,
-                    top = 4.dp,
-                    bottom = 4.dp,
-                ),
+                modifier =
+                    Modifier.padding(
+                        start = 15.dp,
+                        end = 8.dp,
+                        top = 4.dp,
+                        bottom = 4.dp,
+                    ),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 val baseContentColor = LocalContentColor.current
@@ -108,15 +113,18 @@ internal fun MatchupHeaderBar(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = stringResource(R.string.select_teams_content_description),
                     tint = baseContentColor.copy(alpha = 0.7f),
-                    modifier = Modifier.size(20.dp)
-                        .onGloballyPositioned { coordinates ->
-                            val position = coordinates.positionInRoot()
-                            val center = Offset(
-                                x = position.x + coordinates.size.width / 2f,
-                                y = position.y + coordinates.size.height / 2f,
-                            )
-                            onChevronPosition(center)
-                        },
+                    modifier =
+                        Modifier
+                            .size(20.dp)
+                            .onGloballyPositioned { coordinates ->
+                                val position = coordinates.positionInRoot()
+                                val center =
+                                    Offset(
+                                        x = position.x + coordinates.size.width / 2f,
+                                        y = position.y + coordinates.size.height / 2f,
+                                    )
+                                onChevronPosition(center)
+                            },
                 )
             }
         }
@@ -155,20 +163,21 @@ private data class MatchupHeaderBarPreviewData(
 )
 
 private class MatchupHeaderBarPreviewProvider : PreviewParameterProvider<MatchupHeaderBarPreviewData> {
-    private val previewValues = listOf(
-        MatchupHeaderBarPreviewData(
-            awayTeam = MlbTeamRefs.TOR,
-            homeTeam = MlbTeamRefs.LAA,
-        ),
-        MatchupHeaderBarPreviewData(
-            awayTeam = MlbTeamRefs.NYY,
-            homeTeam = MlbTeamRefs.BOS,
-        ),
-        MatchupHeaderBarPreviewData(
-            awayTeam = MlbTeamRefs.LAD,
-            homeTeam = MlbTeamRefs.CHC,
-        ),
-    )
+    private val previewValues =
+        listOf(
+            MatchupHeaderBarPreviewData(
+                awayTeam = MlbTeamRefs.TOR,
+                homeTeam = MlbTeamRefs.LAA,
+            ),
+            MatchupHeaderBarPreviewData(
+                awayTeam = MlbTeamRefs.NYY,
+                homeTeam = MlbTeamRefs.BOS,
+            ),
+            MatchupHeaderBarPreviewData(
+                awayTeam = MlbTeamRefs.LAD,
+                homeTeam = MlbTeamRefs.CHC,
+            ),
+        )
 
     override val values: Sequence<MatchupHeaderBarPreviewData> = previewValues.asSequence()
 

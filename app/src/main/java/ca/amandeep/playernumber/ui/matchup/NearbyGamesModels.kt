@@ -21,22 +21,27 @@ internal fun computeNearbyGames(
     location: DeviceLocation,
     atStadiumMeters: Double = 609.6,
 ): NearbyGames {
-    val candidates = leagues.flatMap { league ->
-        league.games.map { game ->
-            HighlightedGame(
-                game = game,
-                distanceMeters = distanceMeters(location, game.home.venue.location),
-            )
+    val candidates =
+        leagues.flatMap { league ->
+            league.games.map { game ->
+                HighlightedGame(
+                    game = game,
+                    distanceMeters = distanceMeters(location, game.home.venue.location),
+                )
+            }
         }
-    }
     if (candidates.isEmpty()) {
         return NearbyGames(atStadium = null, closest = emptyList())
     }
-    val atStadium = candidates.filter { it.distanceMeters <= atStadiumMeters }
-        .minByOrNull { it.distanceMeters }
-    val closest = candidates.filter { it.distanceMeters <= CLOSEST_RANGE_METERS }
-        .filter { it.game.eventId != atStadium?.game?.eventId }
-        .sortedBy { it.distanceMeters }
+    val atStadium =
+        candidates
+            .filter { it.distanceMeters <= atStadiumMeters }
+            .minByOrNull { it.distanceMeters }
+    val closest =
+        candidates
+            .filter { it.distanceMeters <= CLOSEST_RANGE_METERS }
+            .filter { it.game.eventId != atStadium?.game?.eventId }
+            .sortedBy { it.distanceMeters }
     return NearbyGames(atStadium = atStadium, closest = closest)
 }
 

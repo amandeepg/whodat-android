@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.PlatformTextStyle
@@ -48,9 +49,8 @@ import ca.amandeep.playernumber.data.MlbTeamRefs
 import ca.amandeep.playernumber.data.NbaTeamRefs
 import ca.amandeep.playernumber.data.NflTeamRefs
 import ca.amandeep.playernumber.ui.adaptive.SizeBucket
-import ca.amandeep.playernumber.ui.theme.LocalSystemDarkTheme
-import ca.amandeep.playernumber.ui.theme.PlayerNumberTheme
 import ca.amandeep.playernumber.ui.matchup.reduceFontWidthIfNeeded
+import ca.amandeep.playernumber.ui.theme.PlayerNumberTheme
 import ca.amandeep.playernumber.ui.utils.SingleLineHeightStyle
 import ca.amandeep.playernumber.ui.utils.legibleBlendToward
 import ca.amandeep.playernumber.ui.utils.themedTeamBackground
@@ -69,14 +69,17 @@ internal fun TeamSection(
     chipSpacing: Dp = 12.dp,
 ) {
     val centerBiasBottomWeight = CENTER_BIAS_TOTAL_WEIGHT - centerBiasTopWeight
-    val isDarkTheme = LocalSystemDarkTheme.current
-    val backgroundColor = remember(team.colors.primary, isDarkTheme) {
-        themedTeamBackground(team.colors.primary, isDarkTheme)
-    }
+    val isDarkTheme = MaterialTheme.colorScheme.surface.luminance() < 0.5f
+    val backgroundColor =
+        remember(team.colors.primary, isDarkTheme) {
+            themedTeamBackground(team.colors.primary, isDarkTheme)
+        }
     val nameAccent = team.colors.nameAccent
     Box(
-        modifier = modifier.fillMaxWidth()
-            .background(backgroundColor),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(backgroundColor),
     ) {
         val shortTeamName = remember(team.name) { team.nickname() }
         AnimatedContent(
@@ -87,50 +90,56 @@ internal fun TeamSection(
                 val scaleInSpec = tween<Float>(durationMillis = 220, delayMillis = 80)
                 val scaleOutSpec = tween<Float>(durationMillis = 140)
                 (
-                        fadeIn(animationSpec = fadeInSpec) +
-                                scaleIn(
-                                    initialScale = 0.98f,
-                                    animationSpec = scaleInSpec,
-                                )
-                        ) togetherWith (
-                        fadeOut(animationSpec = fadeOutSpec) +
-                                scaleOut(
-                                    targetScale = 0.98f,
-                                    animationSpec = scaleOutSpec,
-                                )
+                    fadeIn(animationSpec = fadeInSpec) +
+                        scaleIn(
+                            initialScale = 0.98f,
+                            animationSpec = scaleInSpec,
                         )
+                ) togetherWith (
+                    fadeOut(animationSpec = fadeOutSpec) +
+                        scaleOut(
+                            targetScale = 0.98f,
+                            animationSpec = scaleOutSpec,
+                        )
+                )
             },
             label = "playerContent",
         ) { content ->
             val displayPlayer = content.player
             val positionLabel = displayPlayer?.position?.longName
-            val (firstNameMinSize, firstNameMaxSize) = when (heightBucket) {
-                SizeBucket.Small -> 6.sp to 12.sp
-                SizeBucket.Medium -> 6.sp to 16.sp
-                SizeBucket.Large -> 8.sp to 18.sp
-            }
-            val firstNameAutoSize = remember(heightBucket) {
-                TextAutoSize.StepBased(
-                    minFontSize = firstNameMinSize,
-                    maxFontSize = firstNameMaxSize,
-                )
-            }
-            val (lastNameMinSize, lastNameMaxSize) = when (heightBucket) {
-                SizeBucket.Small -> 14.sp to 28.sp
-                SizeBucket.Medium -> 16.sp to 42.sp
-                SizeBucket.Large -> 20.sp to 64.sp
-            }
-            val lastNameAutoSize = remember(heightBucket) {
-                TextAutoSize.StepBased(
-                    minFontSize = lastNameMinSize,
-                    maxFontSize = lastNameMaxSize,
-                )
-            }
+            val (firstNameMinSize, firstNameMaxSize) =
+                when (heightBucket) {
+                    SizeBucket.Small -> 6.sp to 12.sp
+                    SizeBucket.Medium -> 6.sp to 16.sp
+                    SizeBucket.Large -> 8.sp to 18.sp
+                }
+            val firstNameAutoSize =
+                remember(heightBucket) {
+                    TextAutoSize.StepBased(
+                        minFontSize = firstNameMinSize,
+                        maxFontSize = firstNameMaxSize,
+                    )
+                }
+            val (lastNameMinSize, lastNameMaxSize) =
+                when (heightBucket) {
+                    SizeBucket.Small -> 14.sp to 28.sp
+                    SizeBucket.Medium -> 16.sp to 42.sp
+                    SizeBucket.Large -> 20.sp to 64.sp
+                }
+            val lastNameAutoSize =
+                remember(heightBucket) {
+                    TextAutoSize.StepBased(
+                        minFontSize = lastNameMinSize,
+                        maxFontSize = lastNameMaxSize,
+                    )
+                }
 
             Column(
-                modifier = Modifier.fillMaxSize()
-                    .padding(horizontal = 24.dp)
-                    .padding(contentPadding),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp)
+                        .padding(contentPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Spacer(modifier = Modifier.weight(centerBiasTopWeight, fill = true))
@@ -139,41 +148,47 @@ internal fun TeamSection(
                     val displayNumber = content.jerseyNumber
                     if (displayNumber.isNotEmpty()) {
                         Text(
-                            text = stringResource(
-                                R.string.no_team_number,
-                                shortTeamName,
-                                displayNumber,
-                            ),
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                letterSpacing = 1.5.sp,
-                                lineHeightStyle = SingleLineHeightStyle,
-                            ),
-                            color = legibleBlendToward(
-                                background = backgroundColor,
-                                desiredTextColor = nameAccent.copy(alpha = 0.8f),
-                                minContrast = 2.5,
-                            ),
+                            text =
+                                stringResource(
+                                    R.string.no_team_number,
+                                    shortTeamName,
+                                    displayNumber,
+                                ),
+                            style =
+                                MaterialTheme.typography.titleLarge.copy(
+                                    letterSpacing = 1.5.sp,
+                                    lineHeightStyle = SingleLineHeightStyle,
+                                ),
+                            color =
+                                legibleBlendToward(
+                                    background = backgroundColor,
+                                    desiredTextColor = nameAccent.copy(alpha = 0.8f),
+                                    minContrast = 2.5,
+                                ),
                             fontWeight = FontWeight.Medium,
                         )
                     }
                 } else {
                     val suffixText = displayPlayer.suffix?.trim().orEmpty()
-                    val showSuffix = suffixText.isNotEmpty() &&
-                        !(heightBucket == SizeBucket.Small && positionLabel != null)
-                    val firstNameStyle = MaterialTheme.typography.titleMedium.copy(
-                        letterSpacing = 3.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = firstNameMaxSize,
-                        lineHeight = firstNameMaxSize,
-                        platformStyle = PlatformTextStyle(includeFontPadding = false),
-                        lineHeightStyle = SingleLineHeightStyle,
-                    )
-                    val firstNameColor = legibleBlendToward(
-                        background = backgroundColor,
-                        onBackground = MaterialTheme.colorScheme.onSurface,
-                        desiredTextColor = nameAccent.copy(alpha = 0.75f),
-                        minContrast = 5.5,
-                    )
+                    val showSuffix =
+                        suffixText.isNotEmpty() &&
+                            !(heightBucket == SizeBucket.Small && positionLabel != null)
+                    val firstNameStyle =
+                        MaterialTheme.typography.titleMedium.copy(
+                            letterSpacing = 3.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = firstNameMaxSize,
+                            lineHeight = firstNameMaxSize,
+                            platformStyle = PlatformTextStyle(includeFontPadding = false),
+                            lineHeightStyle = SingleLineHeightStyle,
+                        )
+                    val firstNameColor =
+                        legibleBlendToward(
+                            background = backgroundColor,
+                            onBackground = MaterialTheme.colorScheme.onSurface,
+                            desiredTextColor = nameAccent.copy(alpha = 0.75f),
+                            minContrast = 5.5,
+                        )
                     Text(
                         text = displayPlayer.firstName.uppercase(Locale.ROOT),
                         style = firstNameStyle,
@@ -184,27 +199,30 @@ internal fun TeamSection(
                     )
                     val lastNameText = displayPlayer.lastName.uppercase(ROOT)
                     BoxWithConstraints {
-                        val baseStyle = MaterialTheme.typography.displayLarge.copy(
-                            letterSpacing = (-0.3).sp,
-                            fontWeight = FontWeight.Black,
-                            fontSize = lastNameMaxSize,
-                            lineHeight = lastNameMaxSize,
-                            platformStyle = PlatformTextStyle(includeFontPadding = false),
-                            lineHeightStyle = SingleLineHeightStyle,
-                        )
-                        val lastNameStyle = reduceFontWidthIfNeeded(
-                            text = lastNameText,
-                            textStyle = baseStyle,
-                            fontWidth = null,
-                        )
+                        val baseStyle =
+                            MaterialTheme.typography.displayLarge.copy(
+                                letterSpacing = (-0.3).sp,
+                                fontWeight = FontWeight.Black,
+                                fontSize = lastNameMaxSize,
+                                lineHeight = lastNameMaxSize,
+                                platformStyle = PlatformTextStyle(includeFontPadding = false),
+                                lineHeightStyle = SingleLineHeightStyle,
+                            )
+                        val lastNameStyle =
+                            reduceFontWidthIfNeeded(
+                                text = lastNameText,
+                                textStyle = baseStyle,
+                                fontWidth = null,
+                            )
                         Text(
                             text = lastNameText,
                             style = lastNameStyle,
-                            color = legibleBlendToward(
-                                background = backgroundColor,
-                                desiredTextColor = nameAccent,
-                                minContrast = 4.0,
-                            ),
+                            color =
+                                legibleBlendToward(
+                                    background = backgroundColor,
+                                    desiredTextColor = nameAccent,
+                                    minContrast = 4.0,
+                                ),
                             lineHeight = lastNameMaxSize,
                             maxLines = 1,
                             autoSize = lastNameAutoSize,
@@ -249,33 +267,37 @@ private fun PositionLabel(
             color = MaterialTheme.colorScheme.onSurface,
             letterSpacing = 5.sp,
             fontWeight = FontWeight.Normal,
-            style = labelStyle.copy(
-                lineHeight = labelStyle.fontSize,
-                lineHeightStyle = SingleLineHeightStyle,
-            ),
+            style =
+                labelStyle.copy(
+                    lineHeight = labelStyle.fontSize,
+                    lineHeightStyle = SingleLineHeightStyle,
+                ),
             maxLines = 1,
         )
     } else {
-        val isDarkTheme = LocalSystemDarkTheme.current
+        val isDarkTheme = MaterialTheme.colorScheme.surface.luminance() < 0.5f
         Surface(
             color = Color.White.copy(alpha = if (isDarkTheme) 0.10f else 0.45f),
-            contentColor = MaterialTheme.colorScheme.onSurface.copy(
-                alpha = if (isDarkTheme) 0.92f else 0.90f,
-            ),
+            contentColor =
+                MaterialTheme.colorScheme.onSurface.copy(
+                    alpha = if (isDarkTheme) 0.92f else 0.90f,
+                ),
             shape = CircleShape,
-            border = BorderStroke(
-                width = 1.dp,
-                color = Color.White.copy(alpha = if (isDarkTheme) 0.1f else 0.3f),
-            ),
+            border =
+                BorderStroke(
+                    width = 1.dp,
+                    color = Color.White.copy(alpha = if (isDarkTheme) 0.1f else 0.3f),
+                ),
         ) {
             Text(
                 text = positionalLabelUpper,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 2.sp,
-                style = MaterialTheme.typography.labelSmall.copy(
-                    lineHeightStyle = SingleLineHeightStyle,
-                ),
+                style =
+                    MaterialTheme.typography.labelSmall.copy(
+                        lineHeightStyle = SingleLineHeightStyle,
+                    ),
             )
         }
     }
@@ -331,14 +353,15 @@ private fun TeamSectionEmptyPreview(
 }
 
 private class TeamSectionWithPlayerPreviewProvider : PreviewParameterProvider<AnyTeam> {
-    private val previewValues = listOf(
-        MlbTeamRefs.TOR,
-        MlbTeamRefs.NYM,
-        MlbTeamRefs.PHI,
-        NflTeamRefs.MIN,
-        NbaTeamRefs.BOS,
-        MlbTeamRefs.SD,
-    )
+    private val previewValues =
+        listOf(
+            MlbTeamRefs.TOR,
+            MlbTeamRefs.NYM,
+            MlbTeamRefs.PHI,
+            NflTeamRefs.MIN,
+            NbaTeamRefs.BOS,
+            MlbTeamRefs.SD,
+        )
 
     override val values: Sequence<AnyTeam> = previewValues.asSequence()
 
@@ -355,23 +378,27 @@ private data class TeamSectionWithPlayerPreviewState(
 
 private class TeamSectionWithPlayerPreviewStateProvider : PreviewParameterProvider<TeamSectionWithPlayerPreviewState> {
     private val previewValues = TeamSectionWithPlayerPreviewProvider().values.toList()
-    private val heightBuckets = listOf(
-        SizeBucket.Small,
-        SizeBucket.Medium,
-        SizeBucket.Large,
-    )
+    private val heightBuckets =
+        listOf(
+            SizeBucket.Small,
+            SizeBucket.Medium,
+            SizeBucket.Large,
+        )
 
-    override val values: Sequence<TeamSectionWithPlayerPreviewState> = sequence {
-        for (team in previewValues) {
-            for (bucket in heightBuckets) {
-                yield(TeamSectionWithPlayerPreviewState(team = team, heightBucket = bucket))
+    override val values: Sequence<TeamSectionWithPlayerPreviewState> =
+        sequence {
+            for (team in previewValues) {
+                for (bucket in heightBuckets) {
+                    yield(TeamSectionWithPlayerPreviewState(team = team, heightBucket = bucket))
+                }
             }
         }
-    }
 
-    override fun getDisplayName(index: Int): String? = values.toList()
-        .getOrNull(index)
-        ?.let { "${it.team.abbreviation}-${it.heightBucket.name.lowercase()}" }
+    override fun getDisplayName(index: Int): String? =
+        values
+            .toList()
+            .getOrNull(index)
+            ?.let { "${it.team.abbreviation}-${it.heightBucket.name.lowercase()}" }
 }
 
 internal const val CENTER_BIAS_TOTAL_WEIGHT = 2f

@@ -1,12 +1,12 @@
 defaults:
   default_color: '#ffffffe6'
-  font: Google Sans
+  font: "Google Sans, Google Sans Flex"
   color: center
   tolerance: 80
   zero_alpha_threshold: 50
   device_width_ratio: 0.8
   search_root: ../..
-  screenshot_directory: ../../app/src/screenshotTestDebug/reference/ca/amandeep/playernumber/ui/main/MarketingScreenshotsKt
+  screenshot_directory: ../../app/build/outputs/screenshotTest-results/preview/debug/full/rendered/ca/amandeep/playernumber/ui/main/MarketingScreenshotsKt
 jobs:
   - name: jersey_number
     text: Find the <color="#7051B3">player</color>, by the jersey <color="#7051B3">number</color>.

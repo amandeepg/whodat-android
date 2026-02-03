@@ -78,35 +78,37 @@ class EspnRosterRepository(
         val flow = stateFlowFor(team)
         if (refreshJobs[teamId]?.isActive == true) return
 
-        refreshJobs[teamId] = scope.launch(ioDispatcher) {
-            val cached = readCache(team)
-            val now = clock()
-            val decision = decideRefresh(team, flow.value, cached, force, now)
-            decision.preRefreshState?.let { flow.value = it }
-            if (!decision.shouldRefresh) {
-                return@launch
-            }
-
-            try {
-                val league = espnLeagueFor(team)
-                val players = api.fetchRoster(league, team.abbreviation)
-                if (players.isEmpty()) {
+        refreshJobs[teamId] =
+            scope.launch(ioDispatcher) {
+                val cached = readCache(team)
+                val now = clock()
+                val decision = decideRefresh(team, flow.value, cached, force, now)
+                decision.preRefreshState?.let { flow.value = it }
+                if (!decision.shouldRefresh) {
                     return@launch
                 }
-                val updatedAt = clock()
-                flow.value = buildRosterState(
-                    team = team,
-                    players = players,
-                    source = RosterSource.ESPN,
-                    lastUpdatedMillis = updatedAt,
-                )
-                cache.write(team, cachedRosterFor(team, league.leagueId, updatedAt, players))
-            } catch (cancelled: CancellationException) {
-                throw cancelled
-            } catch (error: Exception) {
-                Log.e(LOG_TAG, "Roster refresh failed team=${team.abbreviation}", error)
+
+                try {
+                    val league = espnLeagueFor(team)
+                    val players = api.fetchRoster(league, team.abbreviation)
+                    if (players.isEmpty()) {
+                        return@launch
+                    }
+                    val updatedAt = clock()
+                    flow.value =
+                        buildRosterState(
+                            team = team,
+                            players = players,
+                            source = RosterSource.ESPN,
+                            lastUpdatedMillis = updatedAt,
+                        )
+                    cache.write(team, cachedRosterFor(team, league.leagueId, updatedAt, players))
+                } catch (cancelled: CancellationException) {
+                    throw cancelled
+                } catch (error: Exception) {
+                    Log.e(LOG_TAG, "Roster refresh failed team=${team.abbreviation}", error)
+                }
             }
-        }
     }
 
     override fun findPlayer(
@@ -118,7 +120,10 @@ class EspnRosterRepository(
         return findPlayerInRoster(rosterState.players, number)
     }
 
-    private fun stateFlowFor(team: AnyTeam): MutableStateFlow<RosterState> = stateByTeam.getOrPut(team.teamId()) { MutableStateFlow(staticState(team)) }
+    private fun stateFlowFor(team: AnyTeam): MutableStateFlow<RosterState> =
+        stateByTeam.getOrPut(team.teamId()) {
+            MutableStateFlow(staticState(team))
+        }
 
     private fun decideRefresh(
         team: AnyTeam,
@@ -132,55 +137,61 @@ class EspnRosterRepository(
         }
         val cachedAge = now - cached.fetchedAtMillis
         if (!force && cachedAge < refreshAfterMillis) {
-            val preState = if (current.source == RosterSource.STATIC) {
-                cachedState(team, cached)
-            } else {
-                null
-            }
+            val preState =
+                if (current.source == RosterSource.STATIC) {
+                    cachedState(team, cached)
+                } else {
+                    null
+                }
             return RefreshDecision(preRefreshState = preState, shouldRefresh = false)
         }
         if (cachedAge < expireAfterMillis) {
-            val preState = if (current.source != RosterSource.CACHE) {
+            val preState =
+                if (current.source != RosterSource.CACHE) {
+                    cachedState(team, cached)
+                } else {
+                    null
+                }
+            return RefreshDecision(preRefreshState = preState, shouldRefresh = true)
+        }
+        val preState =
+            if (current.source != RosterSource.CACHE) {
                 cachedState(team, cached)
             } else {
                 null
             }
-            return RefreshDecision(preRefreshState = preState, shouldRefresh = true)
-        }
-        val preState = if (current.source != RosterSource.CACHE) {
-            cachedState(team, cached)
-        } else {
-            null
-        }
         return RefreshDecision(preRefreshState = preState, shouldRefresh = true)
     }
 
-    private fun staticState(team: AnyTeam): RosterState = buildRosterState(
-        team = team,
-        players = team.roster,
-        source = RosterSource.STATIC,
-        lastUpdatedMillis = null,
-    )
+    private fun staticState(team: AnyTeam): RosterState =
+        buildRosterState(
+            team = team,
+            players = team.roster,
+            source = RosterSource.STATIC,
+            lastUpdatedMillis = null,
+        )
 
     private fun cachedState(
         team: AnyTeam,
         cached: CachedRoster,
     ): RosterState {
         val league = EspnLeague.fromLeagueId(cached.leagueId) ?: espnLeagueFor(team)
-        val players = cached.players.map { cachedPlayer ->
-            val position = mapPositionForLeague(
-                league = league,
-                abbreviation = cachedPlayer.positionShortName,
-                name = cachedPlayer.positionLongName,
-            )
-            Player(
-                firstName = cachedPlayer.firstName,
-                lastName = cachedPlayer.lastName,
-                position = position,
-                jerseyNumber = cachedPlayer.jerseyNumber,
-                suffix = cachedPlayer.suffix,
-            )
-        }
+        val players =
+            cached.players.map { cachedPlayer ->
+                val position =
+                    mapPositionForLeague(
+                        league = league,
+                        abbreviation = cachedPlayer.positionShortName,
+                        name = cachedPlayer.positionLongName,
+                    )
+                Player(
+                    firstName = cachedPlayer.firstName,
+                    lastName = cachedPlayer.lastName,
+                    position = position,
+                    jerseyNumber = cachedPlayer.jerseyNumber,
+                    suffix = cachedPlayer.suffix,
+                )
+            }
         return buildRosterState(
             team = team,
             players = players,
@@ -194,46 +205,49 @@ class EspnRosterRepository(
         players: List<AnyPlayer>,
         source: RosterSource,
         lastUpdatedMillis: Long?,
-    ): RosterState = RosterState(
-        team = team,
-        players = players,
-        source = source,
-        lastUpdatedMillis = lastUpdatedMillis,
-    )
+    ): RosterState =
+        RosterState(
+            team = team,
+            players = players,
+            source = source,
+            lastUpdatedMillis = lastUpdatedMillis,
+        )
 
     private fun cachedRosterFor(
         team: AnyTeam,
         leagueId: String,
         fetchedAt: Long,
         players: List<AnyPlayer>,
-    ): CachedRoster = CachedRoster(
-        leagueId = leagueId,
-        teamAbbreviation = team.abbreviation,
-        fetchedAtMillis = fetchedAt,
-        players = players.map { player ->
-            CachedPlayer(
-                firstName = player.firstName,
-                lastName = player.lastName,
-                positionShortName = player.position.shortName,
-                positionLongName = player.position.longName,
-                jerseyNumber = player.jerseyNumber,
-                suffix = player.suffix,
-            )
-        },
-    )
+    ): CachedRoster =
+        CachedRoster(
+            leagueId = leagueId,
+            teamAbbreviation = team.abbreviation,
+            fetchedAtMillis = fetchedAt,
+            players =
+                players.map { player ->
+                    CachedPlayer(
+                        firstName = player.firstName,
+                        lastName = player.lastName,
+                        positionShortName = player.position.shortName,
+                        positionLongName = player.position.longName,
+                        jerseyNumber = player.jerseyNumber,
+                        suffix = player.suffix,
+                    )
+                },
+        )
 
-    private suspend fun readCache(team: AnyTeam): CachedRoster? = try {
-        val leagueId = espnLeagueFor(team).leagueId
-        cache.read(team)?.takeIf { cached ->
-            cached.teamAbbreviation == team.abbreviation && cached.leagueId == leagueId
+    private suspend fun readCache(team: AnyTeam): CachedRoster? =
+        try {
+            val leagueId = espnLeagueFor(team).leagueId
+            cache.read(team)?.takeIf { cached ->
+                cached.teamAbbreviation == team.abbreviation && cached.leagueId == leagueId
+            }
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (error: Exception) {
+            Log.e(LOG_TAG, "Cache read failed team=${team.abbreviation}", error)
+            null
         }
-    } catch (cancelled: CancellationException) {
-        throw cancelled
-    } catch (error: Exception) {
-        Log.e(LOG_TAG, "Cache read failed team=${team.abbreviation}", error)
-        null
-    }
-
 }
 
 private data class RefreshDecision(

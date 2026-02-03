@@ -46,23 +46,24 @@ class FileRosterCacheStore(
 ) : RosterCacheStore {
     private val adapter = moshi.adapter(CachedRoster::class.java)
 
-    override suspend fun read(team: AnyTeam): CachedRoster? = withContext(ioDispatcher) {
-        val file = cacheFile(team)
-        if (!file.exists()) {
-            return@withContext null
-        }
-        return@withContext try {
-            adapter.fromJson(file.readText()).also { roster ->
-                if (roster == null) {
-                    Log.e(LOG_TAG, "Cache decode failed team=${team.abbreviation}")
-                }
+    override suspend fun read(team: AnyTeam): CachedRoster? =
+        withContext(ioDispatcher) {
+            val file = cacheFile(team)
+            if (!file.exists()) {
+                return@withContext null
             }
-        } catch (error: Exception) {
-            Log.e(LOG_TAG, "Cache decode failed team=${team.abbreviation}", error)
-            file.delete()
-            null
+            return@withContext try {
+                adapter.fromJson(file.readText()).also { roster ->
+                    if (roster == null) {
+                        Log.e(LOG_TAG, "Cache decode failed team=${team.abbreviation}")
+                    }
+                }
+            } catch (error: Exception) {
+                Log.e(LOG_TAG, "Cache decode failed team=${team.abbreviation}", error)
+                file.delete()
+                null
+            }
         }
-    }
 
     override suspend fun write(
         team: AnyTeam,

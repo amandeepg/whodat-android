@@ -6,8 +6,8 @@ import androidx.compose.ui.Modifier
 import ca.amandeep.playernumber.data.AnyTeam
 import ca.amandeep.playernumber.data.JerseyNumber
 import ca.amandeep.playernumber.data.StaticRosterLookup
-import ca.amandeep.playernumber.data.teamId
 import ca.amandeep.playernumber.data.api.RosterSource
+import ca.amandeep.playernumber.data.teamId
 import ca.amandeep.playernumber.ui.jersey.PlayerNumberScreen
 import ca.amandeep.playernumber.ui.jersey.PlayerNumberUiState
 import ca.amandeep.playernumber.ui.jersey.RosterStatus
@@ -20,13 +20,14 @@ internal fun PlayerNumberMarketingPreview(
     homeTeam: AnyTeam,
 ) {
     PlayerNumberScreen(
-        state = remember {
-            buildPreviewState(
-                jerseyNumber = jerseyNumber,
-                awayTeam = awayTeam,
-                homeTeam = homeTeam,
-            )
-        },
+        state =
+            remember {
+                buildPreviewState(
+                    jerseyNumber = jerseyNumber,
+                    awayTeam = awayTeam,
+                    homeTeam = homeTeam,
+                )
+            },
         onJerseyInputChange = { },
         onTeamSelectorClick = { },
     )
@@ -43,19 +44,23 @@ private fun buildPreviewState(
 
     return PlayerNumberUiState(
         jerseyNumber = jerseyNumber,
-        away = TeamRosterUiState(
-            team = awayTeam,
-            player = awayPlayer,
-            rosterStatus = PreviewRosterStatus,
-        ),
-        home = TeamRosterUiState(
-            team = homeTeam,
-            player = homePlayer,
-            rosterStatus = PreviewRosterStatus,
-        ),
+        away =
+            TeamRosterUiState(
+                team = awayTeam,
+                player = awayPlayer,
+                rosterStatus = PreviewRosterStatus,
+            ),
+        home =
+            TeamRosterUiState(
+                team = homeTeam,
+                player = homePlayer,
+                rosterStatus = PreviewRosterStatus,
+            ),
     )
 }
-private val PreviewRosterStatus = RosterStatus(
-    source = RosterSource.STATIC,
-    lastUpdatedMillis = null,
-)
+
+private val PreviewRosterStatus =
+    RosterStatus(
+        source = RosterSource.STATIC,
+        lastUpdatedMillis = null,
+    )

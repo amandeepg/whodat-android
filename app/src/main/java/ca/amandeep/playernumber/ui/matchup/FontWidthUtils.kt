@@ -21,38 +21,44 @@ internal fun computeFittingFontWidth(
     maxWidthPx: Float,
 ): FontWidth? {
     val safeWidth = maxWidthPx.coerceAtLeast(0f)
-    val fontSize = if (textStyle.fontSize.isUnspecified) {
-        0f
-    } else {
-        textStyle.fontSize.value
-    }
-    val cacheKey = FontWidthCacheKey(
-        maxWidthPx = safeWidth.roundToInt(),
-        fontSizeSp = fontSize,
-        fontWeight = textStyle.fontWeight?.weight,
-    )
+    val fontSize =
+        if (textStyle.fontSize.isUnspecified) {
+            0f
+        } else {
+            textStyle.fontSize.value
+        }
+    val cacheKey =
+        FontWidthCacheKey(
+            maxWidthPx = safeWidth.roundToInt(),
+            fontSizeSp = fontSize,
+            fontWeight = textStyle.fontWeight?.weight,
+        )
     return synchronized(FontWidthCache) {
-        val cached = FontWidthCache.values.getOrPut(cacheKey) {
-            val text = NbaTeamRefs.POR.name
-            val defaultMeasured = textMeasurer.measure(
-                text = text,
-                style = textStyle,
-                maxLines = 1,
-            )
-            if (defaultMeasured.size.width <= safeWidth) {
-                FontWidthCacheValue.NoChange
-            } else {
-                val width = WidthOptions.firstOrNull { width ->
-                    val measured = textMeasurer.measure(
+        val cached =
+            FontWidthCache.values.getOrPut(cacheKey) {
+                val text = NbaTeamRefs.POR.name
+                val defaultMeasured =
+                    textMeasurer.measure(
                         text = text,
-                        style = textStyle.withFontWidth(width),
+                        style = textStyle,
                         maxLines = 1,
                     )
-                    measured.size.width <= safeWidth
-                } ?: FontWidth.SuperCondensed
-                FontWidthCacheValue.Width(width)
+                if (defaultMeasured.size.width <= safeWidth) {
+                    FontWidthCacheValue.NoChange
+                } else {
+                    val width =
+                        WidthOptions.firstOrNull { width ->
+                            val measured =
+                                textMeasurer.measure(
+                                    text = text,
+                                    style = textStyle.withFontWidth(width),
+                                    maxLines = 1,
+                                )
+                            measured.size.width <= safeWidth
+                        } ?: FontWidth.SuperCondensed
+                    FontWidthCacheValue.Width(width)
+                }
             }
-        }
         when (cached) {
             FontWidthCacheValue.NoChange -> null
             is FontWidthCacheValue.Width -> cached.value
@@ -84,21 +90,24 @@ private sealed interface FontWidthCacheValue {
 fun BoxWithConstraintsScope.reduceFontWidthIfNeeded(
     text: String,
     textStyle: TextStyle,
-    fontWidth: FontWidth?
+    fontWidth: FontWidth?,
 ): TextStyle {
     val textMeasurer = rememberTextMeasurer()
     val density = LocalDensity.current
-    val maxWidthPx = remember(maxWidth, density) {
-        with(density) { maxWidth.toPx() }.coerceAtLeast(0f)
-    }
-    val shouldNarrowWidth = remember(text, textStyle, textMeasurer, maxWidthPx) {
-        val measured = textMeasurer.measure(
-            text = text,
-            style = textStyle,
-            maxLines = 1,
-        )
-        measured.size.width > maxWidthPx
-    }
+    val maxWidthPx =
+        remember(maxWidth, density) {
+            with(density) { maxWidth.toPx() }.coerceAtLeast(0f)
+        }
+    val shouldNarrowWidth =
+        remember(text, textStyle, textMeasurer, maxWidthPx) {
+            val measured =
+                textMeasurer.measure(
+                    text = text,
+                    style = textStyle,
+                    maxLines = 1,
+                )
+            measured.size.width > maxWidthPx
+        }
     return if (shouldNarrowWidth) {
         textStyle
             .withFontWidth(fontWidth.stepNarrower())
@@ -108,11 +117,12 @@ fun BoxWithConstraintsScope.reduceFontWidthIfNeeded(
     }
 }
 
-private fun FontWidth?.stepNarrower(): FontWidth = when (this) {
-    FontWidth.SemiCondensed -> FontWidth.Condensed
-    FontWidth.Condensed -> FontWidth.ExtraCondensed
-    FontWidth.ExtraCondensed -> FontWidth.UltraCondensed
-    FontWidth.UltraCondensed -> FontWidth.SuperCondensed
-    FontWidth.SuperCondensed -> FontWidth.SuperCondensed
-    null -> FontWidth.SemiCondensed
-}
+private fun FontWidth?.stepNarrower(): FontWidth =
+    when (this) {
+        FontWidth.SemiCondensed -> FontWidth.Condensed
+        FontWidth.Condensed -> FontWidth.ExtraCondensed
+        FontWidth.ExtraCondensed -> FontWidth.UltraCondensed
+        FontWidth.UltraCondensed -> FontWidth.SuperCondensed
+        FontWidth.SuperCondensed -> FontWidth.SuperCondensed
+        null -> FontWidth.SemiCondensed
+    }

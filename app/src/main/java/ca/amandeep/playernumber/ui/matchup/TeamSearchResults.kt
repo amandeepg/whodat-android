@@ -56,8 +56,10 @@ internal fun TeamSearchResults(
     val textMeasurer = rememberTextMeasurer()
     val fadeModifier = Modifier.fadingEdges(listState)
     LazyColumn(
-        modifier = modifier.fillMaxWidth()
-            .then(fadeModifier),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .then(fadeModifier),
         state = listState,
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -97,10 +99,11 @@ internal fun LeagueSectionHeader(
         )
         Text(
             text = leagueLabel,
-            style = MaterialTheme.typography.labelLarge.copy(
-                fontWeight = FontWeight.Bold,
-                lineHeightStyle = SingleLineHeightStyle,
-            ),
+            style =
+                MaterialTheme.typography.labelLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    lineHeightStyle = SingleLineHeightStyle,
+                ),
         )
     }
 }
@@ -116,32 +119,35 @@ internal fun RowScope.TeamResultRowContent(
     val titleStyleBase = MaterialTheme.typography.titleLarge
     TeamAbbreviationBadge(team = team, size = 36.dp)
     BoxWithConstraints(modifier = modifier.weight(1f)) {
-        val textStyleBase = titleStyleBase.copy(
-            fontWeight = FontWeight.Normal,
-            lineHeight = titleStyleBase.fontSize,
-            lineHeightStyle = SingleLineHeightStyle,
-        )
-        val fontWidth = if (textMeasurer != null) {
-            val maxWidthPx = constraints.maxWidth.toFloat().coerceAtLeast(0f)
-            remember(textMeasurer, textStyleBase, maxWidthPx) {
-                computeFittingFontWidth(
-                    textMeasurer = textMeasurer,
+        val textStyleBase =
+            titleStyleBase.copy(
+                fontWeight = FontWeight.Normal,
+                lineHeight = titleStyleBase.fontSize,
+                lineHeightStyle = SingleLineHeightStyle,
+            )
+        val fontWidth =
+            if (textMeasurer != null) {
+                val maxWidthPx = constraints.maxWidth.toFloat().coerceAtLeast(0f)
+                remember(textMeasurer, textStyleBase, maxWidthPx) {
+                    computeFittingFontWidth(
+                        textMeasurer = textMeasurer,
+                        textStyle = textStyleBase,
+                        maxWidthPx = maxWidthPx,
+                    )
+                }
+            } else {
+                rememberFittingFontWidth(
                     textStyle = textStyleBase,
-                    maxWidthPx = maxWidthPx,
+                    maxWidth = maxWidth,
                 )
             }
-        } else {
-            rememberFittingFontWidth(
-                textStyle = textStyleBase,
-                maxWidth = maxWidth,
-            )
-        }
         val baseStyle = textStyleBase.withFontWidth(fontWidth)
-        val adjustedStyle = reduceFontWidthIfNeeded(
-            text = team.name,
-            textStyle = baseStyle,
-            fontWidth = fontWidth,
-        )
+        val adjustedStyle =
+            reduceFontWidthIfNeeded(
+                text = team.name,
+                textStyle = baseStyle,
+                fontWidth = fontWidth,
+            )
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = highlightMatch(team.name, query, colors.primary),
@@ -169,9 +175,11 @@ private fun TeamResultRow(
         color = colors.surfaceContainerHigh,
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth()
-                .clickable { onTeamSelect(team) }
-                .padding(horizontal = 14.dp, vertical = 12.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clickable { onTeamSelect(team) }
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -217,9 +225,10 @@ private fun highlightMatch(
 private fun TeamSearchResultsPreview() {
     val query = "New"
     val searchEngine = remember { TeamSearchEngine() }
-    val groupedMatches = remember(searchEngine, query) {
-        searchEngine.search(query, "")
-    }
+    val groupedMatches =
+        remember(searchEngine, query) {
+            searchEngine.search(query, "")
+        }
     PlayerNumberTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             TeamSearchResults(

@@ -24,13 +24,12 @@ import ca.amandeep.playernumber.R
 import ca.amandeep.playernumber.ui.utils.SingleLineHeightStyle
 
 @Composable
-internal fun SyntheticStatusBar(
-    modifier: Modifier = Modifier,
-) {
+internal fun SyntheticStatusBar(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier
-            .height(SyntheticStatusBarHeight)
-            .fillMaxWidth(),
+        modifier =
+            modifier
+                .height(SyntheticStatusBarHeight)
+                .fillMaxWidth(),
         contentAlignment = Alignment.TopCenter,
     ) {
         Surface(
@@ -38,21 +37,23 @@ internal fun SyntheticStatusBar(
             modifier = Modifier.fillMaxSize(),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        horizontal = StatusBarHorizontalPadding,
-                        vertical = StatusBarVerticalPadding
-                    ),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(
+                            horizontal = StatusBarHorizontalPadding,
+                            vertical = StatusBarVerticalPadding,
+                        ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = PREVIEW_TIME,
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontWeight = FontWeight.SemiBold,
-                        lineHeightStyle = SingleLineHeightStyle,
-                    ),
+                    style =
+                        MaterialTheme.typography.labelLarge.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            lineHeightStyle = SingleLineHeightStyle,
+                        ),
                 )
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(StatusBarIconSpacing),

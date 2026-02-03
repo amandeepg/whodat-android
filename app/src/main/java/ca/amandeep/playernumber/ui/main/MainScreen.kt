@@ -24,9 +24,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.amandeep.playernumber.PlayerNumberViewModel
 import ca.amandeep.playernumber.R
 import ca.amandeep.playernumber.data.AnyTeam
@@ -44,20 +44,22 @@ fun MainScreen(
     modifier: Modifier = Modifier,
 ) {
     val backStack = remember { mutableStateListOf<MainDestination>(MainDestination.Jersey) }
-    val popBackStack = remember(backStack) {
-        {
-            if (backStack.size > 1) {
-                backStack.removeAt(backStack.lastIndex)
+    val popBackStack =
+        remember(backStack) {
+            {
+                if (backStack.size > 1) {
+                    backStack.removeAt(backStack.lastIndex)
+                }
             }
         }
-    }
-    val openMatchup = remember(backStack) {
-        {
-            if (backStack.lastOrNull() != MainDestination.Matchup) {
-                backStack.add(MainDestination.Matchup)
+    val openMatchup =
+        remember(backStack) {
+            {
+                if (backStack.lastOrNull() != MainDestination.Matchup) {
+                    backStack.add(MainDestination.Matchup)
+                }
             }
         }
-    }
     val closeMatchup = popBackStack
     val playerNumberState by viewModel.uiState.collectAsStateWithLifecycle()
     val awayTeam by viewModel.awayTeam.collectAsStateWithLifecycle()
@@ -67,24 +69,25 @@ fun MainScreen(
         backStack = backStack,
         onBack = popBackStack,
         modifier = modifier.fillMaxSize(),
-        entryProvider = entryProvider {
-            entry<MainDestination.Matchup> {
-                MatchupDestination(
-                    awayTeam = awayTeam,
-                    homeTeam = homeTeam,
-                    onAwayTeamSelect = viewModel::updateAwayTeam,
-                    onHomeTeamSelect = viewModel::updateHomeTeam,
-                    onDismiss = closeMatchup,
-                )
-            }
-            entry<MainDestination.Jersey> {
-                PlayerNumberScreen(
-                    state = playerNumberState,
-                    onJerseyInputChange = viewModel::onJerseyInputChange,
-                    onTeamSelectorClick = openMatchup,
-                )
-            }
-        },
+        entryProvider =
+            entryProvider {
+                entry<MainDestination.Matchup> {
+                    MatchupDestination(
+                        awayTeam = awayTeam,
+                        homeTeam = homeTeam,
+                        onAwayTeamSelect = viewModel::updateAwayTeam,
+                        onHomeTeamSelect = viewModel::updateHomeTeam,
+                        onDismiss = closeMatchup,
+                    )
+                }
+                entry<MainDestination.Jersey> {
+                    PlayerNumberScreen(
+                        state = playerNumberState,
+                        onJerseyInputChange = viewModel::onJerseyInputChange,
+                        onTeamSelectorClick = openMatchup,
+                    )
+                }
+            },
     )
 }
 
@@ -101,11 +104,12 @@ private fun MatchupDestination(
     val initialAway = remember { awayTeam }
     val initialHome = remember { homeTeam }
     val resetCounter = remember { mutableIntStateOf(0) }
-    val onResetTeams = rememberUpdatedState {
-        onAwayTeamSelect(initialAway)
-        onHomeTeamSelect(initialHome)
-        resetCounter.intValue += 1
-    }
+    val onResetTeams =
+        rememberUpdatedState {
+            onAwayTeamSelect(initialAway)
+            onHomeTeamSelect(initialHome)
+            resetCounter.intValue += 1
+        }
     MatchupDestinationScaffold(
         onDismiss = onDismiss,
         onResetTeams = { onResetTeams.value.invoke() },
@@ -130,13 +134,14 @@ internal fun MatchupDestinationPreview(
     state: TeamSelectionViewModel.State,
     modifier: Modifier = Modifier,
 ) {
-    val previewActions = remember {
-        TeamSelectionActions(
-            dispatch = {},
-            onTeamSelect = {},
-            onGameSelect = {},
-        )
-    }
+    val previewActions =
+        remember {
+            TeamSelectionActions(
+                dispatch = {},
+                onTeamSelect = {},
+                onGameSelect = {},
+            )
+        }
     MatchupDestinationScaffold(
         onDismiss = {},
         onResetTeams = {},
@@ -169,9 +174,10 @@ private fun MatchupDestinationScaffold(
                 title = {
                     Text(
                         text = stringResource(R.string.select_matchup_title),
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            lineHeightStyle = SingleLineHeightStyle,
-                        ),
+                        style =
+                            MaterialTheme.typography.titleLarge.copy(
+                                lineHeightStyle = SingleLineHeightStyle,
+                            ),
                     )
                 },
                 navigationIcon = {
@@ -190,11 +196,12 @@ private fun MatchupDestinationScaffold(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        titleContentColor = MaterialTheme.colorScheme.onBackground,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+                    ),
             )
         },
         content = content,

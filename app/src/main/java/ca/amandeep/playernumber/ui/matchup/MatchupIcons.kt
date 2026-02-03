@@ -10,11 +10,12 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 import java.util.Locale
 
-internal fun leagueIconFor(leagueLabel: String): ImageVector = when (leagueLabel.uppercase(Locale.ROOT)) {
-    "NBA" -> Icons.Default.SportsBasketball
-    "NHL" -> Icons.Default.SportsHockey
-    "NFL" -> Icons.Default.SportsFootball
-    "MLB" -> Icons.Default.SportsBaseball
-    "MLS" -> Icons.Default.SportsSoccer
-    else -> Icons.Default.Star
-}
+internal fun leagueIconFor(leagueLabel: String): ImageVector =
+    when (leagueLabel.uppercase(Locale.ROOT)) {
+        "NBA" -> Icons.Default.SportsBasketball
+        "NHL" -> Icons.Default.SportsHockey
+        "NFL" -> Icons.Default.SportsFootball
+        "MLB" -> Icons.Default.SportsBaseball
+        "MLS" -> Icons.Default.SportsSoccer
+        else -> Icons.Default.Star
+    }

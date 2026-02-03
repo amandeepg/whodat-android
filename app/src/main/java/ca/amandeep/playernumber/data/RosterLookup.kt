@@ -3,14 +3,18 @@ package ca.amandeep.playernumber.data
 import java.util.Locale
 
 @JvmInline
-value class JerseyNumber private constructor(val value: String) {
+value class JerseyNumber private constructor(
+    val value: String,
+) {
     companion object {
         fun from(raw: String): JerseyNumber? = raw.trim().takeIf { it.isNotEmpty() }?.let(::JerseyNumber)
     }
 }
 
 @JvmInline
-value class TeamId private constructor(val value: String) {
+value class TeamId private constructor(
+    val value: String,
+) {
     companion object {
         fun from(team: AnyTeam): TeamId = from(team.league, team.abbreviation)
 
@@ -24,7 +28,10 @@ value class TeamId private constructor(val value: String) {
 fun AnyTeam.teamId(): TeamId = TeamId.from(this)
 
 interface RosterLookup {
-    fun findPlayer(team: TeamId, number: JerseyNumber): AnyPlayer?
+    fun findPlayer(
+        team: TeamId,
+        number: JerseyNumber,
+    ): AnyPlayer?
 }
 
 private val teamsById: Map<TeamId, AnyTeam> by lazy(LazyThreadSafetyMode.NONE) {
@@ -39,5 +46,8 @@ internal fun findPlayerInRoster(
 ): AnyPlayer? = players.lastOrNull { it.jerseyNumber == number.value }
 
 object StaticRosterLookup : RosterLookup {
-    override fun findPlayer(team: TeamId, number: JerseyNumber): AnyPlayer? = teamForId(team)?.roster?.let { findPlayerInRoster(it, number) }
+    override fun findPlayer(
+        team: TeamId,
+        number: JerseyNumber,
+    ): AnyPlayer? = teamForId(team)?.roster?.let { findPlayerInRoster(it, number) }
 }

@@ -22,34 +22,37 @@ class AndroidLocationRepository(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : LocationRepository {
     @SuppressLint("MissingPermission")
-    override fun locationFlow(): Flow<LocationFetchResult> = flow {
-        val hasFinePermission = hasFinePermission()
-        val hasCoarsePermission = hasCoarsePermission()
-        if (!hasFinePermission && !hasCoarsePermission) {
-            emit(LocationFetchResult.MissingPermission)
-            return@flow
-        }
-        val locationManager = context.getSystemService(LocationManager::class.java)
-        if (locationManager == null) {
-            emit(LocationFetchResult.Error("LocationManager unavailable"))
-            return@flow
-        }
-        val lastKnown = bestLastKnownLocation(locationManager)
-        if (lastKnown != null) {
-            emit(lastKnown.toFetchResult())
-        }
-        emit(fetchCurrentLocation(locationManager, hasFinePermission))
-    }.flowOn(ioDispatcher)
+    override fun locationFlow(): Flow<LocationFetchResult> =
+        flow {
+            val hasFinePermission = hasFinePermission()
+            val hasCoarsePermission = hasCoarsePermission()
+            if (!hasFinePermission && !hasCoarsePermission) {
+                emit(LocationFetchResult.MissingPermission)
+                return@flow
+            }
+            val locationManager = context.getSystemService(LocationManager::class.java)
+            if (locationManager == null) {
+                emit(LocationFetchResult.Error("LocationManager unavailable"))
+                return@flow
+            }
+            val lastKnown = bestLastKnownLocation(locationManager)
+            if (lastKnown != null) {
+                emit(lastKnown.toFetchResult())
+            }
+            emit(fetchCurrentLocation(locationManager, hasFinePermission))
+        }.flowOn(ioDispatcher)
 
-    private fun hasFinePermission(): Boolean = ContextCompat.checkSelfPermission(
-        context,
-        Manifest.permission.ACCESS_FINE_LOCATION,
-    ) == PackageManager.PERMISSION_GRANTED
+    private fun hasFinePermission(): Boolean =
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+        ) == PackageManager.PERMISSION_GRANTED
 
-    private fun hasCoarsePermission(): Boolean = ContextCompat.checkSelfPermission(
-        context,
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-    ) == PackageManager.PERMISSION_GRANTED
+    private fun hasCoarsePermission(): Boolean =
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+        ) == PackageManager.PERMISSION_GRANTED
 
     private fun bestProvider(
         locationManager: LocationManager,
@@ -69,9 +72,10 @@ class AndroidLocationRepository(
         locationManager: LocationManager,
         hasFinePermission: Boolean,
     ): LocationFetchResult {
-        val provider = bestProvider(locationManager, hasFinePermission)
-            ?: return bestLastKnownLocation(locationManager)?.toFetchResult()
-                ?: LocationFetchResult.Unavailable
+        val provider =
+            bestProvider(locationManager, hasFinePermission)
+                ?: return bestLastKnownLocation(locationManager)?.toFetchResult()
+                    ?: LocationFetchResult.Unavailable
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             suspendCancellableCoroutine { continuation ->
                 val cancellationSignal = CancellationSignal()
@@ -83,9 +87,10 @@ class AndroidLocationRepository(
                         cancellationSignal,
                         executor,
                     ) { location ->
-                        val result = location?.toFetchResult()
-                            ?: bestLastKnownLocation(locationManager)?.toFetchResult()
-                            ?: LocationFetchResult.Unavailable
+                        val result =
+                            location?.toFetchResult()
+                                ?: bestLastKnownLocation(locationManager)?.toFetchResult()
+                                ?: LocationFetchResult.Unavailable
                         if (continuation.isActive) {
                             continuation.resume(result)
                         }
@@ -106,11 +111,12 @@ class AndroidLocationRepository(
         val providers = locationManager.getProviders(true)
         var bestLocation: Location? = null
         for (provider in providers) {
-            val location = try {
-                locationManager.getLastKnownLocation(provider)
-            } catch (_: SecurityException) {
-                null
-            }
+            val location =
+                try {
+                    locationManager.getLastKnownLocation(provider)
+                } catch (_: SecurityException) {
+                    null
+                }
             if (location != null) {
                 if (bestLocation == null || location.time > bestLocation.time) {
                     bestLocation = location
@@ -120,12 +126,13 @@ class AndroidLocationRepository(
         return bestLocation
     }
 
-    private fun Location.toFetchResult(): LocationFetchResult = LocationFetchResult.Available(
-        DeviceLocation(
-            latitude = latitude,
-            longitude = longitude,
-            accuracyMeters = if (hasAccuracy()) accuracy else null,
-            timestampMillis = if (time > 0L) time else null,
-        ),
-    )
+    private fun Location.toFetchResult(): LocationFetchResult =
+        LocationFetchResult.Available(
+            DeviceLocation(
+                latitude = latitude,
+                longitude = longitude,
+                accuracyMeters = if (hasAccuracy()) accuracy else null,
+                timestampMillis = if (time > 0L) time else null,
+            ),
+        )
 }

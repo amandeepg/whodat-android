@@ -12,13 +12,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import ca.amandeep.playernumber.ui.theme.LocalSystemDarkTheme
 import ca.amandeep.playernumber.ui.theme.PlayerNumberTheme
 
 @Composable
@@ -32,16 +31,17 @@ internal fun DeviceScreenshot(
             color = MaterialTheme.colorScheme.background,
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .consumeWindowInsets(WindowInsets(top = SyntheticStatusBarHeight / 2))
-                ,
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .consumeWindowInsets(WindowInsets(top = SyntheticStatusBarHeight / 2)),
             ) {
                 content()
                 SyntheticStatusBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.TopCenter),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.TopCenter),
                 )
             }
         }
@@ -49,15 +49,14 @@ internal fun DeviceScreenshot(
 }
 
 @Composable
-internal fun DiagonalSplitDeviceScreenshot(
-    content: @Composable () -> Unit,
-) {
-    val dividerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = DiagonalDividerAlpha)
+internal fun DiagonalSplitDeviceScreenshot(content: @Composable () -> Unit) {
+    val dividerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = DIAGONAL_DIVIDER_ALPHA)
     Box(modifier = Modifier.fillMaxSize()) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .diagonalClip(clipTopRight = true),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .diagonalClip(clipTopRight = true),
         ) {
             DeviceScreenshot(
                 darkTheme = isSystemInDarkTheme(),
@@ -65,9 +64,10 @@ internal fun DiagonalSplitDeviceScreenshot(
             )
         }
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .diagonalClip(clipTopRight = false),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .diagonalClip(clipTopRight = false),
         ) {
             DeviceScreenshot(
                 darkTheme = !isSystemInDarkTheme(),
@@ -79,30 +79,31 @@ internal fun DiagonalSplitDeviceScreenshot(
                 color = dividerColor,
                 start = Offset.Zero,
                 end = Offset(size.width, size.height),
-                strokeWidth = DiagonalDividerStrokeWidth.toPx(),
+                strokeWidth = DIAGONAL_DIVIDER_STROKE_WIDTH.toPx(),
             )
         }
     }
 }
 
-
-private fun Modifier.diagonalClip(clipTopRight: Boolean): Modifier = drawWithContent {
-    val path = Path().apply {
-        if (clipTopRight) {
-            moveTo(0f, 0f)
-            lineTo(size.width, 0f)
-            lineTo(size.width, size.height)
-        } else {
-            moveTo(0f, 0f)
-            lineTo(0f, size.height)
-            lineTo(size.width, size.height)
+private fun Modifier.diagonalClip(clipTopRight: Boolean): Modifier =
+    drawWithContent {
+        val path =
+            Path().apply {
+                if (clipTopRight) {
+                    moveTo(0f, 0f)
+                    lineTo(size.width, 0f)
+                    lineTo(size.width, size.height)
+                } else {
+                    moveTo(0f, 0f)
+                    lineTo(0f, size.height)
+                    lineTo(size.width, size.height)
+                }
+                close()
+            }
+        clipPath(path) {
+            this@drawWithContent.drawContent()
         }
-        close()
     }
-    clipPath(path) {
-        this@drawWithContent.drawContent()
-    }
-}
 
-private const val DiagonalDividerAlpha = 0.6f
-private val DiagonalDividerStrokeWidth: Dp = 4.dp
+private const val DIAGONAL_DIVIDER_ALPHA = 0.6f
+private val DIAGONAL_DIVIDER_STROKE_WIDTH: Dp = 4.dp

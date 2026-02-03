@@ -71,7 +71,8 @@ internal class SquircleShape(
 @Composable
 fun TextUnit.toDp(): Dp = with(LocalDensity.current) { this@toDp.toDp() }
 
-internal val SingleLineHeightStyle = LineHeightStyle(
-    alignment = LineHeightStyle.Alignment.Center,
-    trim = LineHeightStyle.Trim.Both,
-)
+internal val SingleLineHeightStyle =
+    LineHeightStyle(
+        alignment = LineHeightStyle.Alignment.Center,
+        trim = LineHeightStyle.Trim.Both,
+    )

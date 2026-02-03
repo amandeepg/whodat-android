@@ -56,46 +56,49 @@ internal fun MatchupVsBadge(
     val backgroundBorderWidthPx = with(LocalDensity.current) { TeamSelectionVsBackgroundBorderWidth.toPx() }
     val innerRadiusPx = with(LocalDensity.current) { TeamSelectionVsSize.toPx() } / 2f
     Box(
-        modifier = modifier.size(TeamSelectionVsOuterSize)
-            .drawWithContent {
-                drawContent()
-                if (backgroundBorderWidthPx > 0f) {
-                    val ringRadius = innerRadiusPx - backgroundBorderWidthPx / 2f
-                    if (ringRadius > 0f) {
-                        drawCircle(
-                            color = backgroundBorderColor,
-                            radius = ringRadius,
-                            style = Stroke(width = backgroundBorderWidthPx),
-                        )
+        modifier =
+            modifier
+                .size(TeamSelectionVsOuterSize)
+                .drawWithContent {
+                    drawContent()
+                    if (backgroundBorderWidthPx > 0f) {
+                        val ringRadius = innerRadiusPx - backgroundBorderWidthPx / 2f
+                        if (ringRadius > 0f) {
+                            drawCircle(
+                                color = backgroundBorderColor,
+                                radius = ringRadius,
+                                style = Stroke(width = backgroundBorderWidthPx),
+                            )
+                        }
                     }
-                }
-                val arcInset = borderWidthPx / 2f
-                val arcSize = Size(
-                    width = size.width - borderWidthPx,
-                    height = size.height - borderWidthPx,
-                )
-                if (arcSize.width <= 0f || arcSize.height <= 0f) return@drawWithContent
-                drawVsBorderArc(
-                    color = topBorderColor,
-                    startAngle = 180f,
-                    sweepAngle = 180f,
-                    borderWidthPx = borderWidthPx,
-                    arcInset = arcInset,
-                    arcSize = arcSize,
-                    borderHalf = MatchupVsBorderHalf.Top,
-                    clip = topBorderClip,
-                )
-                drawVsBorderArc(
-                    color = bottomBorderColor,
-                    startAngle = 0f,
-                    sweepAngle = 180f,
-                    borderWidthPx = borderWidthPx,
-                    arcInset = arcInset,
-                    arcSize = arcSize,
-                    borderHalf = MatchupVsBorderHalf.Bottom,
-                    clip = bottomBorderClip,
-                )
-            },
+                    val arcInset = borderWidthPx / 2f
+                    val arcSize =
+                        Size(
+                            width = size.width - borderWidthPx,
+                            height = size.height - borderWidthPx,
+                        )
+                    if (arcSize.width <= 0f || arcSize.height <= 0f) return@drawWithContent
+                    drawVsBorderArc(
+                        color = topBorderColor,
+                        startAngle = 180f,
+                        sweepAngle = 180f,
+                        borderWidthPx = borderWidthPx,
+                        arcInset = arcInset,
+                        arcSize = arcSize,
+                        borderHalf = MatchupVsBorderHalf.Top,
+                        clip = topBorderClip,
+                    )
+                    drawVsBorderArc(
+                        color = bottomBorderColor,
+                        startAngle = 0f,
+                        sweepAngle = 180f,
+                        borderWidthPx = borderWidthPx,
+                        arcInset = arcInset,
+                        arcSize = arcSize,
+                        borderHalf = MatchupVsBorderHalf.Bottom,
+                        clip = bottomBorderClip,
+                    )
+                },
         contentAlignment = Alignment.Center,
     ) {
         Surface(

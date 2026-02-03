@@ -92,11 +92,12 @@ private fun Modifier.drawFadingEdgesApi33(
 
             onDrawWithContent {
                 drawContent()
-                val topEdgeHeightPx = if (scrollableState.canScrollBackward) {
-                    topEdgeHeight.toPx()
-                } else {
-                    0f
-                }
+                val topEdgeHeightPx =
+                    if (scrollableState.canScrollBackward) {
+                        topEdgeHeight.toPx()
+                    } else {
+                        0f
+                    }
                 if (topEdgeHeightPx > 1f && topEdgeHeightPx < size.height) {
                     topEdgeShader.setFloatUniform("topFade", topEdgeHeightPx)
                     drawRect(
@@ -104,11 +105,12 @@ private fun Modifier.drawFadingEdgesApi33(
                         blendMode = BlendMode.DstIn,
                     )
                 }
-                val bottomEdgeHeightPx = if (scrollableState.canScrollForward) {
-                    bottomEdgeHeight.toPx()
-                } else {
-                    0f
-                }
+                val bottomEdgeHeightPx =
+                    if (scrollableState.canScrollForward) {
+                        bottomEdgeHeight.toPx()
+                    } else {
+                        0f
+                    }
                 if (bottomEdgeHeightPx > 1f && bottomEdgeHeightPx < size.height) {
                     bottomEdgeShader.setFloatUniform("bottomFade", bottomEdgeHeightPx)
                     drawRect(
@@ -130,33 +132,37 @@ private fun Modifier.drawFadingEdgesOldApi(
         .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
         .drawWithContent {
             drawContent()
-            val topEdgeHeightPx = if (scrollableState.canScrollBackward) {
-                topEdgeHeight.toPx()
-            } else {
-                0f
-            }
+            val topEdgeHeightPx =
+                if (scrollableState.canScrollBackward) {
+                    topEdgeHeight.toPx()
+                } else {
+                    0f
+                }
             if (topEdgeHeightPx > 1f && topEdgeHeightPx < size.height) {
                 drawRect(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color.Black),
-                        startY = 0f,
-                        endY = topEdgeHeightPx,
-                    ),
+                    brush =
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, Color.Black),
+                            startY = 0f,
+                            endY = topEdgeHeightPx,
+                        ),
                     blendMode = BlendMode.DstIn,
                 )
             }
-            val bottomEdgeHeightPx = if (scrollableState.canScrollForward) {
-                bottomEdgeHeight.toPx()
-            } else {
-                0f
-            }
+            val bottomEdgeHeightPx =
+                if (scrollableState.canScrollForward) {
+                    bottomEdgeHeight.toPx()
+                } else {
+                    0f
+                }
             if (bottomEdgeHeightPx > 1f && bottomEdgeHeightPx < size.height) {
                 drawRect(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color.Black, Color.Transparent),
-                        startY = size.height - bottomEdgeHeightPx,
-                        endY = size.height,
-                    ),
+                    brush =
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Black, Color.Transparent),
+                            startY = size.height - bottomEdgeHeightPx,
+                            endY = size.height,
+                        ),
                     blendMode = BlendMode.DstIn,
                 )
             }

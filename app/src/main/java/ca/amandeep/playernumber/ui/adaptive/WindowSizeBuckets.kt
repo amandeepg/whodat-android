@@ -45,11 +45,12 @@ fun resolveWidthBucket(
 private fun calculateSizeBucket(
     sizeDp: Dp,
     breakpoints: SizeBreakpoints,
-): SizeBucket = when {
-    sizeDp >= breakpoints.largeLowerBound -> SizeBucket.Large
-    sizeDp >= breakpoints.mediumLowerBound -> SizeBucket.Medium
-    else -> SizeBucket.Small
-}
+): SizeBucket =
+    when {
+        sizeDp >= breakpoints.largeLowerBound -> SizeBucket.Large
+        sizeDp >= breakpoints.mediumLowerBound -> SizeBucket.Medium
+        else -> SizeBucket.Small
+    }
 
 @Composable
 internal fun PreviewWindowSizeClassHint(
@@ -71,8 +72,9 @@ internal fun PreviewWindowSizeClassHint(
         modifier = modifier.padding(8.dp),
     ) {
         Text(
-            text = "W:${widthBucket.name} (${width.value.roundToInt()}dp)\n" +
-                "H:${heightBucket.name} (${height.value.roundToInt()}dp)",
+            text =
+                "W:${widthBucket.name} (${width.value.roundToInt()}dp)\n" +
+                    "H:${heightBucket.name} (${height.value.roundToInt()}dp)",
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
             style = MaterialTheme.typography.labelSmall,
         )

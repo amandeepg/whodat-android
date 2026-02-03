@@ -20,9 +20,10 @@ class TeamSearchEngine {
         val teams: List<AnyTeam>,
     )
 
-    private val leagueSearchIndex: List<LeagueSearchIndex> = LeagueCatalog.map { league ->
-        buildLeagueSearchIndex(league)
-    }
+    private val leagueSearchIndex: List<LeagueSearchIndex> =
+        LeagueCatalog.map { league ->
+            buildLeagueSearchIndex(league)
+        }
 
     fun search(
         query: String,
@@ -35,14 +36,16 @@ class TeamSearchEngine {
             return emptyList()
         }
         val selectedNameLower = selectedName.lowercase(Locale.ROOT)
-        val results = leagueSearchIndex.mapNotNull { league ->
-            val matches = filterTeams(
-                league = league,
-                queryTokens = queryTokens,
-                selectedNameLower = selectedNameLower,
-            )
-            if (matches.isEmpty()) null else LeagueMatches(league.leagueLabel, matches)
-        }
+        val results =
+            leagueSearchIndex.mapNotNull { league ->
+                val matches =
+                    filterTeams(
+                        league = league,
+                        queryTokens = queryTokens,
+                        selectedNameLower = selectedNameLower,
+                    )
+                if (matches.isEmpty()) null else LeagueMatches(league.leagueLabel, matches)
+            }
         val durationMs = SystemClock.elapsedRealtime() - start
         return results
     }
@@ -102,14 +105,15 @@ class TeamSearchEngine {
         league: LeagueSearchIndex,
         queryTokens: List<String>,
         selectedNameLower: String,
-    ): List<AnyTeam> = collectMatches(
-        candidates = candidateIndices(league.prefixIndex, queryTokens),
-        teams = league.teams,
-        selectedNameLower = selectedNameLower,
-        maxResults = Int.MAX_VALUE,
-    ) { teamIndex ->
-        matchesWordStarts(teamIndex.nameLower, teamIndex.tokenStarts, queryTokens)
-    }
+    ): List<AnyTeam> =
+        collectMatches(
+            candidates = candidateIndices(league.prefixIndex, queryTokens),
+            teams = league.teams,
+            selectedNameLower = selectedNameLower,
+            maxResults = Int.MAX_VALUE,
+        ) { teamIndex ->
+            matchesWordStarts(teamIndex.nameLower, teamIndex.tokenStarts, queryTokens)
+        }
 
     private fun filterSingleChar(
         league: LeagueSearchIndex,
@@ -159,11 +163,12 @@ class TeamSearchEngine {
         crossinline predicate: (TeamSearchIndex) -> Boolean,
     ): List<AnyTeam> {
         if (candidates.isEmpty()) return emptyList()
-        val capacity = if (maxResults == Int.MAX_VALUE) {
-            min(candidates.size, DEFAULT_RESULTS_CAPACITY)
-        } else {
-            maxResults
-        }
+        val capacity =
+            if (maxResults == Int.MAX_VALUE) {
+                min(candidates.size, DEFAULT_RESULTS_CAPACITY)
+            } else {
+                maxResults
+            }
         val matches = ArrayList<AnyTeam>(capacity)
         for (candidateIndex in candidates) {
             val teamIndex = teams[candidateIndex]
@@ -234,14 +239,17 @@ class TeamSearchEngine {
             }
         }
         val prefixIndex = prefixMap.mapValues { it.value.toIntArray() }
-        val prefixTop2 = prefixIndex.filterKeys { it.length == 1 }
-            .mapValues { (_, list) -> list.copyOf(min(2, list.size)) }
-        val index = LeagueSearchIndex(
-            leagueLabel = league.displayName,
-            teams = teams,
-            prefixIndex = prefixIndex,
-            prefixTop2 = prefixTop2,
-        )
+        val prefixTop2 =
+            prefixIndex
+                .filterKeys { it.length == 1 }
+                .mapValues { (_, list) -> list.copyOf(min(2, list.size)) }
+        val index =
+            LeagueSearchIndex(
+                leagueLabel = league.displayName,
+                teams = teams,
+                prefixIndex = prefixIndex,
+                prefixTop2 = prefixTop2,
+            )
         val durationMs = SystemClock.elapsedRealtime() - start
         return index
     }
@@ -257,11 +265,12 @@ class TeamSearchEngine {
             val prefixLength = min(MAX_PREFIX_LENGTH, token.length)
             val prefix = token.substring(0, prefixLength)
             val matches = prefixIndex[prefix] ?: return EmptyIntArray
-            candidates = if (candidates == null) {
-                matches
-            } else {
-                intersectSorted(candidates, matches)
-            }
+            candidates =
+                if (candidates == null) {
+                    matches
+                } else {
+                    intersectSorted(candidates, matches)
+                }
             if (candidates.isEmpty()) return candidates
         }
         return candidates ?: EmptyIntArray

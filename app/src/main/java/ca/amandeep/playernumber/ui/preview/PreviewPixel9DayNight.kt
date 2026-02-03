@@ -14,4 +14,4 @@ import androidx.compose.ui.tooling.preview.Preview
     device = Devices.PIXEL_9,
     uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
-annotation class Pixel9DayNightPreview
+annotation class PreviewPixel9DayNight
